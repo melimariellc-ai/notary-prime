@@ -79,19 +79,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Enliven Notary — Mobile & Online Notary Services" },
+      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
       {
         name: "description",
         content:
-          "Professional mobile and online notary services. Fast, reliable, and convenient notarizations at your home, office, hospital, coffee shop, or securely online.",
+          "Enliven Notary — professional mobile and remote online notary services across the Dallas–Fort Worth Metroplex. NNA Certified. Loan signings, RON, same-day appointments.",
+      },
+      {
+        name: "keywords",
+        content:
+          "mobile notary near me, Dallas mobile notary, mobile notary Dallas, online notary Texas, remote online notary, loan signing agent Dallas, same-day notary, Texas notary public, mobile loan signing services, Fort Worth notary",
       },
       { name: "theme-color", content: "#0f0f10" },
       { property: "og:site_name", content: "Enliven Notary" },
-      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary Services" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
       {
         property: "og:description",
         content:
-          "Fast, reliable, and convenient notarizations at your home, office, hospital, or securely online.",
+          "Professional mobile and remote online notarizations across the Dallas–Fort Worth Metroplex. Concierge-level service, on your schedule.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
