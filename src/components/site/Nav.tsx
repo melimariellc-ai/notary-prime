@@ -32,8 +32,8 @@ export function Nav() {
           : "bg-transparent"
       }`}
     >
-      <div className="container-luxe flex items-center justify-between h-20 py-4">
-        <Link to="/" className="flex items-center gap-2.5 group" aria-label="Prestige Notary — Home">
+      <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Prestige Notary — Home">
           <span
             aria-hidden
             className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg tracking-tight"
@@ -41,8 +41,8 @@ export function Nav() {
             N
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg tracking-tight text-foreground">Prestige Notary</span>
-            <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <span className="font-display text-lg tracking-tight text-foreground whitespace-nowrap">Prestige Notary</span>
+            <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-muted-foreground whitespace-nowrap">
               Mobile · Online · Trusted
             </span>
           </span>
@@ -63,14 +63,7 @@ export function Nav() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-2">
-          <a
-            href="tel:+15551234567"
-            className="hidden xl:inline-flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground px-2.5 py-2 whitespace-nowrap"
-          >
-            <Phone className="h-4 w-4 text-gold" aria-hidden />
-            <span className="tabular-nums">(555) 123-4567</span>
-          </a>
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <Link
             to="/book"
             className="btn-gold inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap transition-transform hover:-translate-y-0.5"
