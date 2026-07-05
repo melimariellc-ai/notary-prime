@@ -384,38 +384,69 @@ function HowItWorks() {
 function PricingTeaser() {
   const tiers = [
     {
-      name: "Single Notarization",
-      price: "$15",
-      unit: "per signature",
+      name: "Mobile Notary Services",
+      price: "$100",
+      unit: "starting at",
+      blurb:
+        "Professional mobile notary at your home, office, hospital, nursing home, or preferred meeting location.",
       features: [
-        "State-regulated notary fee",
-        "Any document type",
-        "Mobile or online",
+        "Travel within standard service area",
+        "Professional mobile service",
+        "Flexible scheduling",
+        "Confidential handling",
+        "Prompt communication",
       ],
-      cta: "Book now",
+      cta: "Book Appointment",
+      to: "/book" as const,
     },
     {
-      name: "Loan Signing",
-      price: "$150",
-      unit: "flat fee",
+      name: "Remote Online Notary",
+      price: "$65",
+      unit: "starting at",
+      blurb:
+        "Secure online notarization from anywhere in Texas using a state-approved Remote Online Notary platform.",
       features: [
-        "Full closing package",
-        "Printing & scan-backs",
-        "Evenings & weekends",
+        "Secure online meeting",
+        "Legally recognized notarization",
+        "Convenient from home or office",
+        "Fast turnaround",
       ],
-      cta: "Reserve signing",
+      cta: "Schedule Online",
+      to: "/book" as const,
       featured: true,
     },
     {
-      name: "Travel Fee",
-      price: "$25+",
-      unit: "based on distance",
+      name: "Loan Signing Services",
+      price: "$200",
+      unit: "starting at",
+      blurb:
+        "Professional loan signing services completed with exceptional attention to detail.",
       features: [
-        "Waived within 5 miles",
-        "Hospital & after-hours",
-        "Rush service available",
+        "Purchase Closings",
+        "Seller Packages",
+        "Refinance Packages",
+        "HELOC Packages",
+        "Reverse Mortgages",
+        "Commercial Loan Documents",
       ],
-      cta: "Get a quote",
+      cta: "Request Quote",
+      to: "/contact" as const,
+    },
+    {
+      name: "Specialty Appointments",
+      price: "Custom Quote",
+      unit: "",
+      blurb: "Tailored notarizations for sensitive, time-critical, or off-hours needs.",
+      features: [
+        "Hospital Visits",
+        "Nursing Homes",
+        "Assisted Living Facilities",
+        "Correctional Facilities",
+        "After-Hours Appointments",
+        "Weekend & Holiday Appointments",
+      ],
+      cta: "Request a Quote",
+      to: "/contact" as const,
     },
   ];
   return (
@@ -424,54 +455,83 @@ function PricingTeaser() {
         <Reveal>
           <SectionHeader
             eyebrow="Pricing"
-            title={<>Transparent, <span className="italic font-light text-gradient-gold">honest</span> pricing.</>}
-            intro="State-regulated notary fees apply where applicable. All pricing shown is editable and reviewed with you before appointment."
+            title={<>Concierge notary service, <span className="italic font-light text-gradient-gold">transparently priced.</span></>}
+            intro="Every appointment is quoted in writing before we begin. No surprises — just clear, professional service."
           />
         </Reveal>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {tiers.map((t, i) => (
-            <Reveal key={t.name} delay={i * 60}>
-              <div
-                className={`h-full rounded-2xl border p-8 flex flex-col ${
-                  t.featured
-                    ? "bg-charcoal text-primary-foreground border-transparent shadow-2xl"
-                    : "bg-card border-border"
-                }`}
-              >
-                {t.featured && (
-                  <span className="self-start text-[10px] uppercase tracking-[0.28em] text-gold border border-gold/40 rounded-full px-2.5 py-1">
-                    Most requested
-                  </span>
-                )}
-                <h3 className="mt-4 font-display text-2xl tracking-tight">{t.name}</h3>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className={`font-display text-5xl tracking-tight ${t.featured ? "text-gradient-gold" : ""}`}>{t.price}</span>
-                  <span className={t.featured ? "text-white/60 text-sm" : "text-muted-foreground text-sm"}>
-                    {t.unit}
-                  </span>
-                </div>
-                <ul className={`mt-6 space-y-2.5 text-sm ${t.featured ? "text-white/80" : "text-foreground/80"}`}>
-                  {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check className={`h-4 w-4 mt-0.5 ${t.featured ? "text-gold" : "text-gold"}`} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/book"
-                  className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium ${
+        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {tiers.map((t, i) => {
+            const isCustom = t.price === "Custom Quote";
+            return (
+              <Reveal key={t.name} delay={i * 60}>
+                <div
+                  className={`group relative h-full rounded-3xl border p-8 flex flex-col transition-all duration-500 hover:-translate-y-1 ${
                     t.featured
-                      ? "btn-gold"
-                      : "border border-border hover:border-gold/60 hover:text-foreground text-foreground/90"
+                      ? "bg-charcoal text-primary-foreground border-transparent shadow-[0_40px_80px_-30px_oklch(0.2_0.02_260/0.45)]"
+                      : "bg-card border-border hover:border-gold/60 hover:shadow-[0_30px_60px_-30px_oklch(0.74_0.115_82/0.35)]"
                   }`}
                 >
-                  {t.cta}
-                </Link>
-              </div>
-            </Reveal>
-          ))}
+                  {t.featured && (
+                    <span className="self-start text-[10px] uppercase tracking-[0.28em] text-gold border border-gold/40 rounded-full px-2.5 py-1">
+                      Most requested
+                    </span>
+                  )}
+                  <h3 className={`${t.featured ? "mt-4" : ""} font-display text-2xl tracking-tight`}>
+                    {t.name}
+                  </h3>
+                  <div className="mt-5 flex items-baseline gap-2">
+                    {isCustom ? (
+                      <span className={`font-display text-3xl tracking-tight ${t.featured ? "text-gradient-gold" : "text-gradient-gold"}`}>
+                        {t.price}
+                      </span>
+                    ) : (
+                      <>
+                        <span className={t.featured ? "text-white/60 text-xs uppercase tracking-[0.22em]" : "text-muted-foreground text-xs uppercase tracking-[0.22em]"}>
+                          {t.unit}
+                        </span>
+                        <span className={`font-display text-5xl tracking-tight ${t.featured ? "text-gradient-gold" : ""}`}>
+                          {t.price}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <p className={`mt-4 text-sm leading-relaxed ${t.featured ? "text-white/70" : "text-muted-foreground"}`}>
+                    {t.blurb}
+                  </p>
+                  <div className={`mt-6 h-px w-full ${t.featured ? "bg-white/10" : "bg-border"}`} />
+                  <ul className={`mt-6 space-y-2.5 text-sm ${t.featured ? "text-white/85" : "text-foreground/85"}`}>
+                    {t.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2.5">
+                        <Check className="h-4 w-4 mt-0.5 text-gold shrink-0" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto pt-8">
+                    <Link
+                      to={t.to}
+                      className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                        t.featured
+                          ? "btn-gold"
+                          : "border border-border hover:border-gold/60 text-foreground"
+                      }`}
+                    >
+                      {t.cta} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
+        <Reveal delay={120}>
+          <p className="mt-10 max-w-3xl mx-auto text-center text-sm text-muted-foreground leading-relaxed">
+            Every appointment is unique. Final pricing may vary depending on travel distance,
+            document type, number of notarizations, appointment time, and specialty requests.
+            You'll always receive a transparent quote before your appointment.
+            State-regulated notarial fees apply where required under Texas law.
+          </p>
+        </Reveal>
       </div>
     </section>
   );
