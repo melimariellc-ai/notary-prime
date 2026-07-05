@@ -118,14 +118,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "@id": "https://enlivennotary.example/#business",
-          name: "Enliven Notary Services",
+          name: "Enliven Notary",
           description:
-            "Mobile and online notary services. Serving homes, offices, hospitals, and secure online sessions.",
+            "NNA Certified mobile notary and Texas Remote Online Notary serving the Dallas–Fort Worth Metroplex. Loan signings, estate documents, medical, and business notarizations.",
           image: "/favicon.ico",
           telephone: "+1-817-622-6182",
           email: "hello@enlivennotary.com",
           priceRange: "$$",
-          areaServed: "United States",
+          areaServed: [
+            { "@type": "AdministrativeArea", name: "Dallas–Fort Worth Metroplex" },
+            { "@type": "State", name: "Texas" },
+          ],
           address: {
             "@type": "PostalAddress",
             addressRegion: "TX",
