@@ -50,107 +50,54 @@ export const Route = createFileRoute("/")({
 });
 
 const services = [
-  {
-    icon: MapPin,
-    title: "Mobile Notary",
-    description: "We travel to your home, office, hospital, or preferred meeting place.",
-  },
-  {
-    icon: Video,
-    title: "Remote Online Notary",
-    description: "Secure, audio-video notarizations from anywhere in the country.",
-  },
-  {
-    icon: FileSignature,
-    title: "Loan Signing Agent",
-    description: "Certified NNA-trained loan signings for real estate closings & refinances.",
-  },
-  {
-    icon: ScrollText,
-    title: "General Notary Work",
-    description: "Acknowledgments, jurats, oaths, affirmations, and copy certifications.",
-  },
-  {
-    icon: Landmark,
-    title: "Power of Attorney",
-    description: "Durable, medical, and specific POA documents notarized with care.",
-  },
-  {
-    icon: Home,
-    title: "Real Estate Documents",
-    description: "Deeds, sellers packages, refinances, HELOCs, and reverse mortgages.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Estate Planning",
-    description: "Wills, trusts, healthcare directives, and living wills handled discreetly.",
-  },
-  {
-    icon: Stethoscope,
-    title: "Medical Documents",
-    description: "Bedside notarizations at hospitals, rehab centers, and assisted living.",
-  },
-  {
-    icon: Briefcase,
-    title: "Business Documents",
-    description: "Contracts, corporate resolutions, vendor agreements, and affidavits.",
-  },
-  {
-    icon: GraduationCap,
-    title: "School & Personal Forms",
-    description: "Enrollment forms, permission slips, and personal affidavits.",
-  },
-  {
-    icon: Plane,
-    title: "Travel Consent",
-    description: "Minor travel consent forms and international parental authorizations.",
-  },
-  {
-    icon: Building2,
-    title: "I-9 Verification",
-    description: "Authorized representative I-9 employment verifications on request.",
-  },
+  { icon: MapPin, title: "Mobile Notary", description: "We travel to your home, office, hospital, or preferred location across DFW." },
+  { icon: Video, title: "Remote Online Notary", description: "Secure, Texas-approved online notarizations from anywhere in the state." },
+  { icon: FileSignature, title: "Loan Signing Services", description: "NNA Certified loan signing agent for closings, refinances, and HELOCs." },
+  { icon: ScrollText, title: "Acknowledgments & Jurats", description: "General notary work including acknowledgments, jurats, oaths, and affirmations." },
+  { icon: ClipboardCheck, title: "Affidavits", description: "Sworn statements and personal affidavits, carefully notarized." },
+  { icon: Landmark, title: "Power of Attorney", description: "Durable, medical, and specific POA documents handled with discretion." },
+  { icon: ShieldCheck, title: "Estate Planning", description: "Wills, healthcare directives, and living wills executed with care." },
+  { icon: ScrollText, title: "Trust Documents", description: "Trust agreements, amendments, and certifications notarized properly." },
+  { icon: Home, title: "Purchase Closings", description: "Full purchase packages completed with attention to every page." },
+  { icon: Home, title: "Seller Packages", description: "Seller-side signings coordinated for a smooth close." },
+  { icon: Home, title: "Refinance Packages", description: "Refinance signings scheduled around your life, evenings and weekends." },
+  { icon: Home, title: "HELOC Documents", description: "Home equity line signings handled quickly and professionally." },
+  { icon: Stethoscope, title: "Medical Documents", description: "Bedside notarizations at hospitals, rehab centers, and assisted living." },
+  { icon: GraduationCap, title: "School Documents", description: "Enrollment forms, permission slips, and student affidavits." },
+  { icon: Plane, title: "Travel Consent Forms", description: "Minor travel consent and international parental authorization forms." },
+  { icon: Briefcase, title: "Business Documents", description: "Contracts, corporate resolutions, vendor agreements, and affidavits." },
+  { icon: Building2, title: "I-9 Employment Verification", description: "Authorized representative I-9 verifications available on request." },
 ];
 
 const badges = [
-  "Commissioned Notary",
-  "Insured & Bonded",
-  "Background Screened",
-  "Certified Loan Signing Agent",
+  "NNA Certified",
+  "Texas Commissioned Notary Public",
+  "Mobile Notary",
   "Remote Online Notary",
+  "Loan Signing Services",
+  "Professional & Confidential",
 ];
 
 const steps = [
-  {
-    icon: CalendarClock,
-    title: "Schedule",
-    description:
-      "Choose a time that works — often same day. Pick mobile or online meeting.",
-  },
-  {
-    icon: UserCheck,
-    title: "Verify Identification",
-    description: "Present valid, government-issued photo ID. We handle KBA online.",
-  },
-  {
-    icon: Handshake,
-    title: "Meet In Person or Online",
-    description: "We arrive at your location or send a secure video session link.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "Complete Notarization",
-    description: "Sign, seal, and receive your documents — start to finish in minutes.",
-  },
+  { icon: CalendarClock, title: "Schedule", description: "Choose a time that works — often same day. Pick mobile or online." },
+  { icon: UserCheck, title: "Verify Identification", description: "Present valid, government-issued photo ID. We handle KBA online." },
+  { icon: Handshake, title: "Meet In Person or Online", description: "We arrive at your location or send a secure video session link." },
+  { icon: ClipboardCheck, title: "Complete Notarization", description: "Sign, seal, and receive your documents — start to finish in minutes." },
 ];
 
 const whyChoose = [
-  { icon: ShieldCheck, title: "Professional", text: "Commissioned, insured, and bonded." },
-  { icon: Clock, title: "Same-Day Appointments", text: "Rush and after-hours available." },
-  { icon: MapPin, title: "Mobile Service", text: "We come to you — home, office, hospital." },
-  { icon: Video, title: "Online Notary", text: "Secure remote sessions anywhere in the U.S." },
-  { icon: Sparkles, title: "Attention to Detail", text: "Every signature, every seal — precise." },
+  { icon: ShieldCheck, title: "NNA Certified Professional", text: "Nationally certified and continuously trained." },
+  { icon: MapPin, title: "Mobile Service — We Come To You", text: "Home, office, hospital, or anywhere across DFW." },
+  { icon: Video, title: "Remote Online Notary", text: "Secure online sessions for signers anywhere in Texas." },
+  { icon: FileSignature, title: "Professional Loan Signings", text: "Purchase, refinance, HELOC, and reverse mortgage packages." },
+  { icon: CalendarClock, title: "Flexible Scheduling", text: "Same-day appointments when available." },
+  { icon: Clock, title: "Evenings & Weekends", text: "Around your calendar — not the other way around." },
+  { icon: Phone, title: "Prompt Communication", text: "Quick replies, clear confirmations, no guesswork." },
   { icon: Lock, title: "Secure & Confidential", text: "Your documents are protected end to end." },
+  { icon: Sparkles, title: "Attention To Detail", text: "Every signature, every seal — precise." },
+  { icon: Star, title: "Exceptional Experience", text: "Concierge-level service from first call to final page." },
+  { icon: UserCheck, title: "Reliable & Professional", text: "On time, prepared, and courteous — every appointment." },
+  { icon: Handshake, title: "Client-First Approach", text: "You'll always feel taken care of and informed." },
 ];
 
 const testimonials = [
