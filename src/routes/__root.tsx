@@ -79,15 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Prestige Notary — Mobile & Online Notary Services" },
+      { title: "Enliven Notary — Mobile & Online Notary Services" },
       {
         name: "description",
         content:
           "Professional mobile and online notary services. Fast, reliable, and convenient notarizations at your home, office, hospital, coffee shop, or securely online.",
       },
       { name: "theme-color", content: "#0f0f10" },
-      { property: "og:site_name", content: "Prestige Notary" },
-      { property: "og:title", content: "Prestige Notary — Mobile & Online Notary Services" },
+      { property: "og:site_name", content: "Enliven Notary" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary Services" },
       {
         property: "og:description",
         content:
@@ -112,13 +112,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          "@id": "https://prestigenotary.example/#business",
-          name: "Prestige Notary Services",
+          "@id": "https://enlivennotary.example/#business",
+          name: "Enliven Notary Services",
           description:
             "Mobile and online notary services. Serving homes, offices, hospitals, and secure online sessions.",
           image: "/favicon.ico",
-          telephone: "+1-555-123-4567",
-          email: "hello@prestigenotary.com",
+          telephone: "+1-817-622-6182",
+          email: "hello@enlivennotary.com",
           priceRange: "$$",
           areaServed: "United States",
           address: {

@@ -6,9 +6,9 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/service-areas")({
   head: () => ({
     meta: [
-      { title: "Service Areas — Mobile Notary Near You | Prestige Notary" },
+      { title: "Service Areas — Mobile Notary Near You | Enliven Notary" },
       { name: "description", content: "Mobile notary service throughout the greater metro area. Remote online notarizations available nationwide across the United States." },
-      { property: "og:title", content: "Service Areas | Prestige Notary" },
+      { property: "og:title", content: "Service Areas | Enliven Notary" },
       { property: "og:description", content: "Mobile notary throughout the metro. Online notary nationwide." },
       { property: "og:url", content: "/service-areas" },
     ],

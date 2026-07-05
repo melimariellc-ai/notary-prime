@@ -7,9 +7,9 @@ import aboutImg from "@/assets/about-notary.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Trusted Mobile & Online Notary | Prestige Notary" },
+      { title: "About — Trusted Mobile & Online Notary | Enliven Notary" },
       { name: "description", content: "A commissioned, insured, background-screened notary bringing precision, discretion, and warmth to every signing." },
-      { property: "og:title", content: "About | Prestige Notary" },
+      { property: "og:title", content: "About | Enliven Notary" },
       { property: "og:description", content: "A commissioned, insured notary bringing precision and warmth to every signing." },
       { property: "og:url", content: "/about" },
     ],
@@ -58,7 +58,7 @@ function AboutPage() {
               <h2 className="font-display text-3xl md:text-4xl tracking-tight">A calm, careful hand for your most important documents.</h2>
               <div className="mt-5 space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  I built Prestige Notary on a simple idea: notarization should feel considered, not
+                  I built Enliven Notary on a simple idea: notarization should feel considered, not
                   rushed. Whether we meet at your kitchen table, in a hospital room, or over a secure
                   video session, every appointment is treated with the same precision and warmth.
                 </p>

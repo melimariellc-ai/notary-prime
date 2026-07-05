@@ -33,7 +33,7 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Prestige Notary — Home">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary — Home">
           <span
             aria-hidden
             className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg tracking-tight"
@@ -41,7 +41,7 @@ export function Nav() {
             N
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg tracking-tight text-foreground whitespace-nowrap">Prestige Notary</span>
+            <span className="font-display text-lg tracking-tight text-foreground whitespace-nowrap">Enliven Notary</span>
             <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-muted-foreground whitespace-nowrap">
               Mobile · Online · Trusted
             </span>
@@ -98,7 +98,7 @@ export function Nav() {
             ))}
             <div className="flex gap-2 pt-3">
               <a
-                href="tel:+15551234567"
+                href="tel:+18176226182"
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
               >
                 <Phone className="h-4 w-4 text-gold" /> Call Now

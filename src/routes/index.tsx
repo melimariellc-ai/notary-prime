@@ -30,13 +30,13 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Prestige Notary — Mobile & Online Notary Services" },
+      { title: "Enliven Notary — Mobile & Online Notary Services" },
       {
         name: "description",
         content:
           "Premium mobile and online notary. We come to your home, office, hospital, or meet online. Same-day appointments, certified loan signing agent, background screened.",
       },
-      { property: "og:title", content: "Prestige Notary — Mobile & Online Notary Services" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary Services" },
       {
         property: "og:description",
         content:
@@ -240,11 +240,11 @@ function Hero() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
-                href="tel:+15551234567"
+                href="tel:+18176226182"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium text-foreground hover:border-gold/60 transition-colors"
               >
                 <Phone className="h-4 w-4 text-gold" />
-                Call Now · (555) 123-4567
+                Call Now · (817) 622-6182
               </a>
             </div>
           </Reveal>
@@ -755,7 +755,7 @@ function FinalCTA() {
               Book Appointment <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="tel:+15551234567"
+              href="tel:+18176226182"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium hover:border-gold/60"
             >
               <Phone className="h-4 w-4 text-gold" /> Call Now
