@@ -7,9 +7,9 @@ import { PageHero } from "@/components/site/PageHero";
 export const Route = createFileRoute("/book")({
   head: () => ({
     meta: [
-      { title: "Book Appointment — Mobile & Online Notary | Prestige Notary" },
+      { title: "Book Appointment — Mobile & Online Notary | Enliven Notary" },
       { name: "description", content: "Schedule a mobile or online notary appointment in minutes. Same-day and after-hours availability." },
-      { property: "og:title", content: "Book Appointment | Prestige Notary" },
+      { property: "og:title", content: "Book Appointment | Enliven Notary" },
       { property: "og:description", content: "Schedule mobile or online notary in minutes." },
       { property: "og:url", content: "/book" },
     ],

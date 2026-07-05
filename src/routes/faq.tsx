@@ -5,9 +5,9 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — Notary Questions Answered | Prestige Notary" },
+      { title: "FAQ — Notary Questions Answered | Enliven Notary" },
       { name: "description", content: "Answers to common questions about mobile and online notarization: accepted ID, documents, pricing, appointments, and more." },
-      { property: "og:title", content: "FAQ | Prestige Notary" },
+      { property: "og:title", content: "FAQ | Enliven Notary" },
       { property: "og:description", content: "Answers to common notary questions." },
       { property: "og:url", content: "/faq" },
     ],

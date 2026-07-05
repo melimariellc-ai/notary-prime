@@ -8,9 +8,9 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Reach a Notary Today | Prestige Notary" },
-      { name: "description", content: "Contact Prestige Notary by phone, email, or online form. Serving the metro area with same-day mobile and online notarizations." },
-      { property: "og:title", content: "Contact | Prestige Notary" },
+      { title: "Contact — Reach a Notary Today | Enliven Notary" },
+      { name: "description", content: "Contact Enliven Notary by phone, email, or online form. Serving the metro area with same-day mobile and online notarizations." },
+      { property: "og:title", content: "Contact | Enliven Notary" },
       { property: "og:description", content: "Reach a notary today by phone, email, or form." },
       { property: "og:url", content: "/contact" },
     ],
@@ -114,18 +114,18 @@ function ContactPage() {
 
           <Reveal delay={80}>
             <div className="space-y-6">
-              <a href="tel:+15551234567" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
+              <a href="tel:+18176226182" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
                 <span className="grid place-items-center h-11 w-11 rounded-xl bg-gold/10 text-gold"><Phone className="h-5 w-5" /></span>
                 <span>
                   <span className="block text-xs uppercase tracking-[0.22em] text-muted-foreground">Phone</span>
-                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">(555) 123-4567</span>
+                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">(817) 622-6182</span>
                 </span>
               </a>
-              <a href="mailto:hello@prestigenotary.com" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
+              <a href="mailto:hello@enlivennotary.com" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
                 <span className="grid place-items-center h-11 w-11 rounded-xl bg-gold/10 text-gold"><Mail className="h-5 w-5" /></span>
                 <span>
                   <span className="block text-xs uppercase tracking-[0.22em] text-muted-foreground">Email</span>
-                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">hello@prestigenotary.com</span>
+                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">hello@enlivennotary.com</span>
                 </span>
               </a>
               <div className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6">

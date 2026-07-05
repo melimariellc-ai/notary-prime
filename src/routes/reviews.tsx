@@ -6,9 +6,9 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Reviews — 5-Star Notary Service | Prestige Notary" },
-      { name: "description", content: "Read reviews from attorneys, real estate professionals, and families who trust Prestige Notary for mobile and online notarizations." },
-      { property: "og:title", content: "Reviews | Prestige Notary" },
+      { title: "Reviews — 5-Star Notary Service | Enliven Notary" },
+      { name: "description", content: "Read reviews from attorneys, real estate professionals, and families who trust Enliven Notary for mobile and online notarizations." },
+      { property: "og:title", content: "Reviews | Enliven Notary" },
       { property: "og:description", content: "5-star reviews from attorneys, lenders, and families." },
       { property: "og:url", content: "/reviews" },
     ],

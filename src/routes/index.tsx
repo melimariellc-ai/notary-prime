@@ -30,17 +30,17 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Prestige Notary — Mobile & Online Notary Services" },
+      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         name: "description",
         content:
-          "Premium mobile and online notary. We come to your home, office, hospital, or meet online. Same-day appointments, certified loan signing agent, background screened.",
+          "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
-      { property: "og:title", content: "Prestige Notary — Mobile & Online Notary Services" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
       {
         property: "og:description",
         content:
-          "Fast, reliable notarizations at your location or online. Book in minutes.",
+          "NNA Certified mobile & online notary across the Dallas–Fort Worth Metroplex. Concierge-level service on your schedule.",
       },
       { property: "og:url", content: "/" },
     ],
@@ -50,107 +50,54 @@ export const Route = createFileRoute("/")({
 });
 
 const services = [
-  {
-    icon: MapPin,
-    title: "Mobile Notary",
-    description: "We travel to your home, office, hospital, or preferred meeting place.",
-  },
-  {
-    icon: Video,
-    title: "Remote Online Notary",
-    description: "Secure, audio-video notarizations from anywhere in the country.",
-  },
-  {
-    icon: FileSignature,
-    title: "Loan Signing Agent",
-    description: "Certified NNA-trained loan signings for real estate closings & refinances.",
-  },
-  {
-    icon: ScrollText,
-    title: "General Notary Work",
-    description: "Acknowledgments, jurats, oaths, affirmations, and copy certifications.",
-  },
-  {
-    icon: Landmark,
-    title: "Power of Attorney",
-    description: "Durable, medical, and specific POA documents notarized with care.",
-  },
-  {
-    icon: Home,
-    title: "Real Estate Documents",
-    description: "Deeds, sellers packages, refinances, HELOCs, and reverse mortgages.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Estate Planning",
-    description: "Wills, trusts, healthcare directives, and living wills handled discreetly.",
-  },
-  {
-    icon: Stethoscope,
-    title: "Medical Documents",
-    description: "Bedside notarizations at hospitals, rehab centers, and assisted living.",
-  },
-  {
-    icon: Briefcase,
-    title: "Business Documents",
-    description: "Contracts, corporate resolutions, vendor agreements, and affidavits.",
-  },
-  {
-    icon: GraduationCap,
-    title: "School & Personal Forms",
-    description: "Enrollment forms, permission slips, and personal affidavits.",
-  },
-  {
-    icon: Plane,
-    title: "Travel Consent",
-    description: "Minor travel consent forms and international parental authorizations.",
-  },
-  {
-    icon: Building2,
-    title: "I-9 Verification",
-    description: "Authorized representative I-9 employment verifications on request.",
-  },
+  { icon: MapPin, title: "Mobile Notary", description: "We travel to your home, office, hospital, or preferred location across DFW." },
+  { icon: Video, title: "Remote Online Notary", description: "Secure, Texas-approved online notarizations from anywhere in the state." },
+  { icon: FileSignature, title: "Loan Signing Services", description: "NNA Certified loan signing agent for closings, refinances, and HELOCs." },
+  { icon: ScrollText, title: "Acknowledgments & Jurats", description: "General notary work including acknowledgments, jurats, oaths, and affirmations." },
+  { icon: ClipboardCheck, title: "Affidavits", description: "Sworn statements and personal affidavits, carefully notarized." },
+  { icon: Landmark, title: "Power of Attorney", description: "Durable, medical, and specific POA documents handled with discretion." },
+  { icon: ShieldCheck, title: "Estate Planning", description: "Wills, healthcare directives, and living wills executed with care." },
+  { icon: ScrollText, title: "Trust Documents", description: "Trust agreements, amendments, and certifications notarized properly." },
+  { icon: Home, title: "Purchase Closings", description: "Full purchase packages completed with attention to every page." },
+  { icon: Home, title: "Seller Packages", description: "Seller-side signings coordinated for a smooth close." },
+  { icon: Home, title: "Refinance Packages", description: "Refinance signings scheduled around your life, evenings and weekends." },
+  { icon: Home, title: "HELOC Documents", description: "Home equity line signings handled quickly and professionally." },
+  { icon: Stethoscope, title: "Medical Documents", description: "Bedside notarizations at hospitals, rehab centers, and assisted living." },
+  { icon: GraduationCap, title: "School Documents", description: "Enrollment forms, permission slips, and student affidavits." },
+  { icon: Plane, title: "Travel Consent Forms", description: "Minor travel consent and international parental authorization forms." },
+  { icon: Briefcase, title: "Business Documents", description: "Contracts, corporate resolutions, vendor agreements, and affidavits." },
+  { icon: Building2, title: "I-9 Employment Verification", description: "Authorized representative I-9 verifications available on request." },
 ];
 
 const badges = [
-  "Commissioned Notary",
-  "Insured & Bonded",
-  "Background Screened",
-  "Certified Loan Signing Agent",
+  "NNA Certified",
+  "Texas Commissioned Notary Public",
+  "Mobile Notary",
   "Remote Online Notary",
+  "Loan Signing Services",
+  "Professional & Confidential",
 ];
 
 const steps = [
-  {
-    icon: CalendarClock,
-    title: "Schedule",
-    description:
-      "Choose a time that works — often same day. Pick mobile or online meeting.",
-  },
-  {
-    icon: UserCheck,
-    title: "Verify Identification",
-    description: "Present valid, government-issued photo ID. We handle KBA online.",
-  },
-  {
-    icon: Handshake,
-    title: "Meet In Person or Online",
-    description: "We arrive at your location or send a secure video session link.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "Complete Notarization",
-    description: "Sign, seal, and receive your documents — start to finish in minutes.",
-  },
+  { icon: CalendarClock, title: "Schedule", description: "Choose a time that works — often same day. Pick mobile or online." },
+  { icon: UserCheck, title: "Verify Identification", description: "Present valid, government-issued photo ID. We handle KBA online." },
+  { icon: Handshake, title: "Meet In Person or Online", description: "We arrive at your location or send a secure video session link." },
+  { icon: ClipboardCheck, title: "Complete Notarization", description: "Sign, seal, and receive your documents — start to finish in minutes." },
 ];
 
 const whyChoose = [
-  { icon: ShieldCheck, title: "Professional", text: "Commissioned, insured, and bonded." },
-  { icon: Clock, title: "Same-Day Appointments", text: "Rush and after-hours available." },
-  { icon: MapPin, title: "Mobile Service", text: "We come to you — home, office, hospital." },
-  { icon: Video, title: "Online Notary", text: "Secure remote sessions anywhere in the U.S." },
-  { icon: Sparkles, title: "Attention to Detail", text: "Every signature, every seal — precise." },
+  { icon: ShieldCheck, title: "NNA Certified Professional", text: "Nationally certified and continuously trained." },
+  { icon: MapPin, title: "Mobile Service — We Come To You", text: "Home, office, hospital, or anywhere across DFW." },
+  { icon: Video, title: "Remote Online Notary", text: "Secure online sessions for signers anywhere in Texas." },
+  { icon: FileSignature, title: "Professional Loan Signings", text: "Purchase, refinance, HELOC, and reverse mortgage packages." },
+  { icon: CalendarClock, title: "Flexible Scheduling", text: "Same-day appointments when available." },
+  { icon: Clock, title: "Evenings & Weekends", text: "Around your calendar — not the other way around." },
+  { icon: Phone, title: "Prompt Communication", text: "Quick replies, clear confirmations, no guesswork." },
   { icon: Lock, title: "Secure & Confidential", text: "Your documents are protected end to end." },
+  { icon: Sparkles, title: "Attention To Detail", text: "Every signature, every seal — precise." },
+  { icon: Star, title: "Exceptional Experience", text: "Concierge-level service from first call to final page." },
+  { icon: UserCheck, title: "Reliable & Professional", text: "On time, prepared, and courteous — every appointment." },
+  { icon: Handshake, title: "Client-First Approach", text: "You'll always feel taken care of and informed." },
 ];
 
 const testimonials = [
@@ -192,6 +139,7 @@ function HomePage() {
       <Testimonials />
       <ServiceArea />
       <FAQTeaser />
+      <OurPromise />
       <FinalCTA />
     </>
   );
@@ -218,16 +166,16 @@ function Hero() {
           </Reveal>
           <Reveal delay={80}>
             <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.02] tracking-tight text-foreground">
-              Professional Mobile &<br />
-              <span className="italic font-light">Online</span>{" "}
-              <span className="text-gradient-gold">Notary Services</span>
+              Professional Mobile &{" "}
+              <span className="italic font-light text-gradient-gold">Online Notary</span>{" "}
+              Services Designed Around Your Schedule
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Fast, reliable, and convenient notarizations at your home, office,
-              hospital, coffee shop — or securely online. Trusted by attorneys,
-              lenders, and families across the region.
+              Professional, reliable, and convenient notarization services delivered to
+              your home, office, hospital, or securely online — across the
+              Dallas–Fort Worth Metroplex.
             </p>
           </Reveal>
           <Reveal delay={220}>
@@ -240,11 +188,11 @@ function Hero() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
-                href="tel:+15551234567"
+                href="tel:+18176226182"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium text-foreground hover:border-gold/60 transition-colors"
               >
                 <Phone className="h-4 w-4 text-gold" />
-                Call Now · (555) 123-4567
+                Call Now · (817) 622-6182
               </a>
             </div>
           </Reveal>
@@ -291,12 +239,12 @@ function Hero() {
 function TrustStrip() {
   const items = [
     "Same-Day Appointments",
-    "Certified Loan Signing Agent",
+    "NNA Certified",
+    "Texas Commissioned Notary",
     "Remote Online Notary",
-    "Insured & Bonded",
-    "Background Screened",
+    "Loan Signing Services",
     "Hospital & Bedside Signings",
-    "Attorney Approved",
+    "Evenings & Weekends",
     "Confidential & Secure",
   ];
   const doubled = [...items, ...items];
@@ -436,38 +384,69 @@ function HowItWorks() {
 function PricingTeaser() {
   const tiers = [
     {
-      name: "Single Notarization",
-      price: "$15",
-      unit: "per signature",
+      name: "Mobile Notary Services",
+      price: "$100",
+      unit: "starting at",
+      blurb:
+        "Professional mobile notary at your home, office, hospital, nursing home, or preferred meeting location.",
       features: [
-        "State-regulated notary fee",
-        "Any document type",
-        "Mobile or online",
+        "Travel within standard service area",
+        "Professional mobile service",
+        "Flexible scheduling",
+        "Confidential handling",
+        "Prompt communication",
       ],
-      cta: "Book now",
+      cta: "Book Appointment",
+      to: "/book" as const,
     },
     {
-      name: "Loan Signing",
-      price: "$150",
-      unit: "flat fee",
+      name: "Remote Online Notary",
+      price: "$65",
+      unit: "starting at",
+      blurb:
+        "Secure online notarization from anywhere in Texas using a state-approved Remote Online Notary platform.",
       features: [
-        "Full closing package",
-        "Printing & scan-backs",
-        "Evenings & weekends",
+        "Secure online meeting",
+        "Legally recognized notarization",
+        "Convenient from home or office",
+        "Fast turnaround",
       ],
-      cta: "Reserve signing",
+      cta: "Schedule Online",
+      to: "/book" as const,
       featured: true,
     },
     {
-      name: "Travel Fee",
-      price: "$25+",
-      unit: "based on distance",
+      name: "Loan Signing Services",
+      price: "$200",
+      unit: "starting at",
+      blurb:
+        "Professional loan signing services completed with exceptional attention to detail.",
       features: [
-        "Waived within 5 miles",
-        "Hospital & after-hours",
-        "Rush service available",
+        "Purchase Closings",
+        "Seller Packages",
+        "Refinance Packages",
+        "HELOC Packages",
+        "Reverse Mortgages",
+        "Commercial Loan Documents",
       ],
-      cta: "Get a quote",
+      cta: "Request Quote",
+      to: "/contact" as const,
+    },
+    {
+      name: "Specialty Appointments",
+      price: "Custom Quote",
+      unit: "",
+      blurb: "Tailored notarizations for sensitive, time-critical, or off-hours needs.",
+      features: [
+        "Hospital Visits",
+        "Nursing Homes",
+        "Assisted Living Facilities",
+        "Correctional Facilities",
+        "After-Hours Appointments",
+        "Weekend & Holiday Appointments",
+      ],
+      cta: "Request a Quote",
+      to: "/contact" as const,
     },
   ];
   return (
@@ -476,54 +455,83 @@ function PricingTeaser() {
         <Reveal>
           <SectionHeader
             eyebrow="Pricing"
-            title={<>Transparent, <span className="italic font-light text-gradient-gold">honest</span> pricing.</>}
-            intro="State-regulated notary fees apply where applicable. All pricing shown is editable and reviewed with you before appointment."
+            title={<>Concierge notary service, <span className="italic font-light text-gradient-gold">transparently priced.</span></>}
+            intro="Every appointment is quoted in writing before we begin. No surprises — just clear, professional service."
           />
         </Reveal>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {tiers.map((t, i) => (
-            <Reveal key={t.name} delay={i * 60}>
-              <div
-                className={`h-full rounded-2xl border p-8 flex flex-col ${
-                  t.featured
-                    ? "bg-charcoal text-primary-foreground border-transparent shadow-2xl"
-                    : "bg-card border-border"
-                }`}
-              >
-                {t.featured && (
-                  <span className="self-start text-[10px] uppercase tracking-[0.28em] text-gold border border-gold/40 rounded-full px-2.5 py-1">
-                    Most requested
-                  </span>
-                )}
-                <h3 className="mt-4 font-display text-2xl tracking-tight">{t.name}</h3>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className={`font-display text-5xl tracking-tight ${t.featured ? "text-gradient-gold" : ""}`}>{t.price}</span>
-                  <span className={t.featured ? "text-white/60 text-sm" : "text-muted-foreground text-sm"}>
-                    {t.unit}
-                  </span>
-                </div>
-                <ul className={`mt-6 space-y-2.5 text-sm ${t.featured ? "text-white/80" : "text-foreground/80"}`}>
-                  {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check className={`h-4 w-4 mt-0.5 ${t.featured ? "text-gold" : "text-gold"}`} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/book"
-                  className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium ${
+        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {tiers.map((t, i) => {
+            const isCustom = t.price === "Custom Quote";
+            return (
+              <Reveal key={t.name} delay={i * 60}>
+                <div
+                  className={`group relative h-full rounded-3xl border p-8 flex flex-col transition-all duration-500 hover:-translate-y-1 ${
                     t.featured
-                      ? "btn-gold"
-                      : "border border-border hover:border-gold/60 hover:text-foreground text-foreground/90"
+                      ? "bg-charcoal text-primary-foreground border-transparent shadow-[0_40px_80px_-30px_oklch(0.2_0.02_260/0.45)]"
+                      : "bg-card border-border hover:border-gold/60 hover:shadow-[0_30px_60px_-30px_oklch(0.74_0.115_82/0.35)]"
                   }`}
                 >
-                  {t.cta}
-                </Link>
-              </div>
-            </Reveal>
-          ))}
+                  {t.featured && (
+                    <span className="self-start text-[10px] uppercase tracking-[0.28em] text-gold border border-gold/40 rounded-full px-2.5 py-1">
+                      Most requested
+                    </span>
+                  )}
+                  <h3 className={`${t.featured ? "mt-4" : ""} font-display text-2xl tracking-tight`}>
+                    {t.name}
+                  </h3>
+                  <div className="mt-5 flex items-baseline gap-2">
+                    {isCustom ? (
+                      <span className={`font-display text-3xl tracking-tight ${t.featured ? "text-gradient-gold" : "text-gradient-gold"}`}>
+                        {t.price}
+                      </span>
+                    ) : (
+                      <>
+                        <span className={t.featured ? "text-white/60 text-xs uppercase tracking-[0.22em]" : "text-muted-foreground text-xs uppercase tracking-[0.22em]"}>
+                          {t.unit}
+                        </span>
+                        <span className={`font-display text-5xl tracking-tight ${t.featured ? "text-gradient-gold" : ""}`}>
+                          {t.price}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <p className={`mt-4 text-sm leading-relaxed ${t.featured ? "text-white/70" : "text-muted-foreground"}`}>
+                    {t.blurb}
+                  </p>
+                  <div className={`mt-6 h-px w-full ${t.featured ? "bg-white/10" : "bg-border"}`} />
+                  <ul className={`mt-6 space-y-2.5 text-sm ${t.featured ? "text-white/85" : "text-foreground/85"}`}>
+                    {t.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2.5">
+                        <Check className="h-4 w-4 mt-0.5 text-gold shrink-0" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto pt-8">
+                    <Link
+                      to={t.to}
+                      className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                        t.featured
+                          ? "btn-gold"
+                          : "border border-border hover:border-gold/60 text-foreground"
+                      }`}
+                    >
+                      {t.cta} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
+        <Reveal delay={120}>
+          <p className="mt-10 max-w-3xl mx-auto text-center text-sm text-muted-foreground leading-relaxed">
+            Every appointment is unique. Final pricing may vary depending on travel distance,
+            document type, number of notarizations, appointment time, and specialty requests.
+            You'll always receive a transparent quote before your appointment.
+            State-regulated notarial fees apply where required under Texas law.
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -565,14 +573,18 @@ function Testimonials() {
 
 function ServiceArea() {
   const cities = [
-    "Downtown",
-    "North Hills",
-    "West End",
-    "Riverside",
-    "Southgate",
-    "Uptown",
-    "Lakeview",
-    "Old Town",
+    "Dallas",
+    "Fort Worth",
+    "Arlington",
+    "Plano",
+    "Irving",
+    "Frisco",
+    "McKinney",
+    "Grapevine",
+    "Southlake",
+    "Grand Prairie",
+    "Mansfield",
+    "Colleyville",
   ];
   return (
     <section id="service-areas" className="py-24 md:py-32 bg-secondary/40">
@@ -580,8 +592,8 @@ function ServiceArea() {
         <Reveal>
           <SectionHeader
             eyebrow="Service Area"
-            title={<>Serving the <span className="italic font-light text-gradient-gold">greater metro</span>.</>}
-            intro="We serve homes, offices, hospitals, and long-term care facilities across the region — plus online notarizations for anyone in the United States."
+            title={<>Proudly serving the <span className="italic font-light text-gradient-gold">Dallas–Fort Worth Metroplex</span>.</>}
+            intro="Professional mobile and online notary services throughout DFW — plus secure Remote Online Notarization for signers anywhere in Texas."
           />
           <ul className="mt-8 grid grid-cols-2 gap-2">
             {cities.map((c) => (
@@ -727,6 +739,35 @@ function FAQTeaser() {
   );
 }
 
+function OurPromise() {
+  return (
+    <section className="py-24 md:py-32 bg-charcoal text-primary-foreground relative overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-40"
+        style={{
+          background:
+            "radial-gradient(700px 400px at 50% 0%, oklch(0.4 0.07 80 / 0.55), transparent 70%)",
+        }}
+      />
+      <div className="container-luxe relative max-w-3xl text-center">
+        <Reveal>
+          <p className="text-xs uppercase tracking-[0.28em] text-gold">Our Promise</p>
+          <h2 className="mt-5 font-display text-4xl md:text-5xl tracking-tight">
+            A seamless experience, <span className="italic font-light text-gradient-gold">from start to finish.</span>
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-white/75">
+            At Enliven Notary, every appointment is handled with professionalism, accuracy,
+            confidentiality, and respect. Whether you're completing a simple notarization or a
+            complex real estate closing, our goal is to provide a seamless experience that
+            gives you complete confidence from start to finish.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function FinalCTA() {
   return (
     <section className="py-24 md:py-32">
@@ -755,7 +796,7 @@ function FinalCTA() {
               Book Appointment <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="tel:+15551234567"
+              href="tel:+18176226182"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium hover:border-gold/60"
             >
               <Phone className="h-4 w-4 text-gold" /> Call Now

@@ -6,9 +6,9 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Transparent Notary Fees | Prestige Notary" },
+      { title: "Pricing — Transparent Notary Fees | Enliven Notary" },
       { name: "description", content: "Clear, transparent notary pricing for mobile, online, and loan signing services. State-regulated fees apply where required." },
-      { property: "og:title", content: "Pricing | Prestige Notary" },
+      { property: "og:title", content: "Pricing | Enliven Notary" },
       { property: "og:description", content: "Transparent notary pricing for mobile, online, and loan signing services." },
       { property: "og:url", content: "/pricing" },
     ],

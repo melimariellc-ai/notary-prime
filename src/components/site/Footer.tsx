@@ -20,7 +20,7 @@ export function Footer() {
               Book Appointment
             </Link>
             <a
-              href="tel:+15551234567"
+              href="tel:+18176226182"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm text-white hover:bg-white/5"
             >
               <Phone className="h-4 w-4" /> Call Now
@@ -32,9 +32,9 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2.5">
               <span className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg">
-                N
+                E
               </span>
-              <span className="font-display text-lg tracking-tight">Prestige Notary</span>
+              <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
             <p className="mt-4 text-sm text-white/70 leading-relaxed">
               Making notarization simple by bringing professional notary services directly to
@@ -95,11 +95,11 @@ export function Footer() {
             <ul className="mt-5 space-y-3 text-sm text-white/80">
               <li className="flex items-start gap-3">
                 <Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <a href="tel:+15551234567">(555) 123-4567</a>
+                <a href="tel:+18176226182">(817) 622-6182</a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <a href="mailto:hello@prestigenotary.com">hello@prestigenotary.com</a>
+                <a href="mailto:hello@enlivennotary.com">hello@enlivennotary.com</a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />
@@ -115,7 +115,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-xs text-white/50">
-          <p>© {new Date().getFullYear()} Prestige Notary Services. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Enliven Notary Services. All rights reserved.</p>
           <div className="flex gap-5">
             <a href="#" className="hover:text-white">Privacy Policy</a>
             <a href="#" className="hover:text-white">Terms of Service</a>
