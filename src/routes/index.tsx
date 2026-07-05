@@ -139,6 +139,7 @@ function HomePage() {
       <Testimonials />
       <ServiceArea />
       <FAQTeaser />
+      <OurPromise />
       <FinalCTA />
     </>
   );
