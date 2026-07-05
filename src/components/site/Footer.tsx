@@ -103,7 +103,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <span>Serving the greater metro area</span>
+                <span>Serving the Dallas–Fort Worth Metroplex</span>
               </li>
             </ul>
             <div className="mt-5">
