@@ -38,7 +38,7 @@ export function Nav() {
             aria-hidden
             className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg tracking-tight"
           >
-            N
+            E
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg tracking-tight text-foreground whitespace-nowrap">Enliven Notary</span>
