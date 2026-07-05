@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
 
 export function Reveal({
   children,
@@ -8,7 +8,7 @@ export function Reveal({
 }: {
   children: ReactNode;
   delay?: number;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
   className?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);
