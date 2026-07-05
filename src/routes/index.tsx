@@ -739,6 +739,35 @@ function FAQTeaser() {
   );
 }
 
+function OurPromise() {
+  return (
+    <section className="py-24 md:py-32 bg-charcoal text-primary-foreground relative overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-40"
+        style={{
+          background:
+            "radial-gradient(700px 400px at 50% 0%, oklch(0.4 0.07 80 / 0.55), transparent 70%)",
+        }}
+      />
+      <div className="container-luxe relative max-w-3xl text-center">
+        <Reveal>
+          <p className="text-xs uppercase tracking-[0.28em] text-gold">Our Promise</p>
+          <h2 className="mt-5 font-display text-4xl md:text-5xl tracking-tight">
+            A seamless experience, <span className="italic font-light text-gradient-gold">from start to finish.</span>
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-white/75">
+            At Enliven Notary, every appointment is handled with professionalism, accuracy,
+            confidentiality, and respect. Whether you're completing a simple notarization or a
+            complex real estate closing, our goal is to provide a seamless experience that
+            gives you complete confidence from start to finish.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function FinalCTA() {
   return (
     <section className="py-24 md:py-32">
