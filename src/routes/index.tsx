@@ -166,16 +166,16 @@ function Hero() {
           </Reveal>
           <Reveal delay={80}>
             <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.02] tracking-tight text-foreground">
-              Professional Mobile &<br />
-              <span className="italic font-light">Online</span>{" "}
-              <span className="text-gradient-gold">Notary Services</span>
+              Professional Mobile &{" "}
+              <span className="italic font-light text-gradient-gold">Online Notary</span>{" "}
+              Services Designed Around Your Schedule
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Fast, reliable, and convenient notarizations at your home, office,
-              hospital, coffee shop — or securely online. Trusted by attorneys,
-              lenders, and families across the region.
+              Professional, reliable, and convenient notarization services delivered to
+              your home, office, hospital, or securely online — across the
+              Dallas–Fort Worth Metroplex.
             </p>
           </Reveal>
           <Reveal delay={220}>
