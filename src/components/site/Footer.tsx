@@ -32,7 +32,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2.5">
               <span className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg">
-                N
+                E
               </span>
               <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
