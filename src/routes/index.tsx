@@ -573,14 +573,18 @@ function Testimonials() {
 
 function ServiceArea() {
   const cities = [
-    "Downtown",
-    "North Hills",
-    "West End",
-    "Riverside",
-    "Southgate",
-    "Uptown",
-    "Lakeview",
-    "Old Town",
+    "Dallas",
+    "Fort Worth",
+    "Arlington",
+    "Plano",
+    "Irving",
+    "Frisco",
+    "McKinney",
+    "Grapevine",
+    "Southlake",
+    "Grand Prairie",
+    "Mansfield",
+    "Colleyville",
   ];
   return (
     <section id="service-areas" className="py-24 md:py-32 bg-secondary/40">
@@ -588,8 +592,8 @@ function ServiceArea() {
         <Reveal>
           <SectionHeader
             eyebrow="Service Area"
-            title={<>Serving the <span className="italic font-light text-gradient-gold">greater metro</span>.</>}
-            intro="We serve homes, offices, hospitals, and long-term care facilities across the region — plus online notarizations for anyone in the United States."
+            title={<>Proudly serving the <span className="italic font-light text-gradient-gold">Dallas–Fort Worth Metroplex</span>.</>}
+            intro="Professional mobile and online notary services throughout DFW — plus secure Remote Online Notarization for signers anywhere in Texas."
           />
           <ul className="mt-8 grid grid-cols-2 gap-2">
             {cities.map((c) => (
