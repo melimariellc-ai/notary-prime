@@ -48,7 +48,7 @@ export function Nav() {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden lg:flex items-center gap-1">
+        <nav aria-label="Primary" className="hidden lg:flex items-center gap-0.5">
           {links.map((l) => (
             <Link
               key={l.to}
@@ -56,7 +56,7 @@ export function Nav() {
               activeOptions={{ exact: l.to === "/" }}
               activeProps={{ className: "text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
-              className="px-3 py-2 text-sm tracking-wide transition-colors relative"
+              className="px-2.5 py-2 text-sm tracking-wide whitespace-nowrap transition-colors"
             >
               {l.label}
             </Link>
@@ -66,14 +66,14 @@ export function Nav() {
         <div className="hidden md:flex items-center gap-2">
           <a
             href="tel:+15551234567"
-            className="inline-flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground px-3 py-2"
+            className="hidden xl:inline-flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground px-2.5 py-2 whitespace-nowrap"
           >
             <Phone className="h-4 w-4 text-gold" aria-hidden />
             <span className="tabular-nums">(555) 123-4567</span>
           </a>
           <Link
             to="/book"
-            className="btn-gold inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium transition-transform hover:-translate-y-0.5"
+            className="btn-gold inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap transition-transform hover:-translate-y-0.5"
           >
             Book Appointment
           </Link>
