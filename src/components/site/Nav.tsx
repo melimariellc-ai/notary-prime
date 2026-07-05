@@ -32,7 +32,7 @@ export function Nav() {
           : "bg-transparent"
       }`}
     >
-      <div className="container-luxe flex items-center justify-between h-18 py-4">
+      <div className="container-luxe flex items-center justify-between h-20 py-4">
         <Link to="/" className="flex items-center gap-2.5 group" aria-label="Prestige Notary — Home">
           <span
             aria-hidden
