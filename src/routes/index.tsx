@@ -30,17 +30,17 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Enliven Notary — Mobile & Online Notary Services" },
+      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         name: "description",
         content:
-          "Premium mobile and online notary. We come to your home, office, hospital, or meet online. Same-day appointments, certified loan signing agent, background screened.",
+          "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
-      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary Services" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
       {
         property: "og:description",
         content:
-          "Fast, reliable notarizations at your location or online. Book in minutes.",
+          "NNA Certified mobile & online notary across the Dallas–Fort Worth Metroplex. Concierge-level service on your schedule.",
       },
       { property: "og:url", content: "/" },
     ],
