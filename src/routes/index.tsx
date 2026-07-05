@@ -239,12 +239,12 @@ function Hero() {
 function TrustStrip() {
   const items = [
     "Same-Day Appointments",
-    "Certified Loan Signing Agent",
+    "NNA Certified",
+    "Texas Commissioned Notary",
     "Remote Online Notary",
-    "Insured & Bonded",
-    "Background Screened",
+    "Loan Signing Services",
     "Hospital & Bedside Signings",
-    "Attorney Approved",
+    "Evenings & Weekends",
     "Confidential & Secure",
   ];
   const doubled = [...items, ...items];
