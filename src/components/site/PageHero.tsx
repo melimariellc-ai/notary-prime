@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -49,6 +49,3 @@ export function PageHero({
     </section>
   );
 }
-
-// dummy export to keep this a valid TSX module (not a route file)
-export const _routeMarker = createFileRoute;
