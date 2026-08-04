@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 
 export function Footer() {
   return (
@@ -42,7 +42,6 @@ export function Footer() {
             </p>
             <div className="flex gap-3 mt-6">
               {[
-                { Icon: Facebook, label: "Facebook" },
                 { Icon: Instagram, label: "Instagram" },
                 { Icon: Linkedin, label: "LinkedIn" },
               ].map(({ Icon, label }) => (
