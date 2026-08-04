@@ -79,11 +79,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
+      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         name: "description",
         content:
-          "Enliven Notary — professional mobile and remote online notary services across the Dallas–Fort Worth Metroplex. NNA Certified. Loan signings, RON, same-day appointments.",
+          "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
       {
         name: "keywords",
@@ -92,14 +92,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "theme-color", content: "#0f0f10" },
       { property: "og:site_name", content: "Enliven Notary" },
-      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         property: "og:description",
         content:
-          "Professional mobile and remote online notarizations across the Dallas–Fort Worth Metroplex. Concierge-level service, on your schedule.",
+          "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
+      { name: "twitter:description", content: "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ef3a758-126e-4abc-ab02-a4ce8fa2abff/id-preview-0502e37c--596f7b36-75b5-4578-bce2-d99d4df579c9.lovable.app-1785882946256.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0ef3a758-126e-4abc-ab02-a4ce8fa2abff/id-preview-0502e37c--596f7b36-75b5-4578-bce2-d99d4df579c9.lovable.app-1785882946256.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

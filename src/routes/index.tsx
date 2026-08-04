@@ -36,11 +36,11 @@ export const Route = createFileRoute("/")({
         content:
           "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
-      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth" },
+      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         property: "og:description",
         content:
-          "NNA Certified mobile & online notary across the Dallas–Fort Worth Metroplex. Concierge-level service on your schedule.",
+          "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
       { property: "og:url", content: "/" },
     ],
