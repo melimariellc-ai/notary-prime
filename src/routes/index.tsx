@@ -75,12 +75,11 @@ const services = [
 ];
 
 const badges = [
-  "NNA Certified",
   "Texas Commissioned Notary Public",
-  "Mobile Notary",
-  "Remote Online Notary",
+  "Bonded",
+  "E&O Insured — $100,000 Coverage",
+  "NNA Certified Signing Agent",
   "Loan Signing Services",
-  "Professional & Confidential",
 ];
 
 const steps = [
@@ -170,20 +169,33 @@ function Hero() {
             </p>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.02] tracking-tight text-foreground">
-              Professional Mobile &{" "}
+            <h1 className="mt-6 font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.04] tracking-tight text-foreground">
+              Professional Mobile &amp;{" "}
               <span className="italic font-light text-gradient-gold">Online Notary</span>{" "}
-              Services Designed Around Your Schedule
+              Services Throughout the Dallas–Fort Worth Metroplex
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Professional, reliable, and convenient notarization services delivered to
-              your home, office, hospital, or securely online — across the
-              Dallas–Fort Worth Metroplex.
+              Convenient mobile and remote online notarization for individuals, families,
+              businesses, and real estate professionals. Same-day appointments available.
+              We come to you — or meet securely online.
             </p>
           </Reveal>
           <Reveal delay={220}>
+            <ul className="mt-8 flex flex-wrap gap-2.5">
+              {badges.map((b) => (
+                <li
+                  key={b}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-card-foreground/90"
+                >
+                  <Check className="h-3.5 w-3.5 text-gold" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal delay={280}>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 to="/book"
@@ -206,18 +218,7 @@ function Hero() {
                 <MessageSquare className="h-4 w-4 text-gold" />
                 Text Us
               </a>
-
             </div>
-          </Reveal>
-          <Reveal delay={280}>
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
-              {badges.map((b) => (
-                <li key={b} className="flex items-center gap-2 text-sm text-foreground/80">
-                  <Check className="h-4 w-4 text-gold" />
-                  {b}
-                </li>
-              ))}
-            </ul>
           </Reveal>
         </div>
 
