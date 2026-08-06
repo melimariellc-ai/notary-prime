@@ -4,6 +4,8 @@ import { Phone, Mail, MapPin, Clock, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
+
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
