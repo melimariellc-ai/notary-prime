@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, ArrowRight, Phone, MessageSquare } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 
 export const Route = createFileRoute("/service-areas")({
   head: () => ({
