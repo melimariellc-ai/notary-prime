@@ -27,6 +27,7 @@ import {
   UserCheck,
   Handshake,
   ClipboardCheck,
+  MessageSquare,
 } from "lucide-react";
 import heroImg from "@/assets/hero-notary.jpg";
 import { Reveal } from "@/components/site/Reveal";

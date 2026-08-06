@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin, ArrowRight, Phone } from "lucide-react";
+import { MapPin, ArrowRight, Phone, MessageSquare } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 
