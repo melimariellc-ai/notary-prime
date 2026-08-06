@@ -143,16 +143,8 @@ function ContactPage() {
                   <p className="mt-1 text-sm text-foreground">Greater metro & nationwide online</p>
                 </div>
               </div>
-              <div className="rounded-2xl border border-border bg-card overflow-hidden">
-                <div className="aspect-[16/10] relative">
-                  <div aria-hidden className="absolute inset-0" style={{
-                    background: "radial-gradient(600px 400px at 30% 30%, oklch(0.94 0.05 85 / 0.6), transparent 60%), radial-gradient(500px 400px at 80% 80%, oklch(0.9 0.03 250 / 0.5), transparent 60%)",
-                  }} />
-                  <div className="absolute inset-0 grid place-items-center">
-                    <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">Google Maps placeholder</p>
-                  </div>
-                </div>
-              </div>
+              <ServiceAreaMap className="aspect-[16/10]" caption="Serving the DFW Metroplex" />
+
             </div>
           </Reveal>
         </div>
