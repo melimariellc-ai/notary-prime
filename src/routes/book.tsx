@@ -267,12 +267,13 @@ function BookPage() {
                 >
                   <ArrowLeft className="h-4 w-4" /> Back
                 </button>
-                <button type="button" onClick={next} disabled={!canNext}
+                <button type="button" onClick={next} disabled={!canNext || submitting}
                   className="btn-gold inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
                 >
-                  {step === 3 ? "Request appointment" : "Continue"}
+                  {step === 3 ? (submitting ? "Sending…" : "Request appointment") : "Continue"}
                   <ArrowRight className="h-4 w-4" />
                 </button>
+
               </div>
             </div>
           )}
