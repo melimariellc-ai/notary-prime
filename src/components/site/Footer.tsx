@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
 
 export function Footer() {
   return (
@@ -25,6 +25,13 @@ export function Footer() {
             >
               <Phone className="h-4 w-4" /> Call Now
             </a>
+            <a
+              href="sms:+18176226182"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm text-white hover:bg-white/5"
+            >
+              <MessageSquare className="h-4 w-4" /> Text Us
+            </a>
+
           </div>
         </div>
 

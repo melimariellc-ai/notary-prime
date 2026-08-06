@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, MessageSquare } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home" },
@@ -101,8 +101,15 @@ export function Nav() {
                 href="tel:+18176226182"
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
               >
-                <Phone className="h-4 w-4 text-gold" /> Call Now
+                <Phone className="h-4 w-4 text-gold" /> Call
               </a>
+              <a
+                href="sms:+18176226182"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
+              >
+                <MessageSquare className="h-4 w-4 text-gold" /> Text
+              </a>
+
               <Link
                 to="/book"
                 onClick={() => setOpen(false)}
