@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, Clock, Sparkles, Lock, Award, Heart } from "lucide-react";
+import { ShieldCheck, Clock, Sparkles, Lock, Award, Heart, Image as ImageIcon } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
-import aboutImg from "@/assets/about-notary.jpg";
+import { CredentialsBar } from "@/components/site/CredentialsBar";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
