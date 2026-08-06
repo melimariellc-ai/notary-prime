@@ -142,7 +142,7 @@ function BookPage() {
               </p>
               <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
                 Questions in the meantime?{" "}
-                <a href="tel:+14699912777" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
+                <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
                   <Phone className="h-4 w-4 text-gold" /> Call or text (469) 991-2777
                 </a>
                 .

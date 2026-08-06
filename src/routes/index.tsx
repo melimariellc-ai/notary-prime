@@ -205,14 +205,14 @@ function Hero() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
-                href="tel:+14699912777"
+                href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium text-foreground hover:border-gold/60 transition-colors"
               >
                 <Phone className="h-4 w-4 text-gold" />
                 Call Now · (469) 991-2777
               </a>
               <a
-                href="sms:+14699912777"
+                href="sms:+14699912777" aria-label="Text Enliven Notary at (469) 991-2777"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium text-foreground hover:border-gold/60 transition-colors"
               >
                 <MessageSquare className="h-4 w-4 text-gold" />
@@ -766,13 +766,13 @@ function FinalCTA() {
               Book Appointment <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="tel:+14699912777"
+              href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium hover:border-gold/60"
             >
               <Phone className="h-4 w-4 text-gold" /> Call Now
             </a>
             <a
-              href="sms:+14699912777"
+              href="sms:+14699912777" aria-label="Text Enliven Notary at (469) 991-2777"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium hover:border-gold/60"
             >
               <MessageSquare className="h-4 w-4 text-gold" /> Text Us
