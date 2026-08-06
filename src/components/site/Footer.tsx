@@ -104,7 +104,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <a href="mailto:hello@enlivennotary.com">hello@enlivennotary.com</a>
+                <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />
