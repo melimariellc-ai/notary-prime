@@ -134,10 +134,20 @@ function BookPage() {
               <div className="mx-auto grid place-items-center h-14 w-14 rounded-full bg-gold/15 text-gold">
                 <CheckCircle2 className="h-7 w-7" />
               </div>
-              <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Appointment requested.</h2>
-              <p className="mt-4 text-muted-foreground max-w-md mx-auto">
-                A confirmation email is on its way to <span className="text-foreground font-medium">{data.email}</span> with next steps and preparation tips.
+              <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Request received.</h2>
+              <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Thanks — we'll follow up personally to confirm your appointment. During business hours
+                (Mon–Sat, 7am–9pm) we typically respond within a few hours; after hours or on Sunday, by
+                the next business day.
               </p>
+              <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Questions in the meantime?{" "}
+                <a href="tel:+18176226182" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
+                  <Phone className="h-4 w-4 text-gold" /> Call or text (817) 622-6182
+                </a>
+                .
+              </p>
+
               <div className="mt-8 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
                 <Summary icon={FileText} label="Service" value={data.service} />
                 <Summary icon={data.location === "mobile" ? MapPin : Video} label="Location" value={data.location === "mobile" ? "Mobile — we come to you" : "Online — secure video"} />
