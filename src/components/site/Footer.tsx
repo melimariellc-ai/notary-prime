@@ -116,9 +116,10 @@ export function Footer() {
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-xs text-white/50">
           <p>© {new Date().getFullYear()} Enliven Notary Services. All rights reserved.</p>
           <div className="flex gap-5">
-            <a href="#" className="hover:text-white">Privacy Policy</a>
-            <a href="#" className="hover:text-white">Terms of Service</a>
-            <a href="#" className="hover:text-white">Accessibility</a>
+            <Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-white">Terms of Service</Link>
+            <Link to="/accessibility" className="hover:text-white">Accessibility</Link>
+
           </div>
         </div>
       </div>
