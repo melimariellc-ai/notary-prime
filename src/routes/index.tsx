@@ -75,12 +75,11 @@ const services = [
 ];
 
 const badges = [
-  "NNA Certified",
   "Texas Commissioned Notary Public",
-  "Mobile Notary",
-  "Remote Online Notary",
+  "Bonded",
+  "E&O Insured — $100,000 Coverage",
+  "NNA Certified Signing Agent",
   "Loan Signing Services",
-  "Professional & Confidential",
 ];
 
 const steps = [
