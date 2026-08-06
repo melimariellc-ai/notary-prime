@@ -32,7 +32,7 @@ function ReviewsPage() {
       <PageHero
         eyebrow="Reviews"
         title={<>Trusted by professionals. <span className="italic font-light text-gradient-gold">Loved by clients.</span></>}
-        intro="A selection of reviews from attorneys, lenders, and families across the region. All testimonials editable."
+        intro="A selection of reviews from attorneys, lenders, and families across the region."
       />
 
       <section className="py-14 md:py-20">
