@@ -123,7 +123,7 @@ function BookPage() {
       <PageHero
         eyebrow="Book Appointment"
         title={<>Reserve in <span className="italic font-light text-gradient-gold">under a minute.</span></>}
-        intro="Choose your service, pick a time, and we'll confirm by email within minutes."
+        intro="Choose your service, pick a time, and we'll follow up personally to confirm."
         cta={false}
       />
 
