@@ -31,7 +31,8 @@ export function CredentialsBar({
           <li key={c}>
             <Badge
               variant="outline"
-              className="gap-2 rounded-full border-border bg-background px-4 py-2 text-xs font-medium text-foreground/85"
+              className="gap-2 rounded-full border-border bg-card px-4 py-2 text-xs font-medium text-card-foreground/90 [--gold:oklch(0.56_0.105_82)]"
+
             >
               <ShieldCheck className="h-3.5 w-3.5 text-gold" />
               {c}

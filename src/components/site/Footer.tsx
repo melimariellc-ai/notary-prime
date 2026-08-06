@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone, Stamp } from "lucide-react";
 
 export function Footer() {
   return (
@@ -38,11 +38,10 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="grid place-items-center h-9 w-9 rounded-full border border-gold/60 text-gold font-display text-lg">
-                E
-              </span>
+              <Stamp aria-hidden className="h-6 w-6 text-gold shrink-0" strokeWidth={1.5} />
               <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
+
             <p className="mt-4 text-sm text-white/70 leading-relaxed">
               Making notarization simple by bringing professional notary services directly to
               you — or meeting securely online.
