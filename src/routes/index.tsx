@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 import { CredentialsBar } from "@/components/site/CredentialsBar";
+
 
 import {
   ShieldCheck,
