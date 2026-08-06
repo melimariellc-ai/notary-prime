@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 import { CredentialsBar } from "@/components/site/CredentialsBar";
+
 
 import {
   ShieldCheck,
@@ -613,61 +615,17 @@ function ServiceArea() {
           </Link>
         </Reveal>
         <Reveal delay={100}>
-          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-border bg-card">
-            <div
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(600px 400px at 30% 30%, oklch(0.94 0.05 85 / 0.6), transparent 60%), radial-gradient(500px 400px at 80% 80%, oklch(0.9 0.03 250 / 0.5), transparent 60%)",
-              }}
-            />
-            <svg
-              className="absolute inset-0 h-full w-full"
-              viewBox="0 0 400 300"
-              fill="none"
-              role="img"
-              aria-label="Illustrative service area map"
+          <div className="relative">
+            <ServiceAreaMap className="aspect-[4/3]" caption="Dallas–Fort Worth Metroplex" />
+            <Link
+              to="/service-areas"
+              className="absolute bottom-4 right-4 rounded-full border border-border bg-background/90 px-4 py-2 text-sm font-medium text-foreground backdrop-blur hover:text-gold"
             >
-              <g stroke="oklch(0.85 0.02 85)" strokeWidth="0.5" opacity="0.6">
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <line key={`h${i}`} x1={0} y1={i * 15} x2={400} y2={i * 15} />
-                ))}
-                {Array.from({ length: 27 }).map((_, i) => (
-                  <line key={`v${i}`} x1={i * 15} y1={0} x2={i * 15} y2={300} />
-                ))}
-              </g>
-              <path
-                d="M60,200 C80,150 110,120 160,110 C210,100 250,120 280,90 C310,60 350,80 360,140 C370,200 320,240 260,240 C200,240 120,260 60,200 Z"
-                fill="oklch(0.74 0.115 82 / 0.12)"
-                stroke="oklch(0.74 0.115 82)"
-                strokeWidth="1.5"
-              />
-              {[
-                [120, 170],
-                [180, 140],
-                [230, 170],
-                [280, 130],
-                [200, 210],
-                [150, 200],
-              ].map(([x, y], i) => (
-                <g key={i}>
-                  <circle cx={x} cy={y} r="6" fill="oklch(0.74 0.115 82)" opacity="0.25" />
-                  <circle cx={x} cy={y} r="3" fill="oklch(0.74 0.115 82)" />
-                </g>
-              ))}
-            </svg>
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-background/90 backdrop-blur border border-border p-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-gold">Google Maps</p>
-                <p className="text-sm text-foreground">Interactive map placeholder</p>
-              </div>
-              <Link to="/service-areas" className="text-sm font-medium text-foreground hover:text-gold">
-                Explore →
-              </Link>
-            </div>
+              Explore →
+            </Link>
           </div>
         </Reveal>
+
       </div>
     </section>
   );
