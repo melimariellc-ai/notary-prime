@@ -20,13 +20,13 @@ export function Footer() {
               Book Appointment
             </Link>
             <a
-              href="tel:+18176226182"
+              href="tel:+14699912777"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm text-white hover:bg-white/5"
             >
               <Phone className="h-4 w-4" /> Call Now
             </a>
             <a
-              href="sms:+18176226182"
+              href="sms:+14699912777"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm text-white hover:bg-white/5"
             >
               <MessageSquare className="h-4 w-4" /> Text Us
@@ -100,7 +100,7 @@ export function Footer() {
             <ul className="mt-5 space-y-3 text-sm text-white/80">
               <li className="flex items-start gap-3">
                 <Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <a href="tel:+18176226182">(817) 622-6182</a>
+                <a href="tel:+14699912777">(469) 991-2777</a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" />

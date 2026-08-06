@@ -128,13 +128,13 @@ function AreasPage() {
                 Check Availability <ArrowRight className="h-4 w-4" />
               </Link>
               <a
-                href="tel:+18176226182"
+                href="tel:+14699912777"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium hover:border-gold/60"
               >
-                <Phone className="h-4 w-4 text-gold" /> Call (817) 622-6182
+                <Phone className="h-4 w-4 text-gold" /> Call (469) 991-2777
               </a>
               <a
-                href="sms:+18176226182"
+                href="sms:+14699912777"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium hover:border-gold/60"
               >
                 <MessageSquare className="h-4 w-4 text-gold" /> Text Us

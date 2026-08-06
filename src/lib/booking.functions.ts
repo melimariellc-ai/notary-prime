@@ -32,7 +32,7 @@ export const submitBooking = createServerFn({ method: "POST" })
 
     if (error) {
       console.error("Failed to save booking request", error);
-      throw new Error("Could not save your request. Please call or text (817) 622-6182.");
+      throw new Error("Could not save your request. Please call or text (469) 991-2777.");
     }
 
     return { ok: true as const };
