@@ -94,13 +94,13 @@ export function Nav() {
             ))}
             <div className="flex gap-2 pt-3">
               <a
-                href="tel:+18176226182"
+                href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777"
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
               >
                 <Phone className="h-4 w-4 text-gold" /> Call
               </a>
               <a
-                href="sms:+18176226182"
+                href="sms:+14699912777" aria-label="Text Enliven Notary at (469) 991-2777"
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
               >
                 <MessageSquare className="h-4 w-4 text-gold" /> Text

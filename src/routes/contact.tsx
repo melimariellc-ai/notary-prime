@@ -116,11 +116,11 @@ function ContactPage() {
 
           <Reveal delay={80}>
             <div className="space-y-6">
-              <a href="tel:+18176226182" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
+              <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
                 <span className="grid place-items-center h-11 w-11 rounded-xl bg-gold/10 text-gold"><Phone className="h-5 w-5" /></span>
                 <span>
                   <span className="block text-xs uppercase tracking-[0.22em] text-muted-foreground">Phone</span>
-                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">(817) 622-6182</span>
+                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">(469) 991-2777</span>
                 </span>
               </a>
               <a href="mailto:info@enlivennotary.com" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
