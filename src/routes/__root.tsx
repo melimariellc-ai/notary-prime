@@ -127,7 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "NNA Certified mobile notary and Texas Remote Online Notary serving the Dallas–Fort Worth Metroplex. Loan signings, estate documents, medical, and business notarizations.",
           image: "/favicon.ico",
           telephone: "+1-817-622-6182",
-          email: "hello@enlivennotary.com",
+          email: "info@enlivennotary.com",
           priceRange: "$$",
           areaServed: [
             { "@type": "AdministrativeArea", name: "Dallas–Fort Worth Metroplex" },

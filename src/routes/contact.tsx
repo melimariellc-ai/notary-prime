@@ -123,11 +123,11 @@ function ContactPage() {
                   <span className="block mt-1 font-display text-xl tracking-tight text-foreground">(817) 622-6182</span>
                 </span>
               </a>
-              <a href="mailto:hello@enlivennotary.com" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
+              <a href="mailto:info@enlivennotary.com" className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-6 hover:border-gold/60 transition-colors">
                 <span className="grid place-items-center h-11 w-11 rounded-xl bg-gold/10 text-gold"><Mail className="h-5 w-5" /></span>
                 <span>
                   <span className="block text-xs uppercase tracking-[0.22em] text-muted-foreground">Email</span>
-                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">hello@enlivennotary.com</span>
+                  <span className="block mt-1 font-display text-xl tracking-tight text-foreground">info@enlivennotary.com</span>
                 </span>
               </a>
               <div className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6">
