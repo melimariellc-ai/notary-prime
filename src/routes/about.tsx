@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, Clock, Sparkles, Lock, Award, Heart } from "lucide-react";
+import { ShieldCheck, Clock, Sparkles, Lock, Award, Heart, Image as ImageIcon } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
-import aboutImg from "@/assets/about-notary.jpg";
+import { CredentialsBar } from "@/components/site/CredentialsBar";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -33,23 +34,30 @@ function AboutPage() {
       <PageHero
         eyebrow="About"
         title={<>Notarization, <span className="italic font-light text-gradient-gold">the way it should be.</span></>}
-        intro="I make notarization simple by bringing professional notary services directly to you — or meeting securely online."
+        intro="Enliven Notary makes notarization simple by bringing professional notary services directly to you — or meeting securely online."
       />
+
+      <section className="border-y border-border bg-secondary/40 py-8">
+        <div className="container-luxe">
+          <CredentialsBar />
+        </div>
+      </section>
 
       <section className="py-14 md:py-20">
         <div className="container-luxe grid lg:grid-cols-2 gap-12 items-center">
           <Reveal>
             <div className="relative">
               <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-gold-soft/40 via-transparent to-transparent blur-2xl" aria-hidden />
-              <div className="relative rounded-[1.75rem] overflow-hidden border border-border">
-                <img
-                  src={aboutImg}
-                  alt="A wax notary seal and fountain pen resting on cream paper."
-                  width={1200}
-                  height={1400}
-                  loading="lazy"
-                  className="w-full h-auto object-cover"
-                />
+              <div className="relative rounded-[1.75rem] overflow-hidden border border-dashed border-gold/50 bg-secondary/60 aspect-[6/7] grid place-items-center p-8 text-center">
+                <div>
+                  <div className="mx-auto grid place-items-center h-12 w-12 rounded-xl bg-gold/10 text-gold">
+                    <ImageIcon className="h-5 w-5" />
+                  </div>
+                  <p className="mt-5 text-xs uppercase tracking-[0.28em] text-gold">Image placeholder</p>
+                  <p className="mt-3 max-w-xs mx-auto text-sm text-muted-foreground leading-relaxed">
+                    REPLACE WITH REAL PHOTO — workspace, signing in progress, or seal close-up (no personal headshot).
+                  </p>
+                </div>
               </div>
             </div>
           </Reveal>
@@ -58,19 +66,17 @@ function AboutPage() {
               <h2 className="font-display text-3xl md:text-4xl tracking-tight">A calm, careful hand for your most important documents.</h2>
               <div className="mt-5 space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  I built Enliven Notary on a simple idea: notarization should feel considered, not
-                  rushed. Whether we meet at your kitchen table, in a hospital room, or over a secure
-                  video session, every appointment is treated with the same precision and warmth.
+                  Enliven Notary was built on a simple idea: notarization should feel considered, not
+                  rushed. Whether the appointment happens at a kitchen table, in a hospital room, or
+                  over a secure video session, our team treats every signing with the same precision
+                  and warmth.
                 </p>
                 <p>
-                  As a commissioned, insured, and background-screened notary — and a certified loan
-                  signing agent — I've been trusted by attorneys, title companies, and families
-                  across the region for years. My commitment is straightforward: arrive on time,
-                  double-check every page, protect your privacy, and make the whole experience feel
-                  effortless.
-                </p>
-                <p className="italic text-foreground/90">
-                  This bio is fully editable — swap in your name, story, credentials, and photo whenever you're ready.
+                  Our lead signing agent is a commissioned, bonded, and background-screened notary and
+                  a certified loan signing agent, trusted by attorneys, title companies, and families
+                  across the Dallas–Fort Worth Metroplex. The commitment is straightforward: arrive on
+                  time, double-check every page, protect client privacy, and make the entire
+                  experience feel effortless.
                 </p>
               </div>
               <Link to="/book" className="mt-8 btn-gold inline-flex items-center rounded-full px-6 py-3 text-sm font-medium">
@@ -80,6 +86,7 @@ function AboutPage() {
           </Reveal>
         </div>
       </section>
+
 
       <section className="py-14 md:py-20 bg-secondary/40 border-y border-border">
         <div className="container-luxe">

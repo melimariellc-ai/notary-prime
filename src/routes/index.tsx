@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CredentialsBar } from "@/components/site/CredentialsBar";
+
 import {
   ShieldCheck,
   MapPin,
@@ -802,6 +804,8 @@ function FinalCTA() {
               <Phone className="h-4 w-4 text-gold" /> Call Now
             </a>
           </div>
+          <CredentialsBar className="mt-10" align="center" showHeading={false} />
+
         </div>
       </div>
     </section>
