@@ -87,15 +87,28 @@ function BookPage() {
     else submit();
   }
 
-  function submit() {
+  async function submit() {
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
       setError("Please complete required fields.");
       return;
     }
     setError(null);
-    setDone(true);
+    setSubmitting(true);
+    try {
+      await send({ data: parsed.data });
+      setDone(true);
+    } catch (e) {
+      setError(
+        e instanceof Error && e.message
+          ? e.message
+          : "Something went wrong. Please call or text (817) 622-6182.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
+
 
   const steps = ["Service", "Location", "Date & Time", "Your Info"];
 
