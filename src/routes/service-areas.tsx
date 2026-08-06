@@ -186,6 +186,13 @@ function AreasPage() {
               >
                 <Phone className="h-4 w-4 text-gold" /> Call (817) 622-6182
               </a>
+              <a
+                href="sms:+18176226182"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium hover:border-gold/60"
+              >
+                <MessageSquare className="h-4 w-4 text-gold" /> Text Us
+              </a>
+
             </div>
           </div>
         </div>
