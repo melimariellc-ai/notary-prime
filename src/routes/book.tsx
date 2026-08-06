@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, ArrowLeft, CheckCircle2, Calendar as CalendarIcon, Clock, MapPin, Video, User, FileText } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { ArrowRight, ArrowLeft, CheckCircle2, Calendar as CalendarIcon, Clock, MapPin, Video, User, FileText, Phone } from "lucide-react";
 import { z } from "zod";
 import { PageHero } from "@/components/site/PageHero";
+import { submitBooking } from "@/lib/booking.functions";
+
 
 export const Route = createFileRoute("/book")({
   head: () => ({
