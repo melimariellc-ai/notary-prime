@@ -100,7 +100,7 @@ export function Footer() {
             <ul className="mt-5 space-y-3 text-sm text-white/80">
               <li className="flex items-start gap-3">
                 <Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-                <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777">(469) 991-2777</a>
+                <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777" className="select-text">(469) 991-2777</a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" />
