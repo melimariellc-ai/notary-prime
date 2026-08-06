@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, ArrowRight, Phone, MessageSquare } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
+import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 
 export const Route = createFileRoute("/service-areas")({
   head: () => ({
@@ -75,65 +76,11 @@ function AreasPage() {
       <section className="py-14 md:py-20">
         <div className="container-luxe grid lg:grid-cols-[1.1fr_1fr] gap-12 items-start">
           <Reveal>
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-border bg-card">
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(600px 400px at 30% 30%, oklch(0.94 0.05 85 / 0.6), transparent 60%), radial-gradient(500px 400px at 80% 80%, oklch(0.9 0.03 250 / 0.5), transparent 60%)",
-                }}
-              />
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox="0 0 400 300"
-                role="img"
-                aria-label="Illustrative Dallas–Fort Worth Metroplex service area map"
-              >
-                <g stroke="oklch(0.85 0.02 85)" strokeWidth="0.5" opacity="0.6">
-                  {Array.from({ length: 20 }).map((_, i) => (
-                    <line key={`h${i}`} x1={0} y1={i * 15} x2={400} y2={i * 15} />
-                  ))}
-                  {Array.from({ length: 27 }).map((_, i) => (
-                    <line key={`v${i}`} x1={i * 15} y1={0} x2={i * 15} y2={300} />
-                  ))}
-                </g>
-                <path
-                  d="M60,200 C80,150 110,120 160,110 C210,100 250,120 280,90 C310,60 350,80 360,140 C370,200 320,240 260,240 C200,240 120,260 60,200 Z"
-                  fill="oklch(0.74 0.115 82 / 0.12)"
-                  stroke="oklch(0.74 0.115 82)"
-                  strokeWidth="1.5"
-                />
-                {[
-                  [140, 170, "Fort Worth"],
-                  [255, 155, "Dallas"],
-                  [195, 180, "Arlington"],
-                  [280, 105, "Plano"],
-                  [300, 80, "Frisco"],
-                  [175, 135, "Grapevine"],
-                ].map(([x, y, label], i) => (
-                  <g key={i}>
-                    <circle cx={x as number} cy={y as number} r="7" fill="oklch(0.74 0.115 82)" opacity="0.25" />
-                    <circle cx={x as number} cy={y as number} r="3.5" fill="oklch(0.74 0.115 82)" />
-                    <text
-                      x={(x as number) + 8}
-                      y={(y as number) - 6}
-                      fontSize="9"
-                      fill="oklch(0.25 0.01 260)"
-                      fontFamily="Inter, sans-serif"
-                    >
-                      {label}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-              <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-background/90 backdrop-blur border border-border p-4">
-                <p className="text-xs uppercase tracking-[0.22em] text-gold">Dallas–Fort Worth</p>
-                <p className="text-sm text-foreground">
-                  Serving the DFW Metroplex in person, and all of Texas online.
-                </p>
-              </div>
-            </div>
+            <ServiceAreaMap
+              className="aspect-[4/3]"
+              label="Dallas–Fort Worth"
+              caption="Serving the DFW Metroplex in person, and all of Texas online."
+            />
           </Reveal>
 
           <Reveal delay={80}>
