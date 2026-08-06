@@ -60,6 +60,9 @@ function BookPage() {
   });
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const send = useServerFn(submitBooking);
+
 
   const dates = useMemo(() => {
     const arr: { iso: string; day: string; date: string; weekday: string }[] = [];
