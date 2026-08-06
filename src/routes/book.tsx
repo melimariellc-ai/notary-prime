@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, ArrowLeft, CheckCircle2, Calendar as CalendarIcon, Clock, MapPin, Video, User, FileText } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { ArrowRight, ArrowLeft, CheckCircle2, Calendar as CalendarIcon, Clock, MapPin, Video, User, FileText, Phone } from "lucide-react";
 import { z } from "zod";
 import { PageHero } from "@/components/site/PageHero";
+import { submitBooking } from "@/lib/booking.functions";
+
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -57,6 +60,9 @@ function BookPage() {
   });
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const send = useServerFn(submitBooking);
+
 
   const dates = useMemo(() => {
     const arr: { iso: string; day: string; date: string; weekday: string }[] = [];
@@ -87,15 +93,28 @@ function BookPage() {
     else submit();
   }
 
-  function submit() {
+  async function submit() {
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
       setError("Please complete required fields.");
       return;
     }
     setError(null);
-    setDone(true);
+    setSubmitting(true);
+    try {
+      await send({ data: parsed.data });
+      setDone(true);
+    } catch (e) {
+      setError(
+        e instanceof Error && e.message
+          ? e.message
+          : "Something went wrong. Please call or text (817) 622-6182.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
+
 
   const steps = ["Service", "Location", "Date & Time", "Your Info"];
 
@@ -104,7 +123,7 @@ function BookPage() {
       <PageHero
         eyebrow="Book Appointment"
         title={<>Reserve in <span className="italic font-light text-gradient-gold">under a minute.</span></>}
-        intro="Choose your service, pick a time, and we'll confirm by email within minutes."
+        intro="Choose your service, pick a time, and we'll follow up personally to confirm."
         cta={false}
       />
 
@@ -115,10 +134,20 @@ function BookPage() {
               <div className="mx-auto grid place-items-center h-14 w-14 rounded-full bg-gold/15 text-gold">
                 <CheckCircle2 className="h-7 w-7" />
               </div>
-              <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Appointment requested.</h2>
-              <p className="mt-4 text-muted-foreground max-w-md mx-auto">
-                A confirmation email is on its way to <span className="text-foreground font-medium">{data.email}</span> with next steps and preparation tips.
+              <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Request received.</h2>
+              <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Thanks — we'll follow up personally to confirm your appointment. During business hours
+                (Mon–Sat, 7am–9pm) we typically respond within a few hours; after hours or on Sunday, by
+                the next business day.
               </p>
+              <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Questions in the meantime?{" "}
+                <a href="tel:+18176226182" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
+                  <Phone className="h-4 w-4 text-gold" /> Call or text (817) 622-6182
+                </a>
+                .
+              </p>
+
               <div className="mt-8 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
                 <Summary icon={FileText} label="Service" value={data.service} />
                 <Summary icon={data.location === "mobile" ? MapPin : Video} label="Location" value={data.location === "mobile" ? "Mobile — we come to you" : "Online — secure video"} />
@@ -238,12 +267,13 @@ function BookPage() {
                 >
                   <ArrowLeft className="h-4 w-4" /> Back
                 </button>
-                <button type="button" onClick={next} disabled={!canNext}
+                <button type="button" onClick={next} disabled={!canNext || submitting}
                   className="btn-gold inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
                 >
-                  {step === 3 ? "Request appointment" : "Continue"}
+                  {step === 3 ? (submitting ? "Sending…" : "Request appointment") : "Continue"}
                   <ArrowRight className="h-4 w-4" />
                 </button>
+
               </div>
             </div>
           )}
