@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Lock, LogOut, Mail, MapPin, Phone, Video } from "lucide-react";
+import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, Video } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { getAppointments, lockAdmin, unlockAdmin } from "@/lib/admin.functions";
 
