@@ -3,7 +3,7 @@ import { ShieldCheck, Clock, Sparkles, Lock, Award, Heart } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { CredentialsBar } from "@/components/site/CredentialsBar";
-import notarySigning from "@/assets/notary-signing.jpg";
+import notaryWelcome from "@/assets/notary-welcome.jpg";
 
 
 
@@ -52,8 +52,8 @@ function AboutPage() {
               <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-gold-soft/40 via-transparent to-transparent blur-2xl" aria-hidden />
               <div className="relative rounded-[1.75rem] overflow-hidden border border-border bg-secondary/60 aspect-[6/7]">
                 <img
-                  src={notarySigning}
-                  alt="Notary guiding a client through signing documents at a table with a notary seal and journal"
+                  src={notaryWelcome}
+                  alt="Smiling Enliven Notary agent welcoming a client and handing over a pen to sign documents"
                   width={1200}
                   height={1408}
                   loading="lazy"
