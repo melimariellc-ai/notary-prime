@@ -5,7 +5,7 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ — Notary Questions Answered | Enliven Notary" },
+      { title: "FAQ: Notary Questions Answered | Enliven Notary" },
       { name: "description", content: "Answers to common questions about mobile and online notarization: accepted ID, documents, pricing, appointments, and more." },
       { property: "og:title", content: "FAQ | Enliven Notary" },
       { property: "og:description", content: "Answers to common notary questions." },
@@ -32,15 +32,15 @@ export const Route = createFileRoute("/faq")({
 
 const faqs = [
   { q: "What ID is accepted?", a: "Valid, unexpired government-issued photo ID: driver's license, state ID, passport, or military ID. In many states, two credible witnesses may substitute where allowed." },
-  { q: "What documents can be notarized?", a: "Almost any document requiring a signature under state notarial law — including real estate, estate planning, medical, business, personal, and school documents. Some documents (like vital records) cannot be notarized." },
+  { q: "What documents can be notarized?", a: "Almost any document requiring a signature under state notarial law, including real estate, estate planning, medical, business, personal, and school documents. Some documents (like vital records) cannot be notarized." },
   { q: "Can you come to my location?", a: "Yes. We travel to homes, offices, hospitals, senior living facilities, coffee shops, and jobsites throughout the region." },
   { q: "Do you offer online notarizations?", a: "Yes. Secure Remote Online Notarization (RON) is available for signers anywhere in the United States." },
   { q: "What payment methods do you accept?", a: "Cash, all major credit and debit cards, Apple Pay, Google Pay, Zelle, and invoicing for corporate clients." },
   { q: "Do I sign before the appointment?", a: "No. You must sign in the notary's presence. Please leave all signature and date fields blank until we meet." },
   { q: "How long does an appointment take?", a: "Most single-signature notarizations take 10–15 minutes. Loan signings typically run 45–75 minutes depending on the package." },
-  { q: "Are you insured and bonded?", a: "Yes — fully commissioned, insured, bonded, and background screened. Certifications are provided on request." },
+  { q: "Are you insured and bonded?", a: "Yes, fully commissioned, insured, bonded, and background screened. Certifications are provided on request." },
   { q: "Can you notarize on evenings and weekends?", a: "Yes. Evenings, weekends, and rush appointments are available for a modest additional fee." },
-  { q: "Do you offer loan signing services?", a: "Yes — as a certified loan signing agent, we handle closings, refinances, HELOCs, and reverse mortgages with printing and scan-backs available." },
+  { q: "Do you offer loan signing services?", a: "Yes, as a certified loan signing agent, we handle closings, refinances, HELOCs, and reverse mortgages with printing and scan-backs available." },
 ];
 
 function FAQPage() {

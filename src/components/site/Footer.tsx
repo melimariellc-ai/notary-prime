@@ -44,7 +44,7 @@ export function Footer() {
 
             <p className="mt-4 text-sm text-white/70 leading-relaxed">
               Making notarization simple by bringing professional notary services directly to
-              you — or meeting securely online.
+              you, or meeting securely online.
             </p>
             <div className="flex gap-3 mt-6">
               {[
@@ -113,7 +113,7 @@ export function Footer() {
             </ul>
             <div className="mt-5">
               <p className="text-xs uppercase tracking-[0.22em] text-white/50">Hours</p>
-              <p className="mt-2 text-sm text-white/80">Mon–Sat · 7:00a — 9:00p</p>
+              <p className="mt-2 text-sm text-white/80">Mon to Sat · 7:00a to 9:00p</p>
               <p className="text-sm text-white/60">Sunday by appointment</p>
             </div>
           </div>

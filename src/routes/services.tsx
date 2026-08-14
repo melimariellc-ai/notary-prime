@@ -9,7 +9,7 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Notary Services — Mobile, Online & Loan Signing | Enliven Notary" },
+      { title: "Notary Services: Mobile, Online & Loan Signing | Enliven Notary" },
       { name: "description", content: "Full-service notary: mobile appointments, remote online notary, loan signing agent, real estate, estate planning, medical, business, and personal documents." },
       { property: "og:title", content: "Notary Services | Enliven Notary" },
       { property: "og:description", content: "Mobile, online, and loan signing notary services with same-day availability." },

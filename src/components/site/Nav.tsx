@@ -33,7 +33,7 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary — Home">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary Home">
           <Stamp aria-hidden className="h-6 w-6 text-gold shrink-0" strokeWidth={1.5} />
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg tracking-tight text-foreground whitespace-nowrap">Enliven Notary</span>

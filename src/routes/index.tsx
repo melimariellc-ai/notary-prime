@@ -35,13 +35,13 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
+      { title: "Enliven Notary | Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         name: "description",
         content:
           "Enliven Notary delivers NNA Certified mobile and remote online notary services across the Dallas–Fort Worth Metroplex. Loan signings, same-day appointments, evenings & weekends.",
       },
-      { property: "og:title", content: "Enliven Notary — Mobile & Online Notary | Dallas–Fort Worth, TX" },
+      { property: "og:title", content: "Enliven Notary | Mobile & Online Notary | Dallas–Fort Worth, TX" },
       {
         property: "og:description",
         content:
@@ -77,30 +77,30 @@ const services = [
 const badges = [
   "Texas Commissioned Notary Public",
   "Bonded",
-  "E&O Insured — $100,000 Coverage",
+  "E&O Insured: $100,000 Coverage",
   "NNA Certified Signing Agent",
   "Loan Signing Services",
 ];
 
 const steps = [
-  { icon: CalendarClock, title: "Schedule", description: "Choose a time that works — often same day. Pick mobile or online." },
+  { icon: CalendarClock, title: "Schedule", description: "Choose a time that works, often same day. Pick mobile or online." },
   { icon: UserCheck, title: "Verify Identification", description: "Present valid, government-issued photo ID. We handle KBA online." },
   { icon: Handshake, title: "Meet In Person or Online", description: "We arrive at your location or send a secure video session link." },
-  { icon: ClipboardCheck, title: "Complete Notarization", description: "Sign, seal, and receive your documents — start to finish in minutes." },
+  { icon: ClipboardCheck, title: "Complete Notarization", description: "Sign, seal, and receive your documents, start to finish in minutes." },
 ];
 
 const whyChoose = [
   { icon: ShieldCheck, title: "NNA Certified Professional", text: "Nationally certified and continuously trained." },
-  { icon: MapPin, title: "Mobile Service — We Come To You", text: "Home, office, hospital, or anywhere across DFW." },
+  { icon: MapPin, title: "Mobile Service: We Come To You", text: "Home, office, hospital, or anywhere across DFW." },
   { icon: Video, title: "Remote Online Notary", text: "Secure online sessions for signers anywhere in Texas." },
   { icon: FileSignature, title: "Professional Loan Signings", text: "Purchase, refinance, HELOC, and reverse mortgage packages." },
   { icon: CalendarClock, title: "Flexible Scheduling", text: "Same-day appointments when available." },
-  { icon: Clock, title: "Evenings & Weekends", text: "Around your calendar — not the other way around." },
+  { icon: Clock, title: "Evenings & Weekends", text: "Around your calendar, not the other way around." },
   { icon: Phone, title: "Prompt Communication", text: "Quick replies, clear confirmations, no guesswork." },
   { icon: Lock, title: "Secure & Confidential", text: "Your documents are protected end to end." },
-  { icon: Sparkles, title: "Attention To Detail", text: "Every signature, every seal — precise." },
+  { icon: Sparkles, title: "Attention To Detail", text: "Every signature, every seal, precise." },
   { icon: Star, title: "Exceptional Experience", text: "Concierge-level service from first call to final page." },
-  { icon: UserCheck, title: "Reliable & Professional", text: "On time, prepared, and courteous — every appointment." },
+  { icon: UserCheck, title: "Reliable & Professional", text: "On time, prepared, and courteous, every appointment." },
   { icon: Handshake, title: "Client-First Approach", text: "You'll always feel taken care of and informed." },
 ];
 
@@ -179,7 +179,7 @@ function Hero() {
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Convenient mobile and remote online notarization for individuals, families,
               businesses, and real estate professionals. Same-day appointments available.
-              We come to you — or meet securely online.
+              We come to you, or meet securely online.
             </p>
           </Reveal>
           <Reveal delay={220}>
@@ -306,7 +306,7 @@ function Services() {
           <SectionHeader
             eyebrow="Services"
             title={<>Every notarization, <span className="italic font-light text-gradient-gold">handled with care.</span></>}
-            intro="From loan closings to hospital bedside signings — we bring precision, discretion, and speed to every appointment."
+            intro="From loan closings to hospital bedside signings, we bring precision, discretion, and speed to every appointment."
           />
         </Reveal>
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -470,7 +470,7 @@ function PricingTeaser() {
           <SectionHeader
             eyebrow="Pricing"
             title={<>Concierge notary service, <span className="italic font-light text-gradient-gold">transparently priced.</span></>}
-            intro="Every appointment is quoted in writing before we begin. No surprises — just clear, professional service."
+            intro="Every appointment is quoted in writing before we begin. No surprises, just clear, professional service."
           />
         </Reveal>
         <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -607,7 +607,7 @@ function ServiceArea() {
           <SectionHeader
             eyebrow="Service Area"
             title={<>Proudly serving the <span className="italic font-light text-gradient-gold">Dallas–Fort Worth Metroplex</span>.</>}
-            intro="Professional mobile and online notary services throughout DFW — plus secure Remote Online Notarization for signers anywhere in Texas."
+            intro="Professional mobile and online notary services throughout DFW, plus secure Remote Online Notarization for signers anywhere in Texas."
           />
           <ul className="mt-8 grid grid-cols-2 gap-2">
             {cities.map((c) => (
@@ -649,7 +649,7 @@ function FAQTeaser() {
     },
     {
       q: "Can you come to my location?",
-      a: "Yes — homes, offices, hospitals, coffee shops, senior living facilities, and jobsites throughout the region.",
+      a: "Yes, homes, offices, hospitals, coffee shops, senior living facilities, and jobsites throughout the region.",
     },
     {
       q: "Do you offer online notarizations?",

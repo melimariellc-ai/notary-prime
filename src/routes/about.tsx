@@ -8,7 +8,7 @@ import { CredentialsBar } from "@/components/site/CredentialsBar";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Trusted Mobile & Online Notary | Enliven Notary" },
+      { title: "About: Trusted Mobile & Online Notary | Enliven Notary" },
       { name: "description", content: "A commissioned, insured, background-screened notary bringing precision, discretion, and warmth to every signing." },
       { property: "og:title", content: "About | Enliven Notary" },
       { property: "og:description", content: "A commissioned, insured notary bringing precision and warmth to every signing." },
@@ -34,7 +34,7 @@ function AboutPage() {
       <PageHero
         eyebrow="About"
         title={<>Notarization, <span className="italic font-light text-gradient-gold">the way it should be.</span></>}
-        intro="Enliven Notary makes notarization simple by bringing professional notary services directly to you — or meeting securely online."
+        intro="Enliven Notary makes notarization simple by bringing professional notary services directly to you, or meeting securely online."
       />
 
       <section className="border-y border-border bg-secondary/40 py-8">
@@ -55,7 +55,7 @@ function AboutPage() {
                   </div>
                   <p className="mt-5 text-xs uppercase tracking-[0.28em] text-gold">Image placeholder</p>
                   <p className="mt-3 max-w-xs mx-auto text-sm text-muted-foreground leading-relaxed">
-                    REPLACE WITH REAL PHOTO — workspace, signing in progress, or seal close-up (no personal headshot).
+                    REPLACE WITH REAL PHOTO: workspace, signing in progress, or seal close-up (no personal headshot).
                   </p>
                 </div>
               </div>

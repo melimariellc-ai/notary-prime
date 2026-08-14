@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export const credentials = [
   "Texas Commissioned Notary Public",
   "Bonded",
-  "E&O Insured — $100,000 Coverage",
+  "E&O Insured: $100,000 Coverage",
   "NNA Certified Signing Agent",
 ];
 

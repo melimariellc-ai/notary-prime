@@ -10,7 +10,7 @@ import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Reach a Notary Today | Enliven Notary" },
+      { title: "Contact: Reach a Notary Today | Enliven Notary" },
       { name: "description", content: "Contact Enliven Notary by phone, email, or online form. Serving the metro area with same-day mobile and online notarizations." },
       { property: "og:title", content: "Contact | Enliven Notary" },
       { property: "og:description", content: "Reach a notary today by phone, email, or form." },
@@ -54,7 +54,7 @@ function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title={<>Let's <span className="italic font-light text-gradient-gold">connect.</span></>}
-        intro="Send a message, call, or email — most inquiries are answered within an hour during business hours."
+        intro="Send a message, call, or email. Most inquiries are answered within an hour during business hours."
         cta={false}
       />
 
@@ -69,7 +69,7 @@ function ContactPage() {
                   </div>
                   <h2 className="mt-6 font-display text-3xl tracking-tight">Message received.</h2>
                   <p className="mt-3 text-muted-foreground max-w-md">
-                    Thank you — we'll be in touch within one business hour. For urgent requests, please call directly.
+                    Thank you, we'll be in touch within one business hour. For urgent requests, please call directly.
                   </p>
                 </div>
               ) : (
@@ -134,7 +134,7 @@ function ContactPage() {
                 <span className="grid place-items-center h-11 w-11 rounded-xl bg-gold/10 text-gold"><Clock className="h-5 w-5" /></span>
                 <div>
                   <span className="block text-xs uppercase tracking-[0.22em] text-muted-foreground">Business Hours</span>
-                  <p className="mt-1 text-sm text-foreground">Monday – Saturday · 7:00a — 9:00p</p>
+                  <p className="mt-1 text-sm text-foreground">Monday to Saturday · 7:00a to 9:00p</p>
                   <p className="text-sm text-muted-foreground">Sunday by appointment</p>
                 </div>
               </div>
