@@ -97,35 +97,47 @@ export const Route = createFileRoute("/api/public/appointment-notify")({
         // Customer confirmation email
         const customerEmail = (row.email ?? "").toString().trim();
         if (customerEmail) {
+          const dateTime = [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "—";
           const detailRows: [string, string][] = [
             ["Service", row.service ?? "—"],
-            ["Date", row.preferred_date ?? "—"],
-            ["Time", row.preferred_time ?? "—"],
+            ["Date & Time", dateTime],
             ["Location", location],
           ];
-          const followUp =
-            "We'll follow up personally to confirm your appointment. During business hours (Mon–Sat, 7am–9pm) we typically respond within a few hours; after hours or on Sunday, by the next business day. Questions in the meantime? Call or text (469) 991-2777.";
 
-          const customerHtml = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#0F1A2B">
-<h2 style="font-family:Georgia,serif;color:#0F1A2B">Thank you for your request${name !== "Unknown" ? `, ${escapeHtml(name)}` : ""}!</h2>
-<p>We've received your appointment request. Here are the details you submitted:</p>
+          const customerHtml = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#0F1A2B">
+<p>Thank you for choosing Enliven Notary Services. We&rsquo;ve received your appointment request and will personally review the details before confirming your appointment.</p>
+<h3 style="font-family:Georgia,serif;color:#0F1A2B;margin-bottom:4px">Appointment Details</h3>
 <table cellpadding="6" style="border-collapse:collapse;font-size:14px">${detailRows
             .map(
               ([k, v]) =>
                 `<tr><td style="color:#666">${escapeHtml(k)}</td><td><strong>${escapeHtml(String(v))}</strong></td></tr>`,
             )
             .join("")}</table>
-<p>${escapeHtml(followUp)}</p>
-<p style="color:#666">— Enliven Notary</p>
+<h3 style="font-family:Georgia,serif;color:#0F1A2B;margin-bottom:4px">What happens next?</h3>
+<p>We&rsquo;ll follow up personally to confirm your appointment and make sure we have everything needed for a smooth signing.</p>
+<p>During business hours (Monday&ndash;Saturday, 7:00 AM&ndash;9:00 PM), we typically respond within a few hours. Requests submitted after hours or on Sunday will receive a response by the next business day.</p>
+<p>If you have any questions or need to update your request, please call or text us at (469) 991-2777.</p>
+<p>Thank you for trusting Enliven Notary Services. We look forward to assisting you.</p>
+<p style="color:#666;margin-bottom:0"><strong>Enliven Notary Services</strong><br/>Professional &bull; Convenient &bull; Reliable</p>
 </div>`;
-          const customerText = `Thank you for your request${name !== "Unknown" ? `, ${name}` : ""}!
+          const customerText = `Thank you for choosing Enliven Notary Services. We've received your appointment request and will personally review the details before confirming your appointment.
 
-We've received your appointment request. Details:
+Appointment Details
+
 ${detailRows.map(([k, v]) => `${k}: ${v}`).join("\n")}
 
-${followUp}
+What happens next?
+We'll follow up personally to confirm your appointment and make sure we have everything needed for a smooth signing.
 
-— Enliven Notary`;
+During business hours (Monday–Saturday, 7:00 AM–9:00 PM), we typically respond within a few hours. Requests submitted after hours or on Sunday will receive a response by the next business day.
+
+If you have any questions or need to update your request, please call or text us at (469) 991-2777.
+
+Thank you for trusting Enliven Notary Services. We look forward to assisting you.
+
+Enliven Notary Services
+Professional • Convenient • Reliable`;
+
 
           const customerResponse = await fetch("https://api.resend.com/emails", {
             method: "POST",
