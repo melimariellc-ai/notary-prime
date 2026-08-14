@@ -158,12 +158,25 @@ function AdminPage() {
                     </p>
                   </div>
 
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                    <SmsBadge status={a.sms_status} />
+                    {a.sms_status === "sent" && a.sms_sent_at && (
+                      <span className="text-muted-foreground">
+                        Sent {new Date(a.sms_sent_at).toLocaleString()}
+                      </span>
+                    )}
+                    {a.sms_error && (
+                      <span className="text-muted-foreground break-all">{a.sms_error}</span>
+                    )}
+                  </div>
+
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
                       {a.notes}
                     </p>
                   )}
                 </article>
+
               ))}
             </div>
           )}
