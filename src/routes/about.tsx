@@ -94,7 +94,7 @@ function AboutPage() {
         <div className="container-luxe">
           <Reveal>
             <div className="max-w-2xl">
-              <p className="text-xs uppercase tracking-[0.28em] text-gold">What I stand for</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-gold">What we stand for</p>
               <h2 className="mt-4 font-display text-3xl md:text-4xl tracking-tight">Six commitments to every client.</h2>
             </div>
           </Reveal>
