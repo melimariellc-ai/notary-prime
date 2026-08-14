@@ -41,6 +41,8 @@ export const submitBooking = createServerFn({ method: "POST" })
       const apiKey = process.env["LOVABLE_API_KEY"];
       if (apiKey) {
         const { sendLovableEmail } = await import("@lovable.dev/email-js");
+        const escapeHtml = (value: string) =>
+          value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         const rows: [string, string][] = [
           ["Service", data.service],
           ["Location", data.location === "online" ? "Online — secure video" : `Mobile${data.address ? ` — ${data.address}` : ""}`],
@@ -76,12 +78,3 @@ export const submitBooking = createServerFn({ method: "POST" })
 
     return { ok: true as const };
   });
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
