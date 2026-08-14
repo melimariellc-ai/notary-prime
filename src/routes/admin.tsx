@@ -158,17 +158,45 @@ function AdminPage() {
                     </p>
                   </div>
 
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                    <SmsBadge status={a.sms_status} />
+                    {a.sms_status === "sent" && a.sms_sent_at && (
+                      <span className="text-muted-foreground">
+                        Sent {new Date(a.sms_sent_at).toLocaleString()}
+                      </span>
+                    )}
+                    {a.sms_error && (
+                      <span className="text-muted-foreground break-all">{a.sms_error}</span>
+                    )}
+                  </div>
+
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
                       {a.notes}
                     </p>
                   )}
                 </article>
+
               ))}
             </div>
           )}
         </div>
       </section>
     </>
+  );
+}
+
+function SmsBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; className: string }> = {
+    sent: { label: "SMS sent", className: "border-gold/50 bg-gold/10 text-foreground" },
+    failed: { label: "SMS failed", className: "border-destructive/50 bg-destructive/10 text-destructive" },
+    skipped: { label: "SMS skipped", className: "border-border text-muted-foreground" },
+    pending: { label: "SMS pending", className: "border-border text-muted-foreground" },
+  };
+  const s = map[status] ?? map["pending"]!;
+  return (
+    <span className={`inline-flex items-center rounded-full border px-3 py-1 uppercase tracking-[0.18em] text-[10px] ${s.className}`}>
+      {s.label}
+    </span>
   );
 }

@@ -29,7 +29,11 @@ export type Appointment = {
   phone: string;
   notes: string | null;
   submitted_at: string;
+  sms_status: string;
+  sms_error: string | null;
+  sms_sent_at: string | null;
 };
+
 
 export const unlockAdmin = createServerFn({ method: "POST" })
   .inputValidator((data: { passcode: string }) => ({ passcode: String(data.passcode ?? "") }))
@@ -56,7 +60,7 @@ export const getAppointments = createServerFn({ method: "GET" }).handler(async (
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("appointments")
-    .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at")
+    .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at")
     .order("submitted_at", { ascending: false })
     .limit(500);
 
