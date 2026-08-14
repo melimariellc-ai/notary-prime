@@ -161,6 +161,41 @@ Professional • Convenient • Reliable`;
           }
         }
 
+        // Customer SMS confirmation via OpenPhone
+        const openPhoneKey = process.env["OPENPHONE_API_KEY"];
+        const openPhoneFrom = process.env["OPENPHONE_FROM_NUMBER"] ?? "+14699912777";
+        const toNumber = toE164(row.phone ?? "");
+
+        if (!openPhoneKey) {
+          console.error("OPENPHONE_API_KEY is not configured — skipping SMS");
+        } else if (!toNumber) {
+          console.error("Customer phone number could not be normalized — skipping SMS");
+        } else {
+          const dateTimeSms =
+            [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "your requested time";
+          const smsText = `Enliven Notary: Thanks ${name}! We received your request for ${row.service ?? "notary services"} on ${dateTimeSms}. We'll follow up personally to confirm. Questions? Call or text (469) 991-2777.`;
+
+          const smsResponse = await fetch("https://api.openphone.com/v1/messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: openPhoneKey,
+            },
+            body: JSON.stringify({
+              from: openPhoneFrom,
+              to: [toNumber],
+              content: smsText,
+            }),
+          });
+
+          if (!smsResponse.ok) {
+            const errorBody = await smsResponse.text();
+            console.error(`OpenPhone SMS failed [${smsResponse.status}]: ${errorBody}`);
+          }
+        }
+
+
+
         return new Response(JSON.stringify({ ok: true }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
