@@ -29,7 +29,11 @@ export type Appointment = {
   phone: string;
   notes: string | null;
   submitted_at: string;
+  sms_status: string;
+  sms_error: string | null;
+  sms_sent_at: string | null;
 };
+
 
 export const unlockAdmin = createServerFn({ method: "POST" })
   .inputValidator((data: { passcode: string }) => ({ passcode: String(data.passcode ?? "") }))
