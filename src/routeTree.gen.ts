@@ -23,6 +23,7 @@ import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
+import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
@@ -96,6 +97,11 @@ const ServiceAreasIndexRoute = ServiceAreasIndexRouteImport.update({
   path: '/service-areas/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
+  id: '/service-areas/$city',
+  path: '/service-areas/$city',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAppointmentNotifyRoute =
   ApiPublicAppointmentNotifyRouteImport.update({
     id: '/api/public/appointment-notify',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
     | '/service-areas/'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
     | '/service-areas'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
     | '/service-areas/'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  ServiceAreasCityRoute: typeof ServiceAreasCityRoute
   ServiceAreasIndexRoute: typeof ServiceAreasIndexRoute
   ApiPublicAppointmentNotifyRoute: typeof ApiPublicAppointmentNotifyRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -340,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/service-areas/$city': {
+      id: '/service-areas/$city'
+      path: '/service-areas/$city'
+      fullPath: '/service-areas/$city'
+      preLoaderRoute: typeof ServiceAreasCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/appointment-notify': {
       id: '/api/public/appointment-notify'
       path: '/api/public/appointment-notify'
@@ -371,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  ServiceAreasCityRoute: ServiceAreasCityRoute,
   ServiceAreasIndexRoute: ServiceAreasIndexRoute,
   ApiPublicAppointmentNotifyRoute: ApiPublicAppointmentNotifyRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,

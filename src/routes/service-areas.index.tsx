@@ -3,6 +3,7 @@ import { MapPin, ArrowRight, Phone, MessageSquare } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
+import { cities as cityPages } from "@/data/cities";
 
 export const Route = createFileRoute("/service-areas/")({
   head: () => ({
@@ -92,7 +93,23 @@ function AreasPage() {
                 Professional mobile and online notary throughout the Dallas–Fort Worth Metroplex.
               </p>
               <ul className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                {cities.map((c) => (
+                {cities.map((c) => {
+                  const page = cityPages.find((p) => p.name === c);
+                  if (page) {
+                    return (
+                      <li key={c}>
+                        <Link
+                          to="/service-areas/$city"
+                          params={{ city: page.slug }}
+                          className="flex items-center gap-2 rounded-xl border border-gold/40 bg-card px-3.5 py-2.5 text-sm text-foreground hover:border-gold transition-colors"
+                        >
+                          <MapPin className="h-3.5 w-3.5 text-gold shrink-0" />
+                          <span className="truncate">{c}</span>
+                        </Link>
+                      </li>
+                    );
+                  }
+                  return (
                   <li
                     key={c}
                     className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground/85 hover:border-gold/50 transition-colors"
@@ -100,8 +117,12 @@ function AreasPage() {
                     <MapPin className="h-3.5 w-3.5 text-gold shrink-0" />
                     <span className="truncate">{c}</span>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Gold-outlined cities have a dedicated page with neighborhoods, ZIP codes, and local details.
+              </p>
             </div>
           </Reveal>
         </div>
