@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as ServiceAreasRouteImport } from './routes/service-areas'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -23,6 +22,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
+import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
@@ -39,11 +40,6 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServiceAreasRoute = ServiceAreasRouteImport.update({
-  id: '/service-areas',
-  path: '/service-areas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewsRoute = ReviewsRouteImport.update({
@@ -96,6 +92,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiceAreasIndexRoute = ServiceAreasIndexRouteImport.update({
+  id: '/service-areas/',
+  path: '/service-areas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
+  id: '/service-areas/$city',
+  path: '/service-areas/$city',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAppointmentNotifyRoute =
   ApiPublicAppointmentNotifyRouteImport.update({
     id: '/api/public/appointment-notify',
@@ -120,10 +126,11 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reviews': typeof ReviewsRoute
-  '/service-areas': typeof ServiceAreasRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
+  '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -138,10 +145,11 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reviews': typeof ReviewsRoute
-  '/service-areas': typeof ServiceAreasRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
+  '/service-areas': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -157,10 +165,11 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/reviews': typeof ReviewsRoute
-  '/service-areas': typeof ServiceAreasRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/service-areas/$city': typeof ServiceAreasCityRoute
+  '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -177,10 +186,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/reviews'
-    | '/service-areas'
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
+    | '/service-areas/'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -195,10 +205,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/reviews'
-    | '/service-areas'
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
+    | '/service-areas'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
   id:
@@ -213,10 +224,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy-policy'
     | '/reviews'
-    | '/service-areas'
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/service-areas/$city'
+    | '/service-areas/'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -232,10 +244,11 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ReviewsRoute: typeof ReviewsRoute
-  ServiceAreasRoute: typeof ServiceAreasRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  ServiceAreasCityRoute: typeof ServiceAreasCityRoute
+  ServiceAreasIndexRoute: typeof ServiceAreasIndexRoute
   ApiPublicAppointmentNotifyRoute: typeof ApiPublicAppointmentNotifyRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -261,13 +274,6 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/service-areas': {
-      id: '/service-areas'
-      path: '/service-areas'
-      fullPath: '/service-areas'
-      preLoaderRoute: typeof ServiceAreasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reviews': {
@@ -340,6 +346,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/service-areas/': {
+      id: '/service-areas/'
+      path: '/service-areas'
+      fullPath: '/service-areas/'
+      preLoaderRoute: typeof ServiceAreasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-areas/$city': {
+      id: '/service-areas/$city'
+      path: '/service-areas/$city'
+      fullPath: '/service-areas/$city'
+      preLoaderRoute: typeof ServiceAreasCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/appointment-notify': {
       id: '/api/public/appointment-notify'
       path: '/api/public/appointment-notify'
@@ -368,10 +388,11 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ReviewsRoute: ReviewsRoute,
-  ServiceAreasRoute: ServiceAreasRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  ServiceAreasCityRoute: ServiceAreasCityRoute,
+  ServiceAreasIndexRoute: ServiceAreasIndexRoute,
   ApiPublicAppointmentNotifyRoute: ApiPublicAppointmentNotifyRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
