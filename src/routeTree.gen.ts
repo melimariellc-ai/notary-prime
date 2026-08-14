@@ -19,6 +19,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BookRouteImport } from './routes/book'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -74,6 +75,11 @@ const BookRoute = BookRouteImport.update({
   path: '/book',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccessibilityRoute = AccessibilityRouteImport.update({
   id: '/accessibility',
   path: '/accessibility',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/book'
     | '/contact'
     | '/faq'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/book'
     | '/contact'
     | '/faq'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/book'
     | '/contact'
     | '/faq'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccessibilityRoute: typeof AccessibilityRoute
+  AdminRoute: typeof AdminRoute
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accessibility': {
       id: '/accessibility'
       path: '/accessibility'
@@ -320,6 +340,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccessibilityRoute: AccessibilityRoute,
+  AdminRoute: AdminRoute,
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
