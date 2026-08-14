@@ -246,8 +246,15 @@ function BookPage() {
                       <Input label="Full name" value={data.name} onChange={(v) => setData({ ...data, name: v })} icon={User} />
                       <div className="grid gap-4 sm:grid-cols-2">
                         <Input label="Email" type="email" value={data.email} onChange={(v) => setData({ ...data, email: v })} />
-                        <Input label="Phone" type="tel" value={data.phone} onChange={(v) => setData({ ...data, phone: v })} />
+                        <div>
+                          <Input label="Phone" type="tel" value={data.phone} onChange={(v) => setData({ ...data, phone: v })} />
+                          <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                            By submitting, you agree to receive appointment texts at this number. Message and data rates may
+                            apply. Reply STOP to opt out.
+                          </p>
+                        </div>
                       </div>
+
                       <div>
                         <label className="text-sm font-medium">Notes <span className="text-muted-foreground">(optional)</span></label>
                         <textarea rows={4} value={data.notes} onChange={(e) => setData({ ...data, notes: e.target.value })} maxLength={1000}
