@@ -121,7 +121,7 @@ function AdminPage() {
           {failedSms.length > 0 && (
             <div className="mt-8 rounded-3xl border border-destructive/40 bg-destructive/5 p-6 md:p-8">
               <h2 className="inline-flex items-center gap-2 font-display text-xl tracking-tight text-destructive">
-                <AlertTriangle className="h-5 w-5" /> SMS delivery log — {failedSms.length} failure
+                <AlertTriangle className="h-5 w-5" /> SMS delivery log: {failedSms.length} failure
                 {failedSms.length === 1 ? "" : "s"}
               </h2>
               <ul className="mt-4 grid gap-3 text-sm">
@@ -166,7 +166,7 @@ function AdminPage() {
                     </p>
                     <p className="inline-flex items-center gap-2 text-muted-foreground">
                       {a.meeting_type === "online" ? <Video className="h-4 w-4 text-gold" /> : <MapPin className="h-4 w-4 text-gold" />}
-                      {a.meeting_type === "online" ? "Online — secure video" : a.address || "Mobile — address TBC"}
+                      {a.meeting_type === "online" ? "Online: secure video" : a.address || "Mobile: address TBC"}
                     </p>
                     <p className="text-muted-foreground">
                       {new Date(`${a.preferred_date}T00:00:00`).toLocaleDateString(undefined, {

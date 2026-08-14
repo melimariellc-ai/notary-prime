@@ -7,13 +7,13 @@ import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 export const Route = createFileRoute("/service-areas")({
   head: () => ({
     meta: [
-      { title: "Service Areas — Dallas–Fort Worth Mobile Notary | Enliven Notary" },
+      { title: "Service Areas: Dallas–Fort Worth Mobile Notary | Enliven Notary" },
       {
         name: "description",
         content:
           "Enliven Notary serves the entire Dallas–Fort Worth Metroplex with mobile notary, Remote Online Notary, and loan signing services. Dallas, Fort Worth, Arlington, Plano, Frisco, and more.",
       },
-      { property: "og:title", content: "Service Areas | Enliven Notary — DFW Metroplex" },
+      { property: "og:title", content: "Service Areas | Enliven Notary | DFW Metroplex" },
       {
         property: "og:description",
         content:
@@ -153,7 +153,7 @@ function AreasPage() {
           </h2>
           <p className="mt-5 text-muted-foreground leading-relaxed">
             Can't meet in person? Our secure Remote Online Notary sessions serve signers anywhere
-            in Texas — legally recognized and completed in minutes.
+            in Texas, legally recognized and completed in minutes.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

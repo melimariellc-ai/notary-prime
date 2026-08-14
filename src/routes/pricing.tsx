@@ -6,7 +6,7 @@ import { Reveal } from "@/components/site/Reveal";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Mobile, Online & Loan Signing | Enliven Notary" },
+      { title: "Pricing: Mobile, Online & Loan Signing | Enliven Notary" },
       {
         name: "description",
         content:
@@ -115,7 +115,7 @@ function PricingPage() {
             <span className="italic font-light text-gradient-gold">transparently priced.</span>
           </>
         }
-        intro="Every appointment is quoted in writing before we begin. No surprises — just clear, professional service across the Dallas–Fort Worth Metroplex."
+        intro="Every appointment is quoted in writing before we begin. No surprises, just clear, professional service across the Dallas–Fort Worth Metroplex."
       />
 
       <section className="py-14 md:py-20">

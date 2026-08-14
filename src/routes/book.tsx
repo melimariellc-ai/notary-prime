@@ -10,7 +10,7 @@ import { submitBooking } from "@/lib/booking.functions";
 export const Route = createFileRoute("/book")({
   head: () => ({
     meta: [
-      { title: "Book Appointment — Mobile & Online Notary | Enliven Notary" },
+      { title: "Book Appointment: Mobile & Online Notary | Enliven Notary" },
       { name: "description", content: "Schedule a mobile or online notary appointment in minutes. Same-day and after-hours availability." },
       { property: "og:title", content: "Book Appointment | Enliven Notary" },
       { property: "og:description", content: "Schedule mobile or online notary in minutes." },
@@ -150,7 +150,7 @@ function BookPage() {
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
                 <Summary icon={FileText} label="Service" value={data.service} />
-                <Summary icon={data.location === "mobile" ? MapPin : Video} label="Location" value={data.location === "mobile" ? "Mobile — we come to you" : "Online — secure video"} />
+                <Summary icon={data.location === "mobile" ? MapPin : Video} label="Location" value={data.location === "mobile" ? "Mobile: we come to you" : "Online: secure video"} />
                 <Summary icon={CalendarIcon} label="Date" value={new Date(data.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })} />
                 <Summary icon={Clock} label="Time" value={data.time} />
               </div>
@@ -188,8 +188,8 @@ function BookPage() {
                     <h3 className="font-display text-2xl md:text-3xl tracking-tight">Where should we meet?</h3>
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
                       {[
-                        { key: "mobile", icon: MapPin, title: "Mobile — we come to you", desc: "Home, office, hospital, or wherever you are." },
-                        { key: "online", icon: Video, title: "Online — secure video", desc: "Notarize from anywhere in the U.S." },
+                        { key: "mobile", icon: MapPin, title: "Mobile: we come to you", desc: "Home, office, hospital, or wherever you are." },
+                        { key: "online", icon: Video, title: "Online: secure video", desc: "Notarize from anywhere in the U.S." },
                       ].map((o) => (
                         <button key={o.key} type="button" onClick={() => setData({ ...data, location: o.key as "mobile" | "online" })}
                           className={`text-left rounded-2xl border p-6 transition-all ${data.location === o.key ? "border-gold bg-gold/5" : "border-border hover:border-gold/40"}`}
