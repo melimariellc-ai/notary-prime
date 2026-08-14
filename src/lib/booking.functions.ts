@@ -18,17 +18,18 @@ export const submitBooking = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { error } = await supabaseAdmin.from("booking_requests").insert({
+    const { error } = await supabaseAdmin.from("appointments").insert({
       service: data.service,
       meeting_type: data.location,
+      address: data.address || null,
       preferred_date: data.date,
       preferred_time: data.time,
       name: data.name,
       email: data.email,
       phone: data.phone,
-      address: data.address || null,
       notes: data.notes || null,
     });
+
 
     if (error) {
       console.error("Failed to save booking request", error);
