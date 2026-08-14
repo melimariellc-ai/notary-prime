@@ -136,17 +136,17 @@ function BookPage() {
               </div>
               <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Request received.</h2>
               <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Thanks — we'll follow up personally to confirm your appointment. During business hours
-                (Mon–Sat, 7am–9pm) we typically respond within a few hours; after hours or on Sunday, by
-                the next business day.
+                Thank you! We've received your appointment request. Our team will be in touch shortly to
+                confirm your appointment and finalize the details.
               </p>
               <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Questions in the meantime?{" "}
+                Need assistance in the meantime?{" "}
                 <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
                   <Phone className="h-4 w-4 text-gold" /> Call or text (469) 991-2777
                 </a>
                 .
               </p>
+
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
                 <Summary icon={FileText} label="Service" value={data.service} />
