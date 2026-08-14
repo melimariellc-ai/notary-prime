@@ -50,18 +50,18 @@ function AboutPage() {
           <Reveal>
             <div className="relative">
               <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-gold-soft/40 via-transparent to-transparent blur-2xl" aria-hidden />
-              <div className="relative rounded-[1.75rem] overflow-hidden border border-dashed border-gold/50 bg-secondary/60 aspect-[6/7] grid place-items-center p-8 text-center">
-                <div>
-                  <div className="mx-auto grid place-items-center h-12 w-12 rounded-xl bg-gold/10 text-gold">
-                    <ImageIcon className="h-5 w-5" />
-                  </div>
-                  <p className="mt-5 text-xs uppercase tracking-[0.28em] text-gold">Image placeholder</p>
-                  <p className="mt-3 max-w-xs mx-auto text-sm text-muted-foreground leading-relaxed">
-                    REPLACE WITH REAL PHOTO: workspace, signing in progress, or seal close-up (no personal headshot).
-                  </p>
-                </div>
+              <div className="relative rounded-[1.75rem] overflow-hidden border border-border bg-secondary/60 aspect-[6/7]">
+                <img
+                  src={notarySigning}
+                  alt="Notary guiding a client through signing documents at a table with a notary seal and journal"
+                  width={1200}
+                  height={1408}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
+
           </Reveal>
           <Reveal delay={80}>
             <div>
