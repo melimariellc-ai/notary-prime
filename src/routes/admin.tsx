@@ -37,6 +37,7 @@ function AdminPage() {
   const [passcode, setPasscode] = useState("");
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
+  const failedSms = appointments.filter((a) => a.sms_status === "failed");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
