@@ -26,10 +26,13 @@ export function Nav() {
 
   return (
     <header
-      className={`bg-charcoal text-primary-foreground sticky top-0 z-50 transition-all duration-500 ${
-        scrolled ? "border-b border-white/10 shadow-lg shadow-black/10" : ""
+      className={`bg-charcoal text-primary-foreground sticky top-0 z-50 border-b transition-all duration-500 ${
+        scrolled
+          ? "border-gold/30 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.55)]"
+          : "border-white/10 shadow-[0_1px_0_0_rgba(201,162,39,0.18)]"
       }`}
     >
+
       <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
         <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary Home">
           <Stamp aria-hidden className="h-6 w-6 text-gold shrink-0" strokeWidth={1.5} />
