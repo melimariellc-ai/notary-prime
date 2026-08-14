@@ -185,3 +185,18 @@ function AdminPage() {
     </>
   );
 }
+
+function SmsBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; className: string }> = {
+    sent: { label: "SMS sent", className: "border-gold/50 bg-gold/10 text-foreground" },
+    failed: { label: "SMS failed", className: "border-destructive/50 bg-destructive/10 text-destructive" },
+    skipped: { label: "SMS skipped", className: "border-border text-muted-foreground" },
+    pending: { label: "SMS pending", className: "border-border text-muted-foreground" },
+  };
+  const s = map[status] ?? map["pending"]!;
+  return (
+    <span className={`inline-flex items-center rounded-full border px-3 py-1 uppercase tracking-[0.18em] text-[10px] ${s.className}`}>
+      {s.label}
+    </span>
+  );
+}
