@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Lock, LogOut, Mail, MapPin, Phone, Video } from "lucide-react";
+import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, Video } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { getAppointments, lockAdmin, unlockAdmin } from "@/lib/admin.functions";
 
@@ -37,6 +37,7 @@ function AdminPage() {
   const [passcode, setPasscode] = useState("");
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
+  const failedSms = appointments.filter((a) => a.sms_status === "failed");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -117,11 +118,38 @@ function AdminPage() {
             </button>
           </div>
 
+          {failedSms.length > 0 && (
+            <div className="mt-8 rounded-3xl border border-destructive/40 bg-destructive/5 p-6 md:p-8">
+              <h2 className="inline-flex items-center gap-2 font-display text-xl tracking-tight text-destructive">
+                <AlertTriangle className="h-5 w-5" /> SMS delivery log — {failedSms.length} failure
+                {failedSms.length === 1 ? "" : "s"}
+              </h2>
+              <ul className="mt-4 grid gap-3 text-sm">
+                {failedSms.map((a) => (
+                  <li key={a.id} className="rounded-xl border border-border bg-card p-4">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-medium">
+                        {a.name} · {a.phone}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                        {new Date(a.submitted_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="mt-2 font-mono text-xs text-destructive break-all">
+                      {a.sms_error || "Unknown error from OpenPhone"}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {appointments.length === 0 ? (
             <p className="mt-8 rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
               No requests yet. New submissions from the Book page will appear here.
             </p>
           ) : (
+
             <div className="mt-8 grid gap-4">
               {appointments.map((a) => (
                 <article key={a.id} className="rounded-3xl border border-border bg-card p-6 md:p-8">
