@@ -78,14 +78,14 @@ export function Nav() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl">
+        <div className="lg:hidden border-t border-white/10 bg-charcoal text-primary-foreground">
           <div className="container-luxe py-4 flex flex-col gap-1">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className="py-3 text-base text-foreground border-b border-border/50 last:border-0"
+                className="py-3 text-base text-white border-b border-white/10 last:border-0"
               >
                 {l.label}
               </Link>
@@ -93,13 +93,13 @@ export function Nav() {
             <div className="flex gap-2 pt-3">
               <a
                 href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777"
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-3 text-sm text-white"
               >
                 <Phone className="h-4 w-4 text-gold" /> Call
               </a>
               <a
                 href="sms:+14699912777" aria-label="Text Enliven Notary at (469) 991-2777"
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-3 text-sm text-white"
               >
                 <MessageSquare className="h-4 w-4 text-gold" /> Text
               </a>
