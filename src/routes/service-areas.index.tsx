@@ -4,7 +4,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 
-export const Route = createFileRoute("/service-areas")({
+export const Route = createFileRoute("/service-areas/")({
   head: () => ({
     meta: [
       { title: "Service Areas: Dallas–Fort Worth Mobile Notary | Enliven Notary" },

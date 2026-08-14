@@ -9,16 +9,20 @@ export function ServiceAreaMap({
   className,
   label = "Service area",
   caption = "Dallas–Fort Worth Metroplex",
+  embedSrc = DFW_EMBED_SRC,
+  mapTitle = "Map of the Dallas–Fort Worth Metroplex service area",
 }: {
   className?: string;
   label?: string;
   caption?: string;
+  embedSrc?: string;
+  mapTitle?: string;
 }) {
   return (
     <div className={cn("relative overflow-hidden rounded-3xl border border-border bg-card", className)}>
       <iframe
-        src={DFW_EMBED_SRC}
-        title="Map of the Dallas–Fort Worth Metroplex service area"
+        src={embedSrc}
+        title={mapTitle}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen
