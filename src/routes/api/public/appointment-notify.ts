@@ -174,33 +174,66 @@ Professional • Convenient • Reliable`;
         const openPhoneFrom = process.env["OPENPHONE_FROM_NUMBER"] ?? "+14699912777";
         const toNumber = toE164(row.phone ?? "");
 
+        let smsStatus: "sent" | "failed" | "skipped" = "skipped";
+        let smsError: string | null = null;
+
         if (!openPhoneKey) {
-          console.error("OPENPHONE_API_KEY is not configured — skipping SMS");
+          smsError = "OPENPHONE_API_KEY is not configured";
+          console.error(`${smsError} — skipping SMS`);
         } else if (!toNumber) {
-          console.error("Customer phone number could not be normalized — skipping SMS");
+          smsError = "Customer phone number could not be normalized";
+          console.error(`${smsError} — skipping SMS`);
         } else {
           const dateTimeSms =
             [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "your requested time";
           const smsText = `Enliven Notary: Thanks ${name}! We received your request for ${row.service ?? "notary services"} on ${dateTimeSms}. We'll follow up personally to confirm. Questions? Call or text (469) 991-2777.`;
 
-          const smsResponse = await fetch("https://api.openphone.com/v1/messages", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: openPhoneKey,
-            },
-            body: JSON.stringify({
-              from: openPhoneFrom,
-              to: [toNumber],
-              content: smsText,
-            }),
-          });
+          try {
+            const smsResponse = await fetch("https://api.openphone.com/v1/messages", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: openPhoneKey,
+              },
+              body: JSON.stringify({
+                from: openPhoneFrom,
+                to: [toNumber],
+                content: smsText,
+              }),
+            });
 
-          if (!smsResponse.ok) {
-            const errorBody = await smsResponse.text();
-            console.error(`OpenPhone SMS failed [${smsResponse.status}]: ${errorBody}`);
+            if (smsResponse.ok) {
+              smsStatus = "sent";
+            } else {
+              const errorBody = await smsResponse.text();
+              smsStatus = "failed";
+              smsError = `[${smsResponse.status}] ${errorBody}`.slice(0, 500);
+              console.error(`OpenPhone SMS failed ${smsError}`);
+            }
+          } catch (e) {
+            smsStatus = "failed";
+            smsError = (e instanceof Error ? e.message : String(e)).slice(0, 500);
+            console.error(`OpenPhone SMS threw: ${smsError}`);
           }
         }
+
+        if (row.id) {
+          try {
+            const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+            const { error: updateError } = await supabaseAdmin
+              .from("appointments")
+              .update({
+                sms_status: smsStatus,
+                sms_error: smsError,
+                sms_sent_at: smsStatus === "sent" ? new Date().toISOString() : null,
+              })
+              .eq("id", row.id);
+            if (updateError) console.error("Failed to record SMS status", updateError);
+          } catch (e) {
+            console.error("Failed to record SMS status", e);
+          }
+        }
+
 
 
 
