@@ -176,7 +176,7 @@ export const cities: CityPage[] = [
       },
       {
         title: "Remote Online Notary",
-        text: "Signers traveling or out of state can notarize from a laptop in minutes, valid anywhere in Texas.",
+        text: "Signers traveling or out of state can notarize from a laptop in minutes, valid for signers anywhere in the United States.",
       },
     ],
     nearby: ["plano", "dallas", "irving"],
