@@ -36,7 +36,9 @@ export function Nav() {
 
       <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
         <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary Home">
-          <img src={logoAsset.url} alt="Enliven Notary logo" className="h-11 w-auto shrink-0" />
+          <span className="grid place-items-center h-12 w-12 shrink-0 rounded-full bg-white p-1.5">
+            <img src={logoAsset.url} alt="Enliven Notary logo" className="h-full w-full object-contain" />
+          </span>
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg tracking-tight whitespace-nowrap">Enliven Notary</span>
             <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-white/60 whitespace-nowrap">
