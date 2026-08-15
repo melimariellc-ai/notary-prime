@@ -8,6 +8,10 @@ import { submitBooking } from "@/lib/booking.functions";
 
 
 export const Route = createFileRoute("/book")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    service: typeof search.service === "string" ? search.service : undefined,
+  }),
+
 
   head: () => ({
     meta: [
