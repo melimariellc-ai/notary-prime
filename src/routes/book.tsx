@@ -1,5 +1,5 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, ArrowLeft, CheckCircle2, MapPin, Video, User, FileText, Phone, ExternalLink, Zap, Clock } from "lucide-react";
 import { z } from "zod";
@@ -8,6 +8,9 @@ import { submitBooking } from "@/lib/booking.functions";
 
 
 export const Route = createFileRoute("/book")({
+
+
+
 
   head: () => ({
     meta: [
@@ -85,16 +88,18 @@ const schema = z.object({
 });
 
 
+function matchQuoteService(raw: string | null | undefined) {
+  if (!raw) return "";
+  const needle = decodeURIComponent(raw).toLowerCase();
+  const match = quoteServices.find(
+    (s) => s.toLowerCase() === needle || s.toLowerCase().replace(/[^a-z]+/g, "-") === needle,
+  );
+  return match ?? "";
+}
+
 function BookPage() {
   const searchStr = useRouterState({ select: (s) => s.location.searchStr });
-  const preselected = (() => {
-    const raw = new URLSearchParams(searchStr ?? "").get("service");
-    if (!raw) return "";
-    const match = quoteServices.find(
-      (s) => s.toLowerCase() === raw.toLowerCase() || s.toLowerCase().replace(/[^a-z]+/g, "-") === raw.toLowerCase(),
-    );
-    return match ?? "";
-  })();
+  const preselected = matchQuoteService(new URLSearchParams(searchStr ?? "").get("service"));
 
   const [step, setStep] = useState(preselected ? 1 : 0);
   const [data, setData] = useState({
@@ -108,6 +113,17 @@ function BookPage() {
     address: "",
     notes: "",
   });
+
+  // On the published (prerendered) site the router's search string can be empty
+  // during hydration, so re-read the real URL after mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const fromUrl = matchQuoteService(new URLSearchParams(window.location.search).get("service"));
+    if (!fromUrl) return;
+    setData((d) => (d.service ? d : { ...d, service: fromUrl }));
+    setStep((s) => (s === 0 ? 1 : s));
+  }, []);
+
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
