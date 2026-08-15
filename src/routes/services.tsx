@@ -20,13 +20,50 @@ export const Route = createFileRoute("/services")({
   component: ServicesPage,
 });
 
-const groups = [
+const ACUITY = {
+  mobileStandard:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97116974",
+  mobileUrgent:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123688",
+  ron: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123816",
+};
+
+type Item = {
+  icon: typeof MapPin;
+  title: string;
+  desc: string;
+  href?: string;
+  to?: "/book";
+  cta?: string;
+  secondary?: { label: string; href: string };
+};
+
+const groups: { title: string; items: Item[] }[] = [
   {
     title: "How we meet",
     items: [
-      { icon: MapPin, title: "Mobile Notary", desc: "We travel to homes, offices, hospitals, coffee shops, and jobsites." },
-      { icon: Video, title: "Remote Online Notary", desc: "Secure audio-video sessions for signers anywhere in the U.S." },
-      { icon: FileSignature, title: "Loan Signing Agent", desc: "NNA-certified for closings, refinances, HELOCs, and reverse mortgages." },
+      {
+        icon: MapPin,
+        title: "Mobile Notary",
+        desc: "We travel to homes, offices, hospitals, coffee shops, and jobsites.",
+        cta: "Book Now",
+        href: ACUITY.mobileStandard,
+        secondary: { label: "Same-day / urgent booking", href: ACUITY.mobileUrgent },
+      },
+      {
+        icon: Video,
+        title: "Remote Online Notary",
+        desc: "Secure audio-video sessions for signers anywhere in the U.S.",
+        cta: "Book Now",
+        href: ACUITY.ron,
+      },
+      {
+        icon: FileSignature,
+        title: "Loan Signing Agent",
+        desc: "NNA-certified for closings, refinances, HELOCs, and reverse mortgages.",
+        cta: "Book Now",
+        to: "/book",
+      },
     ],
   },
   {
@@ -76,7 +113,36 @@ function ServicesPage() {
                     </div>
                     <h3 className="mt-6 font-display text-xl tracking-tight">{s.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                    {s.href && (
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-gold/60"
+                      >
+                        {s.cta} <ArrowRight className="h-4 w-4" />
+                      </a>
+                    )}
+                    {s.to && (
+                      <Link
+                        to={s.to}
+                        className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-gold/60"
+                      >
+                        {s.cta} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    )}
+                    {s.secondary && (
+                      <a
+                        href={s.secondary.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 block text-xs text-muted-foreground underline underline-offset-4 hover:text-gold"
+                      >
+                        {s.secondary.label}
+                      </a>
+                    )}
                   </article>
+
                 </Reveal>
               ))}
             </div>

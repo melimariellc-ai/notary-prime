@@ -25,6 +25,14 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
+const ACUITY = {
+  mobileStandard:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97116974",
+  mobileUrgent:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123688",
+  ron: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123816",
+};
+
 type Tier = {
   name: string;
   price: string;
@@ -32,7 +40,9 @@ type Tier = {
   blurb: string;
   features: string[];
   cta: string;
-  to: "/book" | "/contact";
+  to?: "/book" | "/contact";
+  href?: string;
+  secondary?: { label: string; href: string };
   featured?: boolean;
 };
 
@@ -50,8 +60,9 @@ const tiers: Tier[] = [
       "Confidential service",
       "Prompt communication",
     ],
-    cta: "Book Appointment",
-    to: "/book",
+    cta: "Book Now",
+    href: ACUITY.mobileStandard,
+    secondary: { label: "Need same-day or urgent? Book that here", href: ACUITY.mobileUrgent },
   },
   {
     name: "Remote Online Notary",
@@ -65,8 +76,8 @@ const tiers: Tier[] = [
       "Convenient from home or office",
       "Fast turnaround",
     ],
-    cta: "Schedule Online",
-    to: "/book",
+    cta: "Book Now",
+    href: ACUITY.ron,
     featured: true,
   },
   {
@@ -84,7 +95,7 @@ const tiers: Tier[] = [
       "Commercial Loan Documents",
     ],
     cta: "Request Quote",
-    to: "/contact",
+    to: "/book",
   },
   {
     name: "Specialty Appointments",
@@ -189,17 +200,43 @@ function PricingPage() {
                       ))}
                     </ul>
                     <div className="mt-auto pt-8">
-                      <Link
-                        to={t.to}
-                        className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
-                          t.featured
-                            ? "btn-gold"
-                            : "border border-border hover:border-gold/60 text-foreground"
-                        }`}
-                      >
-                        {t.cta} <ArrowRight className="h-4 w-4" />
-                      </Link>
+                      {t.href ? (
+                        <a
+                          href={t.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                            t.featured
+                              ? "btn-gold"
+                              : "border border-border hover:border-gold/60 text-foreground"
+                          }`}
+                        >
+                          {t.cta} <ArrowRight className="h-4 w-4" />
+                        </a>
+                      ) : (
+                        <Link
+                          to={t.to!}
+                          className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                            t.featured
+                              ? "btn-gold"
+                              : "border border-border hover:border-gold/60 text-foreground"
+                          }`}
+                        >
+                          {t.cta} <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      )}
+                      {t.secondary && (
+                        <a
+                          href={t.secondary.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 block text-center text-xs text-muted-foreground underline underline-offset-4 hover:text-gold"
+                        >
+                          {t.secondary.label}
+                        </a>
+                      )}
                     </div>
+
                   </div>
                 </Reveal>
               );
