@@ -237,7 +237,7 @@ Mobile · Online · Trusted`;
                 : notesText
               : rawService || "notary services";
 
-          const smsText = `Hi ${firstName}! Thank you for choosing Enliven Notary Services.
+          const smsText = `Hi ${firstName}! Thank you for choosing Enliven Notary.
 
 We've received your request for ${serviceSms} on ${whenSms}.
 
