@@ -121,7 +121,13 @@ function BookPage() {
       setError("Please complete required fields.");
       return;
     }
+    const suggestion = emailTypoSuggestion(parsed.data.email);
+    if (suggestion) {
+      setError(`That email looks like a typo. Did you mean @${suggestion}? Confirmation emails can't reach an invalid address.`);
+      return;
+    }
     setError(null);
+
     setSubmitting(true);
     try {
       await send({ data: parsed.data });
