@@ -25,6 +25,14 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
+const ACUITY = {
+  mobileStandard:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97116974",
+  mobileUrgent:
+    "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123688",
+  ron: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123816",
+};
+
 type Tier = {
   name: string;
   price: string;
@@ -32,7 +40,9 @@ type Tier = {
   blurb: string;
   features: string[];
   cta: string;
-  to: "/book" | "/contact";
+  to?: "/book" | "/contact";
+  href?: string;
+  secondary?: { label: string; href: string };
   featured?: boolean;
 };
 
@@ -50,8 +60,9 @@ const tiers: Tier[] = [
       "Confidential service",
       "Prompt communication",
     ],
-    cta: "Book Appointment",
-    to: "/book",
+    cta: "Book Now",
+    href: ACUITY.mobileStandard,
+    secondary: { label: "Need same-day or urgent? Book that here", href: ACUITY.mobileUrgent },
   },
   {
     name: "Remote Online Notary",
@@ -65,8 +76,8 @@ const tiers: Tier[] = [
       "Convenient from home or office",
       "Fast turnaround",
     ],
-    cta: "Schedule Online",
-    to: "/book",
+    cta: "Book Now",
+    href: ACUITY.ron,
     featured: true,
   },
   {
@@ -84,7 +95,7 @@ const tiers: Tier[] = [
       "Commercial Loan Documents",
     ],
     cta: "Request Quote",
-    to: "/contact",
+    to: "/book",
   },
   {
     name: "Specialty Appointments",
