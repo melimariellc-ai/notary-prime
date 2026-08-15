@@ -222,9 +222,30 @@ Mobile · Online · Trusted`;
           smsError = "Customer phone number could not be normalized";
           console.error(`${smsError} — skipping SMS`);
         } else {
-          const dateTimeSms =
-            [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "your requested time";
-          const smsText = `Enliven Notary: Thanks ${name}! We received your request for ${row.service ?? "notary services"} on ${dateTimeSms}. We'll follow up personally to confirm. Questions? Call or text (469) 991-2777.`;
+          const firstName = name.split(/\s+/)[0] || name;
+          const friendlyDate = formatDateFriendly(row.preferred_date ?? "");
+          const friendlyTime = formatTimeFriendly(row.preferred_time ?? "");
+          const whenSms =
+            [friendlyDate, friendlyTime].filter(Boolean).join(" at ") || "your requested date and time";
+
+          const rawService = (row.service ?? "").trim();
+          const notesText = (row.notes ?? "").trim();
+          const serviceSms =
+            /^other/i.test(rawService) && notesText
+              ? notesText.length > 120
+                ? `${notesText.slice(0, 117)}...`
+                : notesText
+              : rawService || "notary services";
+
+          const smsText = `Hi ${firstName}! Thank you for choosing Enliven Notary Services.
+
+We've received your request for ${serviceSms} on ${whenSms}.
+
+We'll reach out shortly to review the details and confirm your appointment.
+
+Questions? Call or text us at (469) 991-2777.
+
+We look forward to assisting you!`;
 
           try {
             const smsResponse = await fetch("https://api.openphone.com/v1/messages", {
