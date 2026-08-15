@@ -39,9 +39,22 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="grid place-items-center h-12 w-12 shrink-0 rounded-full bg-white p-1.5">
-                <img src={logoAsset.url} alt="Enliven Notary logo" className="h-full w-full object-contain" />
-              </span>
+              <span
+                role="img"
+                aria-label="Enliven Notary logo"
+                className="block h-12 w-12 shrink-0 bg-gold"
+                style={{
+                  maskImage: `url(${logoAsset.url})`,
+                  WebkitMaskImage: `url(${logoAsset.url})`,
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                  maskSize: "contain",
+                  WebkitMaskSize: "contain",
+                }}
+              />
+
               <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
 
