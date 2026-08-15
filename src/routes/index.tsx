@@ -127,7 +127,7 @@ const testimonials = [
     name: "James O.",
     role: "Home Buyer",
     quote:
-      "Explained every page of the loan docs. We felt taken care of the entire time.",
+      "Guided us smoothly through the entire signing package. We felt taken care of from start to finish.",
   },
 ];
 
