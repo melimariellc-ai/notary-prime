@@ -762,6 +762,7 @@ function FinalCTA() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/book"
+              hash="instant-booking"
               className="btn-gold inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium"
             >
               Book Instantly <ArrowRight className="h-4 w-4" />
