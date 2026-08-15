@@ -20,6 +20,52 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const formatDateFriendly = (raw: string): string => {
+  const iso = raw.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) {
+    const month = MONTHS[Number(iso[2]) - 1];
+    if (month) return `${month} ${Number(iso[3])}`;
+  }
+  return raw.trim();
+};
+
+const formatTimeFriendly = (raw: string): string => {
+  const value = raw.trim();
+  const match = value.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|AM|PM|a\.m\.|p\.m\.)?$/);
+  if (!match) return value;
+  let hour = Number(match[1]);
+  const minutes = match[2] ?? "00";
+  const suffix = (match[3] ?? "").toLowerCase();
+  let meridiem: string;
+  if (suffix.startsWith("a")) {
+    meridiem = "AM";
+    if (hour === 12) hour = 12;
+  } else if (suffix.startsWith("p")) {
+    meridiem = "PM";
+  } else {
+    // 24-hour input
+    meridiem = hour >= 12 ? "PM" : "AM";
+    if (hour === 0) hour = 12;
+    else if (hour > 12) hour -= 12;
+  }
+  return `${hour}:${minutes} ${meridiem}`;
+};
+
 const toE164 = (raw: string): string | null => {
   const digits = raw.replace(/\D/g, "");
   if (digits.length === 10) return `+1${digits}`;
@@ -176,9 +222,30 @@ Mobile · Online · Trusted`;
           smsError = "Customer phone number could not be normalized";
           console.error(`${smsError} — skipping SMS`);
         } else {
-          const dateTimeSms =
-            [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "your requested time";
-          const smsText = `Enliven Notary: Thanks ${name}! We received your request for ${row.service ?? "notary services"} on ${dateTimeSms}. We'll follow up personally to confirm. Questions? Call or text (469) 991-2777.`;
+          const firstName = name.split(/\s+/)[0] || name;
+          const friendlyDate = formatDateFriendly(row.preferred_date ?? "");
+          const friendlyTime = formatTimeFriendly(row.preferred_time ?? "");
+          const whenSms =
+            [friendlyDate, friendlyTime].filter(Boolean).join(" at ") || "your requested date and time";
+
+          const rawService = (row.service ?? "").trim();
+          const notesText = (row.notes ?? "").trim();
+          const serviceSms =
+            /^other/i.test(rawService) && notesText
+              ? notesText.length > 120
+                ? `${notesText.slice(0, 117)}...`
+                : notesText
+              : rawService || "notary services";
+
+          const smsText = `Hi ${firstName}! Thank you for choosing Enliven Notary Services.
+
+We've received your request for ${serviceSms} on ${whenSms}.
+
+We'll reach out shortly to review the details and confirm your appointment.
+
+Questions? Call or text us at (469) 991-2777.
+
+We look forward to assisting you!`;
 
           try {
             const smsResponse = await fetch("https://api.openphone.com/v1/messages", {
