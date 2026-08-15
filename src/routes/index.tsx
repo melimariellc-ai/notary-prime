@@ -172,7 +172,7 @@ function Hero() {
           <Reveal delay={110}>
             <div className="mt-5 flex items-center gap-3">
               <span className="h-px w-10 bg-gold/60" />
-              <span className="text-[0.7rem] sm:text-xs uppercase tracking-[0.28em] text-muted-foreground">
+              <span className="text-[0.7rem] sm:text-xs uppercase tracking-[0.28em] text-gold">
                 Mobile · Online · Trusted
               </span>
             </div>
