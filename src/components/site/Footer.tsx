@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone, Stamp } from "lucide-react";
+import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import logoAsset from "../../assets/enliven-logo.png.asset.json";
 
 export function Footer() {
   return (
@@ -38,7 +39,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <Stamp aria-hidden className="h-6 w-6 text-gold shrink-0" strokeWidth={1.5} />
+              <img src={logoAsset.url} alt="Enliven Notary logo" className="h-11 w-auto shrink-0" />
               <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
 
