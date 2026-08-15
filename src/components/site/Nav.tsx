@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Phone, MessageSquare, Stamp } from "lucide-react";
+import { Menu, X, Phone, MessageSquare } from "lucide-react";
+import logoAsset from "../../assets/enliven-logo.png.asset.json";
 
 const links = [
   { to: "/", label: "Home" },
@@ -35,7 +36,7 @@ export function Nav() {
 
       <div className="mx-auto w-full max-w-[86rem] px-5 md:px-8 flex items-center justify-between h-20 py-4 gap-4">
         <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="Enliven Notary Home">
-          <Stamp aria-hidden className="h-6 w-6 text-gold shrink-0" strokeWidth={1.5} />
+          <img src={logoAsset.url} alt="Enliven Notary logo" className="h-11 w-auto shrink-0" />
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg tracking-tight whitespace-nowrap">Enliven Notary</span>
             <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-white/60 whitespace-nowrap">
