@@ -757,7 +757,7 @@ function FinalCTA() {
           </h2>
           <p className="mt-5 max-w-xl mx-auto text-muted-foreground">
             Get started in under a minute. Book instantly online, or request a quote if your situation
-            needs a closer look — either way, you'll hear from us fast.
+            needs a closer look. Either way, you'll hear from us fast.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
