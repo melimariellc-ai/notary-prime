@@ -764,7 +764,14 @@ function FinalCTA() {
               to="/book"
               className="btn-gold inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium"
             >
-              Book Appointment <ArrowRight className="h-4 w-4" />
+              Book Instantly <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/book"
+              search={{ service: "Other" }}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-4 text-sm font-medium hover:border-gold/60"
+            >
+              Request a Quote
             </Link>
             <a
               href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777"
