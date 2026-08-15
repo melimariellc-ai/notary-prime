@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, ArrowLeft, CheckCircle2, MapPin, Video, User, FileText, Phone, ExternalLink, Zap, Clock } from "lucide-react";
@@ -8,6 +8,7 @@ import { submitBooking } from "@/lib/booking.functions";
 
 
 export const Route = createFileRoute("/book")({
+
   head: () => ({
     meta: [
       { title: "Get Started: Book or Request a Quote | Enliven Notary" },
@@ -85,9 +86,19 @@ const schema = z.object({
 
 
 function BookPage() {
-  const [step, setStep] = useState(0);
+  const searchStr = useRouterState({ select: (s) => s.location.searchStr });
+  const preselected = (() => {
+    const raw = new URLSearchParams(searchStr ?? "").get("service");
+    if (!raw) return "";
+    const match = quoteServices.find(
+      (s) => s.toLowerCase() === raw.toLowerCase() || s.toLowerCase().replace(/[^a-z]+/g, "-") === raw.toLowerCase(),
+    );
+    return match ?? "";
+  })();
+
+  const [step, setStep] = useState(preselected ? 1 : 0);
   const [data, setData] = useState({
-    service: "",
+    service: preselected,
     location: "mobile" as "mobile" | "online",
     date: "",
     time: "",

@@ -34,6 +34,7 @@ type Item = {
   desc: string;
   href?: string;
   to?: "/book";
+  search?: Record<string, string>;
   cta?: string;
   secondary?: { label: string; href: string };
 };
@@ -63,6 +64,7 @@ const groups: { title: string; items: Item[] }[] = [
         desc: "NNA-certified for closings, refinances, HELOCs, and reverse mortgages.",
         cta: "Book Now",
         to: "/book",
+        search: { service: "Loan Signing" },
       },
     ],
   },
@@ -126,6 +128,7 @@ function ServicesPage() {
                     {s.to && (
                       <Link
                         to={s.to}
+                        search={(s.search ?? {}) as never}
                         className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-gold/60"
                       >
                         {s.cta} <ArrowRight className="h-4 w-4" />
