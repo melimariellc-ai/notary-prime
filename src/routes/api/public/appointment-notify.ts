@@ -108,43 +108,35 @@ export const Route = createFileRoute("/api/public/appointment-notify")({
           const dateTime = [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "—";
           const detailRows: [string, string][] = [
             ["Service", row.service ?? "—"],
-            ["Date & Time", dateTime],
+            ["Preferred Date", dateTime],
             ["Location", location],
           ];
 
           const customerHtml = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#0F1A2B">
-<p>Thank you for choosing Enliven Notary Services. We&rsquo;ve received your appointment request and will personally review the details before confirming your appointment.</p>
-<h3 style="font-family:Georgia,serif;color:#0F1A2B;margin-bottom:4px">Appointment Details</h3>
+<p>Thank you for choosing Enliven Notary. We&rsquo;ve received your request with the following details:</p>
 <table cellpadding="6" style="border-collapse:collapse;font-size:14px">${detailRows
             .map(
               ([k, v]) =>
                 `<tr><td style="color:#666">${escapeHtml(k)}</td><td><strong>${escapeHtml(String(v))}</strong></td></tr>`,
             )
             .join("")}</table>
-<h3 style="font-family:Georgia,serif;color:#0F1A2B;margin-bottom:4px">What happens next?</h3>
-<p>We&rsquo;ll follow up personally to confirm your appointment and make sure we have everything needed for a smooth signing.</p>
-<p>During business hours (Monday&ndash;Saturday, 7:00 AM&ndash;9:00 PM), we typically respond within a few hours. Requests submitted after hours or on Sunday will receive a response by the next business day.</p>
-<p>If you have any questions or need to update your request, please call or text us at (469) 991-2777.</p>
-<p>Thank you for trusting Enliven Notary Services. We look forward to assisting you.</p>
-<p style="color:#666;margin-bottom:0"><strong>Enliven Notary Services</strong><br/>Professional &bull; Convenient &bull; Reliable</p>
+<p>We&rsquo;ll review your request and reach out shortly to confirm availability, timing, and final pricing. During business hours, we typically respond within a few hours. Requests submitted after hours or on Sunday will be followed up on as soon as possible the next business day.</p>
+<p>Need assistance in the meantime? Call or text us at (469) 991-2777.</p>
+<p>We look forward to assisting you!</p>
+<p style="color:#666;margin-bottom:0"><strong>Enliven Notary</strong><br/>Mobile &middot; Online &middot; Trusted</p>
 </div>`;
-          const customerText = `Thank you for choosing Enliven Notary Services. We've received your appointment request and will personally review the details before confirming your appointment.
-
-Appointment Details
+          const customerText = `Thank you for choosing Enliven Notary. We've received your request with the following details:
 
 ${detailRows.map(([k, v]) => `${k}: ${v}`).join("\n")}
 
-What happens next?
-We'll follow up personally to confirm your appointment and make sure we have everything needed for a smooth signing.
+We'll review your request and reach out shortly to confirm availability, timing, and final pricing. During business hours, we typically respond within a few hours. Requests submitted after hours or on Sunday will be followed up on as soon as possible the next business day.
 
-During business hours (Monday–Saturday, 7:00 AM–9:00 PM), we typically respond within a few hours. Requests submitted after hours or on Sunday will receive a response by the next business day.
+Need assistance in the meantime? Call or text us at (469) 991-2777.
 
-If you have any questions or need to update your request, please call or text us at (469) 991-2777.
+We look forward to assisting you!
 
-Thank you for trusting Enliven Notary Services. We look forward to assisting you.
-
-Enliven Notary Services
-Professional • Convenient • Reliable`;
+Enliven Notary
+Mobile · Online · Trusted`;
 
 
           const customerResponse = await fetch("https://api.resend.com/emails", {
