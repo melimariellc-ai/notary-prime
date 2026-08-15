@@ -39,7 +39,9 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <img src={logoAsset.url} alt="Enliven Notary logo" className="h-11 w-auto shrink-0" />
+              <span className="grid place-items-center h-12 w-12 shrink-0 rounded-full bg-white p-1.5">
+                <img src={logoAsset.url} alt="Enliven Notary logo" className="h-full w-full object-contain" />
+              </span>
               <span className="font-display text-lg tracking-tight">Enliven Notary</span>
             </div>
 
