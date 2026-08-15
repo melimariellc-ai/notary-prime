@@ -1,5 +1,5 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, ArrowLeft, CheckCircle2, MapPin, Video, User, FileText, Phone, ExternalLink, Zap, Clock } from "lucide-react";
 import { z } from "zod";
