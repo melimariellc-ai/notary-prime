@@ -113,7 +113,36 @@ function ServicesPage() {
                     </div>
                     <h3 className="mt-6 font-display text-xl tracking-tight">{s.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                    {s.href && (
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-gold/60"
+                      >
+                        {s.cta} <ArrowRight className="h-4 w-4" />
+                      </a>
+                    )}
+                    {s.to && (
+                      <Link
+                        to={s.to}
+                        className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium hover:border-gold/60"
+                      >
+                        {s.cta} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    )}
+                    {s.secondary && (
+                      <a
+                        href={s.secondary.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 block text-xs text-muted-foreground underline underline-offset-4 hover:text-gold"
+                      >
+                        {s.secondary.label}
+                      </a>
+                    )}
                   </article>
+
                 </Reveal>
               ))}
             </div>
