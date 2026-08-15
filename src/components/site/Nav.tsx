@@ -54,7 +54,7 @@ export function Nav() {
 
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg tracking-tight whitespace-nowrap">Enliven Notary</span>
-            <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-white/60 whitespace-nowrap">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-white/60 whitespace-nowrap">
               Mobile · Online · Trusted
             </span>
           </span>
