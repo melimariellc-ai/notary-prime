@@ -200,17 +200,43 @@ function PricingPage() {
                       ))}
                     </ul>
                     <div className="mt-auto pt-8">
-                      <Link
-                        to={t.to}
-                        className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
-                          t.featured
-                            ? "btn-gold"
-                            : "border border-border hover:border-gold/60 text-foreground"
-                        }`}
-                      >
-                        {t.cta} <ArrowRight className="h-4 w-4" />
-                      </Link>
+                      {t.href ? (
+                        <a
+                          href={t.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                            t.featured
+                              ? "btn-gold"
+                              : "border border-border hover:border-gold/60 text-foreground"
+                          }`}
+                        >
+                          {t.cta} <ArrowRight className="h-4 w-4" />
+                        </a>
+                      ) : (
+                        <Link
+                          to={t.to!}
+                          className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
+                            t.featured
+                              ? "btn-gold"
+                              : "border border-border hover:border-gold/60 text-foreground"
+                          }`}
+                        >
+                          {t.cta} <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      )}
+                      {t.secondary && (
+                        <a
+                          href={t.secondary.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 block text-center text-xs text-muted-foreground underline underline-offset-4 hover:text-gold"
+                        >
+                          {t.secondary.label}
+                        </a>
+                      )}
                     </div>
+
                   </div>
                 </Reveal>
               );
