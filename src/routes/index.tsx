@@ -170,11 +170,8 @@ function Hero() {
             </h1>
           </Reveal>
           <Reveal delay={110}>
-            <div className="mt-5 flex items-center gap-3">
-              <span className="h-px w-10 bg-gold/60" />
-              <span className="text-[0.7rem] sm:text-xs uppercase tracking-[0.28em] text-gold">
-                Mobile · Online · Trusted
-              </span>
+            <div className="mt-4 text-[0.7rem] sm:text-xs uppercase tracking-[0.28em] text-gold">
+              Mobile · Online · Trusted
             </div>
           </Reveal>
           <Reveal delay={160}>
