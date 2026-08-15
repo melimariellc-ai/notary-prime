@@ -756,7 +756,8 @@ function FinalCTA() {
             Notarization made <span className="italic font-light text-gradient-gold">simple.</span>
           </h2>
           <p className="mt-5 max-w-xl mx-auto text-muted-foreground">
-            Reserve a time in under a minute. We'll confirm details and send you a checklist right away.
+            Get started in under a minute. Book instantly online, or request a quote if your situation
+            needs a closer look — either way, you'll hear from us fast.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
