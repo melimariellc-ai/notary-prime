@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowRight, ArrowLeft, CheckCircle2, Calendar as CalendarIcon, Clock, MapPin, Video, User, FileText, Phone } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, MapPin, Video, User, FileText, Phone, ExternalLink, Zap, Clock } from "lucide-react";
 import { z } from "zod";
 import { PageHero } from "@/components/site/PageHero";
 import { submitBooking } from "@/lib/booking.functions";
@@ -10,10 +10,10 @@ import { submitBooking } from "@/lib/booking.functions";
 export const Route = createFileRoute("/book")({
   head: () => ({
     meta: [
-      { title: "Book Appointment: Mobile & Online Notary | Enliven Notary" },
-      { name: "description", content: "Schedule a mobile or online notary appointment in minutes. Same-day and after-hours availability." },
-      { property: "og:title", content: "Book Appointment | Enliven Notary" },
-      { property: "og:description", content: "Schedule mobile or online notary in minutes." },
+      { title: "Get Started: Book or Request a Quote | Enliven Notary" },
+      { name: "description", content: "Book a mobile or online notary appointment instantly, or request a quote for loan signings and specialty documents in DFW." },
+      { property: "og:title", content: "Get Started | Enliven Notary" },
+      { property: "og:description", content: "Instant booking for standard services, or a quote request for anything more complex." },
       { property: "og:url", content: "/book" },
     ],
     links: [{ rel: "canonical", href: "/book" }],
@@ -21,23 +21,37 @@ export const Route = createFileRoute("/book")({
   component: BookPage,
 });
 
-const services = [
-  "Single Notarization",
-  "Loan Signing",
-  "Remote Online Notary",
-  "Estate Planning Documents",
-  "Real Estate / Closing",
-  "Business Documents",
-  "Other",
+const instantServices = [
+  {
+    title: "Mobile Notary (Standard)",
+    desc: "We come to you at a scheduled time.",
+    url: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97116974",
+  },
+  {
+    title: "Mobile Notary (Same-Day/Urgent)",
+    desc: "Today's availability for time-sensitive signings.",
+    url: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123688",
+  },
+  {
+    title: "Remote Online Notarization",
+    desc: "Notarize from anywhere by secure video.",
+    url: "https://app.acuityscheduling.com/schedule.php?owner=40144886&appointmentType=97123816",
+  },
 ];
 
-const timeSlots = ["8:00 AM", "9:30 AM", "11:00 AM", "1:00 PM", "2:30 PM", "4:00 PM", "5:30 PM", "7:00 PM"];
+const quoteServices = [
+  "Loan Signing",
+  "Real Estate / Closing",
+  "Business Documents",
+  "Estate Planning Documents",
+  "Other",
+];
 
 const schema = z.object({
   service: z.string().min(1),
   location: z.enum(["mobile", "online"]),
-  date: z.string().min(1),
-  time: z.string().min(1),
+  date: z.string().trim().min(1),
+  time: z.string().trim().min(1),
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
   phone: z.string().trim().min(7).max(30),
@@ -63,27 +77,10 @@ function BookPage() {
   const [submitting, setSubmitting] = useState(false);
   const send = useServerFn(submitBooking);
 
-
-  const dates = useMemo(() => {
-    const arr: { iso: string; day: string; date: string; weekday: string }[] = [];
-    const now = new Date();
-    for (let i = 0; i < 10; i++) {
-      const d = new Date(now);
-      d.setDate(now.getDate() + i);
-      arr.push({
-        iso: d.toISOString().slice(0, 10),
-        day: d.toLocaleDateString(undefined, { month: "short" }),
-        date: String(d.getDate()),
-        weekday: d.toLocaleDateString(undefined, { weekday: "short" }),
-      });
-    }
-    return arr;
-  }, []);
-
   const canNext = (() => {
     if (step === 0) return !!data.service;
     if (step === 1) return !!data.location;
-    if (step === 2) return !!data.date && !!data.time;
+    if (step === 2) return !!data.date.trim() && !!data.time.trim();
     if (step === 3) return !!data.name && !!data.email && !!data.phone;
     return true;
   })();
@@ -115,15 +112,14 @@ function BookPage() {
     }
   }
 
-
-  const steps = ["Service", "Location", "Date & Time", "Your Info"];
+  const steps = ["Service", "Location", "Details", "Your Info"];
 
   return (
     <>
       <PageHero
-        eyebrow="Book Appointment"
-        title={<>Reserve in <span className="italic font-light text-gradient-gold">under a minute.</span></>}
-        intro="Choose your service, pick a time, and we'll follow up personally to confirm."
+        eyebrow="Get Started"
+        title={<>Two ways to <span className="italic font-light text-gradient-gold">get started.</span></>}
+        intro="Book standard mobile or online notary services instantly, or request a quote for loan signings and specialty documents and we'll follow up with pricing and timing."
         cta={false}
       />
 
@@ -136,49 +132,87 @@ function BookPage() {
               </div>
               <h2 className="mt-6 font-display text-3xl md:text-4xl tracking-tight">Request received.</h2>
               <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Thank you! We've received your appointment request. Our team will be in touch shortly to
-                confirm your appointment and finalize the details.
+                Thanks, we'll review the details and follow up personally to confirm timing and pricing. During
+                business hours we typically respond within a few hours; after hours or on Sunday, by the next
+                business day.
               </p>
               <p className="mt-4 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                Need assistance in the meantime?{" "}
+                Questions in the meantime?{" "}
                 <a href="tel:+14699912777" aria-label="Call Enliven Notary at (469) 991-2777" className="inline-flex items-center gap-1.5 text-foreground font-medium hover:text-gold transition-colors">
                   <Phone className="h-4 w-4 text-gold" /> Call or text (469) 991-2777
                 </a>
                 .
               </p>
 
-
               <div className="mt-8 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
                 <Summary icon={FileText} label="Service" value={data.service} />
                 <Summary icon={data.location === "mobile" ? MapPin : Video} label="Location" value={data.location === "mobile" ? "Mobile: we come to you" : "Online: secure video"} />
-                <Summary icon={CalendarIcon} label="Date" value={new Date(data.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })} />
-                <Summary icon={Clock} label="Time" value={data.time} />
+                <Summary icon={Clock} label="Preferred timing" value={`${data.date} · ${data.time}`} />
               </div>
             </div>
           ) : (
             <div className="rounded-3xl border border-border bg-card p-6 md:p-10">
-              <ol className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.22em]">
-                {steps.map((s, i) => (
-                  <li key={s} className={`flex items-center gap-2 ${i === step ? "text-foreground" : "text-muted-foreground"}`}>
-                    <span className={`grid place-items-center h-6 w-6 rounded-full text-[11px] ${i <= step ? "bg-charcoal text-primary-foreground" : "border border-border"}`}>{i + 1}</span>
-                    {s}
-                    {i < steps.length - 1 && <span className="mx-1 text-muted-foreground/60">·</span>}
-                  </li>
-                ))}
-              </ol>
+              {step > 0 && (
+                <ol className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.22em]">
+                  {steps.map((s, i) => (
+                    <li key={s} className={`flex items-center gap-2 ${i === step ? "text-foreground" : "text-muted-foreground"}`}>
+                      <span className={`grid place-items-center h-6 w-6 rounded-full text-[11px] ${i <= step ? "bg-charcoal text-primary-foreground" : "border border-border"}`}>{i + 1}</span>
+                      {s}
+                      {i < steps.length - 1 && <span className="mx-1 text-muted-foreground/60">·</span>}
+                    </li>
+                  ))}
+                </ol>
+              )}
 
-              <div className="mt-8">
+              <div className={step > 0 ? "mt-8" : ""}>
                 {step === 0 && (
-                  <div>
-                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">What do you need notarized?</h3>
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      {services.map((s) => (
-                        <button key={s} type="button" onClick={() => setData({ ...data, service: s })}
-                          className={`text-left rounded-2xl border p-5 transition-all ${data.service === s ? "border-gold bg-gold/5" : "border-border hover:border-gold/40"}`}
-                        >
-                          <span className="font-medium">{s}</span>
-                        </button>
-                      ))}
+                  <div className="space-y-10">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-5 w-5 text-gold" />
+                        <h3 className="font-display text-2xl md:text-3xl tracking-tight">Book Instantly</h3>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">Pick a time and pay your deposit instantly.</p>
+                      <div className="mt-5 grid gap-3">
+                        {instantServices.map((s) => (
+                          <a
+                            key={s.title}
+                            href={s.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center justify-between gap-4 rounded-2xl border border-border p-5 transition-all hover:border-gold/60 hover:bg-gold/5"
+                          >
+                            <span>
+                              <span className="block font-medium">{s.title}</span>
+                              <span className="mt-1 block text-sm text-muted-foreground">{s.desc}</span>
+                            </span>
+                            <ExternalLink className="h-4 w-4 shrink-0 text-gold" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border pt-10">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-gold" />
+                        <h3 className="font-display text-2xl md:text-3xl tracking-tight">Request a Quote</h3>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">Tell us the details and we'll follow up with pricing and timing.</p>
+                      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                        {quoteServices.map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => {
+                              setData({ ...data, service: s });
+                              setStep(1);
+                            }}
+                            className="text-left rounded-2xl border border-border p-5 transition-all hover:border-gold/40"
+                          >
+                            <span className="font-medium">{s}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -214,27 +248,31 @@ function BookPage() {
 
                 {step === 2 && (
                   <div>
-                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">Pick a date & time.</h3>
-                    <div className="mt-6 grid grid-cols-3 sm:grid-cols-5 gap-2">
-                      {dates.map((d) => (
-                        <button key={d.iso} type="button" onClick={() => setData({ ...data, date: d.iso })}
-                          className={`rounded-xl border p-3 text-center transition-all ${data.date === d.iso ? "border-gold bg-gold/5" : "border-border hover:border-gold/40"}`}
-                        >
-                          <span className="block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{d.weekday}</span>
-                          <span className="block font-display text-2xl leading-none mt-1">{d.date}</span>
-                          <span className="block text-xs text-muted-foreground mt-1">{d.day}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <p className="mt-8 text-sm font-medium">Available times</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {timeSlots.map((t) => (
-                        <button key={t} type="button" onClick={() => setData({ ...data, time: t })}
-                          className={`rounded-full px-4 py-2 text-sm border transition-all ${data.time === t ? "border-gold bg-gold/10 text-foreground" : "border-border hover:border-gold/40 text-foreground/80"}`}
-                        >
-                          {t}
-                        </button>
-                      ))}
+                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">When would you like this done?</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      This is a request, not a confirmed slot. We'll confirm exact timing with you.
+                    </p>
+                    <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="text-sm font-medium">Preferred date</label>
+                        <input
+                          type="date"
+                          value={data.date}
+                          onChange={(e) => setData({ ...data, date: e.target.value })}
+                          className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Preferred time</label>
+                        <input
+                          type="text"
+                          value={data.time}
+                          onChange={(e) => setData({ ...data, time: e.target.value })}
+                          maxLength={40}
+                          placeholder="e.g. Morning, or around 2pm"
+                          className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -268,20 +306,21 @@ function BookPage() {
                 )}
               </div>
 
-              <div className="mt-10 flex items-center justify-between">
-                <button type="button" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}
-                  className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground disabled:opacity-40"
-                >
-                  <ArrowLeft className="h-4 w-4" /> Back
-                </button>
-                <button type="button" onClick={next} disabled={!canNext || submitting}
-                  className="btn-gold inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-                >
-                  {step === 3 ? (submitting ? "Sending…" : "Request appointment") : "Continue"}
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-
-              </div>
+              {step > 0 && (
+                <div className="mt-10 flex items-center justify-between">
+                  <button type="button" onClick={() => setStep(Math.max(0, step - 1))}
+                    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    <ArrowLeft className="h-4 w-4" /> Back
+                  </button>
+                  <button type="button" onClick={next} disabled={!canNext || submitting}
+                    className="btn-gold inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
+                  >
+                    {step === 3 ? (submitting ? "Sending…" : "Request a quote") : "Continue"}
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
