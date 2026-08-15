@@ -56,7 +56,7 @@ export const Route = createFileRoute("/")({
 
 const services = [
   { icon: MapPin, title: "Mobile Notary", description: "We travel to your home, office, hospital, or preferred location across DFW." },
-  { icon: Video, title: "Remote Online Notary", description: "Secure, Texas-approved online notarizations from anywhere in the state." },
+  { icon: Video, title: "Remote Online Notary", description: "Secure, Texas-approved online notarizations for signers anywhere in the United States." },
   { icon: FileSignature, title: "Loan Signing Services", description: "NNA Certified loan signing agent for closings, refinances, and HELOCs." },
   { icon: ScrollText, title: "Acknowledgments & Jurats", description: "General notary work including acknowledgments, jurats, oaths, and affirmations." },
   { icon: ClipboardCheck, title: "Affidavits", description: "Sworn statements and personal affidavits, carefully notarized." },
@@ -92,7 +92,7 @@ const steps = [
 const whyChoose = [
   { icon: ShieldCheck, title: "NNA Certified Professional", text: "Nationally certified and continuously trained." },
   { icon: MapPin, title: "Mobile Service: We Come To You", text: "Home, office, hospital, or anywhere across DFW." },
-  { icon: Video, title: "Remote Online Notary", text: "Secure online sessions for signers anywhere in Texas." },
+  { icon: Video, title: "Remote Online Notary", text: "Secure online sessions for signers anywhere in the United States." },
   { icon: FileSignature, title: "Professional Loan Signings", text: "Purchase, refinance, HELOC, and reverse mortgage packages." },
   { icon: CalendarClock, title: "Flexible Scheduling", text: "Same-day appointments when available." },
   { icon: Clock, title: "Evenings & Weekends", text: "Around your calendar, not the other way around." },
@@ -418,7 +418,7 @@ function PricingTeaser() {
       price: "$65",
       unit: "starting at",
       blurb:
-        "Secure online notarization from anywhere in Texas using a state-approved Remote Online Notary platform.",
+        "Secure online notarization for signers anywhere in the United States, using a state-approved Remote Online Notary platform.",
       features: [
         "Secure online meeting",
         "Legally recognized notarization",
@@ -607,7 +607,7 @@ function ServiceArea() {
           <SectionHeader
             eyebrow="Service Area"
             title={<>Proudly serving the <span className="italic font-light text-gradient-gold">Dallas–Fort Worth Metroplex</span>.</>}
-            intro="Professional mobile and online notary services throughout DFW, plus secure Remote Online Notarization for signers anywhere in Texas."
+            intro="Professional mobile and online notary services throughout DFW, plus secure Remote Online Notarization for signers anywhere in the United States."
           />
           <ul className="mt-8 grid grid-cols-2 gap-2">
             {cities.map((c) => (

@@ -70,7 +70,7 @@ const tiers: Tier[] = [
     price: "$65",
     unit: "starting at",
     blurb:
-      "Secure online notarization from anywhere in Texas using a state-approved Remote Online Notary platform.",
+      "Secure online notarization for signers anywhere in the United States, using a state-approved Remote Online Notary platform.",
     features: [
       "Secure online meeting",
       "Legally recognized notarization",
