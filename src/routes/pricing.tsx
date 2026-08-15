@@ -41,6 +41,7 @@ type Tier = {
   features: string[];
   cta: string;
   to?: "/book" | "/contact";
+  search?: Record<string, string>;
   href?: string;
   secondary?: { label: string; href: string };
   featured?: boolean;
@@ -96,6 +97,7 @@ const tiers: Tier[] = [
     ],
     cta: "Request Quote",
     to: "/book",
+    search: { service: "Loan Signing" },
   },
   {
     name: "Specialty Appointments",
@@ -216,6 +218,7 @@ function PricingPage() {
                       ) : (
                         <Link
                           to={t.to!}
+                          search={(t.search ?? {}) as never}
                           className={`w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform group-hover:-translate-y-0.5 ${
                             t.featured
                               ? "btn-gold"
