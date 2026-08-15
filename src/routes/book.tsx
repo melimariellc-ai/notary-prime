@@ -225,7 +225,7 @@ function BookPage() {
               <div className={step > 0 ? "mt-8" : ""}>
                 {step === 0 && (
                   <div className="space-y-10">
-                    <div>
+                    <div id="instant-booking" className="scroll-mt-28">
                       <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-gold" />
                         <h3 className="font-display text-2xl md:text-3xl tracking-tight">Book Instantly</h3>
