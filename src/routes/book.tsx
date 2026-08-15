@@ -47,6 +47,30 @@ const quoteServices = [
   "Other",
 ];
 
+const TYPO_DOMAINS: Record<string, string> = {
+  "gmail.coom": "gmail.com",
+  "gmail.con": "gmail.com",
+  "gmail.cm": "gmail.com",
+  "gmail.co": "gmail.com",
+  "gmial.com": "gmail.com",
+  "gmai.com": "gmail.com",
+  "yahoo.coom": "yahoo.com",
+  "yahoo.con": "yahoo.com",
+  "hotmail.con": "hotmail.com",
+  "hotmail.coom": "hotmail.com",
+  "outlook.con": "outlook.com",
+  "icloud.con": "icloud.com",
+};
+
+function emailTypoSuggestion(email: string): string | null {
+  const domain = email.trim().toLowerCase().split("@")[1];
+  if (!domain) return null;
+  const fixed = TYPO_DOMAINS[domain] ?? (domain.endsWith(".coom") || domain.endsWith(".con")
+    ? domain.replace(/\.(coom|con)$/, ".com")
+    : null);
+  return fixed && fixed !== domain ? fixed : null;
+}
+
 const schema = z.object({
   service: z.string().min(1),
   location: z.enum(["mobile", "online"]),
@@ -58,6 +82,7 @@ const schema = z.object({
   address: z.string().trim().max(200).optional().or(z.literal("")),
   notes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
+
 
 function BookPage() {
   const [step, setStep] = useState(0);
