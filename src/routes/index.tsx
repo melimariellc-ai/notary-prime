@@ -163,13 +163,7 @@ function Hero() {
       <div className="container-luxe pt-16 md:pt-24 pb-20 md:pb-28 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
         <div>
           <Reveal>
-            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-gold">
-              <span className="h-px w-8 bg-gold" />
-              Mobile · Online · Trusted
-            </p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-6 font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.04] tracking-tight text-foreground">
+            <h1 className="font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.04] tracking-tight text-foreground">
               Professional Mobile &amp;{" "}
               <span className="italic font-light text-gradient-gold">Online Notary</span>{" "}
               Services Throughout the Dallas–Fort Worth Metroplex
