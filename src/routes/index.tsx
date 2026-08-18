@@ -414,7 +414,7 @@ function PricingTeaser() {
     },
     {
       name: "Remote Online Notary",
-      price: "$65",
+      price: "$75",
       unit: "starting at",
       blurb:
         "Secure online notarization for signers anywhere in the United States, using a state-approved Remote Online Notary platform.",
@@ -430,7 +430,7 @@ function PricingTeaser() {
     },
     {
       name: "Loan Signing Services",
-      price: "$200",
+      price: "$250",
       unit: "starting at",
       blurb:
         "Professional loan signing services completed with exceptional attention to detail.",

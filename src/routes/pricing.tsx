@@ -10,7 +10,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Transparent notary pricing across Dallas–Fort Worth: mobile from $100, Remote Online Notary from $65, loan signings from $200, specialty by quote.",
+          "Transparent notary pricing across Dallas–Fort Worth: mobile from $100, Remote Online Notary from $75, loan signings from $250, specialty by quote.",
       },
       { property: "og:title", content: "Pricing | Enliven Notary" },
       {
@@ -67,7 +67,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Remote Online Notary",
-    price: "$65",
+    price: "$75",
     unit: "starting at",
     blurb:
       "Secure online notarization for signers anywhere in the United States, using a state-approved Remote Online Notary platform.",
@@ -83,7 +83,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Loan Signing Services",
-    price: "$200",
+    price: "$250",
     unit: "starting at",
     blurb:
       "Professional loan signing services completed with exceptional attention to detail.",
