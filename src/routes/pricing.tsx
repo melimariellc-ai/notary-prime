@@ -10,7 +10,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Transparent Enliven Notary pricing for the Dallas–Fort Worth Metroplex. Mobile notary from $100, Remote Online Notary from $65, Loan Signings from $200, and specialty appointments by custom quote.",
+          "Transparent notary pricing across Dallas–Fort Worth: mobile from $100, Remote Online Notary from $65, loan signings from $200, specialty by quote.",
       },
       { property: "og:title", content: "Pricing | Enliven Notary" },
       {
@@ -152,7 +152,7 @@ function PricingPage() {
                     )}
                     <h2 className={`${t.featured ? "mt-4" : ""} font-display text-2xl tracking-tight`}>
                       {t.name}
-                    </h3>
+                    </h2>
                     <div className="mt-5 flex items-baseline gap-2">
                       {isCustom ? (
                         <span className="font-display text-3xl tracking-tight text-gradient-gold">
