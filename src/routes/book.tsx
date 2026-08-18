@@ -228,7 +228,7 @@ function BookPage() {
                     <div id="instant-booking" className="scroll-mt-28">
                       <div className="flex items-center gap-2">
                         <Zap className="h-5 w-5 text-gold" />
-                        <h3 className="font-display text-2xl md:text-3xl tracking-tight">Book Instantly</h3>
+                        <h2 className="font-display text-2xl md:text-3xl tracking-tight">Book Instantly</h2>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">Pick a time and pay your deposit instantly.</p>
                       <div className="mt-5 grid gap-3">
@@ -253,7 +253,7 @@ function BookPage() {
                     <div className="border-t border-border pt-10">
                       <div className="flex items-center gap-2">
                         <FileText className="h-5 w-5 text-gold" />
-                        <h3 className="font-display text-2xl md:text-3xl tracking-tight">Request a Quote</h3>
+                        <h2 className="font-display text-2xl md:text-3xl tracking-tight">Request a Quote</h2>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">Tell us the details and we'll follow up with pricing and timing.</p>
                       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -277,7 +277,7 @@ function BookPage() {
 
                 {step === 1 && (
                   <div>
-                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">Where should we meet?</h3>
+                    <h2 className="font-display text-2xl md:text-3xl tracking-tight">Where should we meet?</h2>
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
                       {[
                         { key: "mobile", icon: MapPin, title: "Mobile: we come to you", desc: "Home, office, hospital, or wherever you are." },
@@ -294,8 +294,8 @@ function BookPage() {
                     </div>
                     {data.location === "mobile" && (
                       <div className="mt-6">
-                        <label className="text-sm font-medium">Meeting address <span className="text-muted-foreground">(optional now)</span></label>
-                        <input type="text" value={data.address} onChange={(e) => setData({ ...data, address: e.target.value })} maxLength={200}
+                        <label htmlFor="book-address" className="text-sm font-medium">Meeting address <span className="text-muted-foreground">(optional now)</span></label>
+                        <input id="book-address" type="text" value={data.address} onChange={(e) => setData({ ...data, address: e.target.value })} maxLength={200}
                           placeholder="Street, City, ZIP"
                           className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
                         />
@@ -306,14 +306,15 @@ function BookPage() {
 
                 {step === 2 && (
                   <div>
-                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">When would you like this done?</h3>
+                    <h2 className="font-display text-2xl md:text-3xl tracking-tight">When would you like this done?</h2>
                     <p className="mt-2 text-sm text-muted-foreground">
                       This is a request, not a confirmed slot. We'll confirm exact timing with you.
                     </p>
                     <div className="mt-6 grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="text-sm font-medium">Preferred date</label>
+                        <label htmlFor="book-date" className="text-sm font-medium">Preferred date</label>
                         <input
+                          id="book-date"
                           type="date"
                           value={data.date}
                           onChange={(e) => setData({ ...data, date: e.target.value })}
@@ -321,8 +322,9 @@ function BookPage() {
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium">Preferred time</label>
+                        <label htmlFor="book-time" className="text-sm font-medium">Preferred time</label>
                         <input
+                          id="book-time"
                           type="text"
                           value={data.time}
                           onChange={(e) => setData({ ...data, time: e.target.value })}
@@ -337,7 +339,7 @@ function BookPage() {
 
                 {step === 3 && (
                   <div>
-                    <h3 className="font-display text-2xl md:text-3xl tracking-tight">Your details.</h3>
+                    <h2 className="font-display text-2xl md:text-3xl tracking-tight">Your details.</h2>
                     <div className="mt-6 grid gap-4">
                       <Input label="Full name" value={data.name} onChange={(v) => setData({ ...data, name: v })} icon={User} />
                       <div className="grid gap-4 sm:grid-cols-2">
@@ -352,8 +354,8 @@ function BookPage() {
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium">Notes <span className="text-muted-foreground">(optional)</span></label>
-                        <textarea rows={4} value={data.notes} onChange={(e) => setData({ ...data, notes: e.target.value })} maxLength={1000}
+                        <label htmlFor="book-notes" className="text-sm font-medium">Notes <span className="text-muted-foreground">(optional)</span></label>
+                        <textarea id="book-notes" rows={4} value={data.notes} onChange={(e) => setData({ ...data, notes: e.target.value })} maxLength={1000}
                           className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
                           placeholder="Number of signers, document type, any special instructions…"
                         />
@@ -388,12 +390,13 @@ function BookPage() {
 }
 
 function Input({ label, value, onChange, type = "text", icon: Icon }: { label: string; value: string; onChange: (v: string) => void; type?: string; icon?: React.ComponentType<{ className?: string }> }) {
+  const inputId = useId();
   return (
     <div>
-      <label className="text-sm font-medium">{label}</label>
+      <label htmlFor={inputId} className="text-sm font-medium">{label}</label>
       <div className="mt-2 relative">
         {Icon && <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />}
-        <input type={type} value={value} onChange={(e) => onChange(e.target.value)} maxLength={255}
+        <input id={inputId} type={type} value={value} onChange={(e) => onChange(e.target.value)} maxLength={255}
           className={`w-full rounded-xl border border-border bg-background py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60 ${Icon ? "pl-11 pr-4" : "px-4"}`}
         />
       </div>
