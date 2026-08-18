@@ -8,11 +8,11 @@ import { cities as cityPages } from "@/data/cities";
 export const Route = createFileRoute("/service-areas/")({
   head: () => ({
     meta: [
-      { title: "Service Areas: Dallas–Fort Worth Mobile Notary | Enliven Notary" },
+      { title: "DFW Service Areas: Mobile Notary | Enliven Notary" },
       {
         name: "description",
         content:
-          "Enliven Notary serves the entire Dallas–Fort Worth Metroplex with mobile notary, Remote Online Notary, and loan signing services. Dallas, Fort Worth, Arlington, Plano, Frisco, and more.",
+          "Mobile notary, Remote Online Notary, and loan signings across Dallas–Fort Worth: Dallas, Fort Worth, Arlington, Plano, Frisco, Irving, and more.",
       },
       { property: "og:title", content: "Service Areas | Enliven Notary | DFW Metroplex" },
       {
