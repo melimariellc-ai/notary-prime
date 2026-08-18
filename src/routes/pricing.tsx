@@ -150,7 +150,7 @@ function PricingPage() {
                         Most requested
                       </span>
                     )}
-                    <h3 className={`${t.featured ? "mt-4" : ""} font-display text-2xl tracking-tight`}>
+                    <h2 className={`${t.featured ? "mt-4" : ""} font-display text-2xl tracking-tight`}>
                       {t.name}
                     </h3>
                     <div className="mt-5 flex items-baseline gap-2">
