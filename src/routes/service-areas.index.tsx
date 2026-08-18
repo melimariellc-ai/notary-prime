@@ -8,7 +8,7 @@ import { cities as cityPages } from "@/data/cities";
 export const Route = createFileRoute("/service-areas/")({
   head: () => ({
     meta: [
-      { title: "Service Areas: Dallas–Fort Worth Mobile Notary | Enliven Notary" },
+      { title: "DFW Service Areas: Mobile Notary | Enliven Notary" },
       {
         name: "description",
         content:
