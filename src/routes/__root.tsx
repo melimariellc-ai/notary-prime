@@ -121,16 +121,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          "@id": "https://enlivennotary.example/#business",
+          "@id": "https://enlivennotary.com/#business",
+          url: "https://enlivennotary.com",
           name: "Enliven Notary",
           description:
             "NNA Certified mobile notary and Texas Remote Online Notary serving the Dallas–Fort Worth Metroplex. Loan signings, estate documents, medical, and business notarizations.",
-          image: "/favicon.ico",
-          telephone: "+1-469-991-2777",
+          image: "https://enlivennotary.com/favicon.png",
+          telephone: "+14699912777",
           email: "info@enlivennotary.com",
-          priceRange: "$$",
+          priceRange: "$75-$250",
+          openingHours: "Mo-Sa 07:00-21:00",
           areaServed: [
             { "@type": "AdministrativeArea", name: "Dallas–Fort Worth Metroplex" },
+            { "@type": "City", name: "Dallas", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
+            { "@type": "City", name: "Fort Worth", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
+            { "@type": "City", name: "Plano", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
+            { "@type": "City", name: "Frisco", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
+            { "@type": "City", name: "Arlington", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
+            { "@type": "City", name: "Irving", address: { "@type": "PostalAddress", addressRegion: "TX", addressCountry: "US" } },
             { "@type": "State", name: "Texas" },
           ],
           address: {
