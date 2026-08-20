@@ -79,7 +79,6 @@ const badges = [
   "Bonded",
   "E&O Insured: $100,000 Coverage",
   "NNA Certified Signing Agent",
-  "Loan Signing Services",
 ];
 
 const steps = [
