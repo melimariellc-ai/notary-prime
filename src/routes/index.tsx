@@ -163,9 +163,11 @@ function Hero() {
       <div className="container-luxe pt-16 md:pt-24 pb-20 md:pb-28 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
         <div>
           <Reveal>
-            <h1 className="font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.04] tracking-tight text-foreground">
+            <h1 className="font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.18] tracking-tight text-foreground [overflow-wrap:break-word]">
               Professional Mobile &amp;{" "}
-              <span className="italic font-light text-gradient-gold">Online Notary</span>{" "}
+              <span className="italic font-light text-gradient-gold inline-block pb-[0.12em] align-baseline">
+                Online Notary
+              </span>{" "}
               Services Throughout the Dallas–Fort Worth Metroplex
             </h1>
           </Reveal>
