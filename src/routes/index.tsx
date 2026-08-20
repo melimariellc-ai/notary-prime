@@ -165,7 +165,7 @@ function Hero() {
           <Reveal>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.18] tracking-tight text-foreground [overflow-wrap:break-word]">
               Professional Mobile &amp;{" "}
-              <span className="italic font-light text-gradient-gold inline-block pb-[0.12em] align-baseline">
+              <span className="italic font-light text-gradient-gold inline-block pb-[0.35em] mb-[-0.35em] pr-[0.06em] align-baseline [overflow:visible]">
                 Online Notary
               </span>{" "}
               Services Throughout the Dallas–Fort Worth Metroplex
