@@ -1,3 +1,5 @@
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -18,7 +20,6 @@ export const Route = createFileRoute("/admin/_protected/dashboard")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: () => getMyRole(),
   component: DashboardPage,
   errorComponent: () => (
     <div className="container-luxe py-32 text-center text-muted-foreground">
@@ -33,7 +34,10 @@ export const Route = createFileRoute("/admin/_protected/dashboard")({
 function DashboardPage() {
   const router = useRouter();
   const user = Route.useRouteContext().user;
-  const { role, isAdmin } = Route.useLoaderData();
+  const fetchRole = useServerFn(getMyRole);
+  const { data: me } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole({}) });
+  const role = me?.role ?? null;
+  const isAdmin = me?.isAdmin ?? false;
   const addUser = useServerFn(createAdminUser);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
