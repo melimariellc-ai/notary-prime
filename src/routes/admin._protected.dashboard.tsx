@@ -25,8 +25,9 @@ function DashboardPage() {
   const router = useRouter();
   const user = Route.useRouteContext().user;
   const addUser = useServerFn(createAdminUser);
+  const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState("notary");
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
