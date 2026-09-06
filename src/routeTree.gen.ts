@@ -24,6 +24,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
+import { Route as AdminSetPasswordRouteImport } from './routes/admin.set-password'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
@@ -106,6 +107,11 @@ const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
   path: '/service-areas/$city',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSetPasswordRoute = AdminSetPasswordRouteImport.update({
+  id: '/set-password',
+  path: '/set-password',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/set-password': typeof AdminSetPasswordRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/set-password': typeof AdminSetPasswordRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/_protected': typeof AdminProtectedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/admin/set-password': typeof AdminSetPasswordRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/admin/login'
+    | '/admin/set-password'
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/dashboard'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/admin/login'
+    | '/admin/set-password'
     | '/service-areas/$city'
     | '/service-areas'
     | '/admin/dashboard'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/admin/_protected'
     | '/admin/login'
+    | '/admin/set-password'
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/_protected/dashboard'
@@ -401,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasCityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/set-password': {
+      id: '/admin/set-password'
+      path: '/set-password'
+      fullPath: '/admin/set-password'
+      preLoaderRoute: typeof AdminSetPasswordRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -463,11 +482,13 @@ const AdminProtectedRouteWithChildren = AdminProtectedRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminProtectedRoute: typeof AdminProtectedRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminSetPasswordRoute: typeof AdminSetPasswordRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminProtectedRoute: AdminProtectedRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
+  AdminSetPasswordRoute: AdminSetPasswordRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

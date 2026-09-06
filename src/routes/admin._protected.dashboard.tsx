@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { LogOut, Lock, Mail, UserPlus } from "lucide-react";
+import { LogOut, Mail, Shield, UserPlus } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { supabase } from "@/integrations/supabase/client";
 import { createAdminUser } from "@/lib/users.functions";
@@ -25,8 +25,9 @@ function DashboardPage() {
   const router = useRouter();
   const user = Route.useRouteContext().user;
   const addUser = useServerFn(createAdminUser);
+  const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState("notary");
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -37,11 +38,11 @@ function DashboardPage() {
     setNotice(null);
     setError(null);
     try {
-      const res = await addUser({ data: { email: newEmail, password: newPassword } });
+      const res = await addUser({ data: { name: newName, email: newEmail, role: newRole } });
       if (res.ok) {
         setNotice(res.message);
+        setNewName("");
         setNewEmail("");
-        setNewPassword("");
       } else {
         setError(res.message);
       }
@@ -91,11 +92,25 @@ function DashboardPage() {
               <UserPlus className="h-5 w-5 text-gold" /> Add user
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Create an account for a team member. Give them the temporary password and ask them to change it after signing in.
+              Create an account for a team member. They'll get a welcome email with a secure link to set their own password.
             </p>
 
             <form onSubmit={onAddUser} className="mt-6">
-              <label htmlFor="new-email" className="text-sm font-medium">Email</label>
+              <label htmlFor="new-name" className="text-sm font-medium">Name</label>
+              <div className="mt-2 relative">
+                <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  id="new-name"
+                  type="text"
+                  required
+                  autoComplete="off"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                />
+              </div>
+
+              <label htmlFor="new-email" className="mt-6 block text-sm font-medium">Email</label>
               <div className="mt-2 relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
@@ -109,19 +124,19 @@ function DashboardPage() {
                 />
               </div>
 
-              <label htmlFor="new-password" className="mt-6 block text-sm font-medium">Temporary password</label>
+              <label htmlFor="new-role" className="mt-6 block text-sm font-medium">Role</label>
               <div className="mt-2 relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  id="new-password"
-                  type="text"
+                <Shield className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <select
+                  id="new-role"
                   required
-                  minLength={8}
-                  autoComplete="off"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
-                />
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value)}
+                  className="w-full appearance-none rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                >
+                  <option value="notary">Notary</option>
+                  <option value="admin">Employee/Admin</option>
+                </select>
               </div>
 
               {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
@@ -129,7 +144,7 @@ function DashboardPage() {
 
               <button
                 type="submit"
-                disabled={busy || !newEmail || newPassword.length < 8}
+                disabled={busy || !newName || !newEmail}
                 className="btn-gold mt-6 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
               >
                 {busy ? "Creating…" : "Create account"}
