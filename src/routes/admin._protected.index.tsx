@@ -200,6 +200,14 @@ function AdminPage() {
 
                   <AssignRow appointmentId={a.id} assigned={a.assigned_notary_id} notaries={notaries} />
 
+                  <ReferralRow
+                    appointmentId={a.id}
+                    referredBy={a.referred_by}
+                    feeAmount={a.fee_amount}
+                    contacts={referralContacts}
+                  />
+
+
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
                       {a.notes}
