@@ -44,23 +44,30 @@ Enliven Notary`;
 
 function adminEmail(name: string, link: string) {
   const safeName = escapeHtml(name);
-  const subject = "Your Enliven Notary Admin Access";
+  const subject = "Welcome to the Enliven Notary Team!";
   const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a">
 <p>Hi ${safeName},</p>
-<p>You've been given access to the Enliven Notary admin system.</p>
-<p>Click the link below to set your password and get logged in:</p>
-<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Set your password</a></p>
-<p>If you have any questions getting started, reach out at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>.</p>
+<p>Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we continue growing and serving clients throughout the Dallas Fort Worth area.</p>
+<p>Your account is ready. To get started, click the link below to create your password and access your account.</p>
+<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Create your password</a></p>
+<p>Once you're signed in, you'll have access to the tools and information you need for your role, including managing appointments, supporting daily operations, and helping keep everything running smoothly.</p>
+<p>If you have any questions or need assistance getting started, please contact us at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>. We're always happy to help.</p>
+<p>We're glad to have you with us and look forward to working together!</p>
 <p>Enliven Notary</p>
 </div>`;
   const text = `Hi ${name},
 
-You've been given access to the Enliven Notary admin system.
+Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we continue growing and serving clients throughout the Dallas Fort Worth area.
 
-Click the link below to set your password and get logged in:
+Your account is ready. To get started, click the link below to create your password and access your account.
+
 ${link}
 
-If you have any questions getting started, reach out at info@enlivennotary.com.
+Once you're signed in, you'll have access to the tools and information you need for your role, including managing appointments, supporting daily operations, and helping keep everything running smoothly.
+
+If you have any questions or need assistance getting started, please contact us at info@enlivennotary.com. We're always happy to help.
+
+We're glad to have you with us and look forward to working together!
 
 Enliven Notary`;
   return { subject, html, text };
