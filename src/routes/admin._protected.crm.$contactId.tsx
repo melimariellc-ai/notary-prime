@@ -159,6 +159,36 @@ function ContactDetailPage() {
           </div>
 
           <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
+            <h2 className="font-display text-2xl tracking-tight">
+              Referred appointments <span className="text-sm text-muted-foreground">({referralCount})</span>
+            </h2>
+            {appointments.length === 0 ? (
+              <p className="mt-4 text-sm text-muted-foreground">
+                No appointments are linked to this contact yet. Link a booking to this contact from the appointments
+                list and it will be counted here automatically.
+              </p>
+            ) : (
+              <ul className="mt-4 grid gap-2 text-sm">
+                {appointments.map((a) => (
+                  <li key={a.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
+                    <span>
+                      {a.name} — <span className="text-muted-foreground">{a.service}</span>
+                    </span>
+                    <span className="text-muted-foreground">
+                      {new Date(`${a.preferred_date}T00:00:00`).toLocaleDateString()} ·{" "}
+                      <span className="text-foreground">
+                        {a.fee_amount === null
+                          ? "no amount"
+                          : a.fee_amount.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
             <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
               <MessageSquare className="h-5 w-5 text-gold" /> Log an activity
             </h2>
