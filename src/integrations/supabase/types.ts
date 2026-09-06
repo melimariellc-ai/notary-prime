@@ -197,6 +197,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -282,7 +309,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "notary" | "admin"
+      app_role: "notary" | "admin" | "employee"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -410,7 +437,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["notary", "admin"],
+      app_role: ["notary", "admin", "employee"],
     },
   },
 } as const
