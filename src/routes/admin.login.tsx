@@ -24,10 +24,8 @@ export const Route = createFileRoute("/admin/login")({
 
 function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<"signin" | "setup">("signin");
   const [email, setEmail] = useState(OWNER_EMAIL);
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -41,23 +39,7 @@ function LoginPage() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    setMessage(null);
     try {
-      if (mode === "setup") {
-        if (email.trim().toLowerCase() !== OWNER_EMAIL) {
-          setError("Only the owner email can create the first account.");
-          return;
-        }
-        const { error: signUpError } = await supabase.auth.signUp({ email: email.trim(), password });
-        if (signUpError) {
-          setError(signUpError.message);
-          return;
-        }
-        setMessage("Account created. You can sign in now.");
-        setMode("signin");
-        return;
-      }
-
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
@@ -71,6 +53,7 @@ function LoginPage() {
       setBusy(false);
     }
   }
+
 
   return (
     <>
