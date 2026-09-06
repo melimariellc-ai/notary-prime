@@ -1,9 +1,9 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, Video } from "lucide-react";
+import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
-import { getAppointments, lockAdmin, unlockAdmin } from "@/lib/admin.functions";
+import { assignNotary, getAppointments, lockAdmin, unlockAdmin, type NotaryOption } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/_protected/")({
   head: () => ({
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/admin/_protected/")({
 });
 
 function AdminPage() {
-  const { locked, appointments } = Route.useLoaderData();
+  const { locked, appointments, notaries } = Route.useLoaderData();
   const router = useRouter();
   const unlock = useServerFn(unlockAdmin);
   const lock = useServerFn(lockAdmin);
@@ -198,6 +198,8 @@ function AdminPage() {
                     )}
                   </div>
 
+                  <AssignRow appointmentId={a.id} assigned={a.assigned_notary_id} notaries={notaries} />
+
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
                       {a.notes}
@@ -211,6 +213,58 @@ function AdminPage() {
         </div>
       </section>
     </>
+  );
+}
+
+function AssignRow({
+  appointmentId,
+  assigned,
+  notaries,
+}: {
+  appointmentId: string;
+  assigned: string | null;
+  notaries: NotaryOption[];
+}) {
+  const save = useServerFn(assignNotary);
+  const [value, setValue] = useState(assigned ?? "");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  async function onChange(next: string) {
+    setValue(next);
+    setStatus("saving");
+    try {
+      const res = await save({ data: { appointmentId, notaryId: next || null } });
+      setStatus(res.ok ? "saved" : "error");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4 text-sm">
+      <label htmlFor={`assign-${appointmentId}`} className="inline-flex items-center gap-2 text-muted-foreground">
+        <UserCheck className="h-4 w-4 text-gold" /> Assigned notary
+      </label>
+      <select
+        id={`assign-${appointmentId}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+      >
+        <option value="">Unassigned</option>
+        {notaries.map((n) => (
+          <option key={n.id} value={n.id}>
+            {n.name} ({n.email})
+          </option>
+        ))}
+      </select>
+      {status === "saving" && <span className="text-xs text-muted-foreground">Saving…</span>}
+      {status === "saved" && <span className="text-xs text-muted-foreground">Saved</span>}
+      {status === "error" && <span className="text-xs text-destructive">Could not save</span>}
+      {notaries.length === 0 && (
+        <span className="text-xs text-muted-foreground">No notary accounts yet — add one from the dashboard.</span>
+      )}
+    </div>
   );
 }
 
