@@ -116,6 +116,95 @@ export type Database = {
         }
         Relationships: []
       }
+      business_contacts: {
+        Row: {
+          business_name: string
+          contact_person: string | null
+          contact_type: Database["public"]["Enums"]["bd_contact_type"]
+          created_at: string
+          email: string | null
+          first_contacted_date: string | null
+          id: string
+          next_follow_up_date: string | null
+          phone: string | null
+          pipeline_stage: Database["public"]["Enums"]["bd_pipeline_stage"]
+          referral_source: string | null
+          total_jobs_referred: number
+          updated_at: string
+        }
+        Insert: {
+          business_name: string
+          contact_person?: string | null
+          contact_type?: Database["public"]["Enums"]["bd_contact_type"]
+          created_at?: string
+          email?: string | null
+          first_contacted_date?: string | null
+          id?: string
+          next_follow_up_date?: string | null
+          phone?: string | null
+          pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
+          referral_source?: string | null
+          total_jobs_referred?: number
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string
+          contact_person?: string | null
+          contact_type?: Database["public"]["Enums"]["bd_contact_type"]
+          created_at?: string
+          email?: string | null
+          first_contacted_date?: string | null
+          id?: string
+          next_follow_up_date?: string | null
+          phone?: string | null
+          pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
+          referral_source?: string | null
+          total_jobs_referred?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_activities: {
+        Row: {
+          activity_date: string
+          activity_type: Database["public"]["Enums"]["bd_activity_type"]
+          contact_id: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          activity_date?: string
+          activity_type?: Database["public"]["Enums"]["bd_activity_type"]
+          contact_id: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: Database["public"]["Enums"]["bd_activity_type"]
+          contact_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_activities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "business_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -316,6 +405,18 @@ export type Database = {
     }
     Enums: {
       app_role: "notary" | "admin" | "employee"
+      bd_activity_type: "Call" | "Email" | "Meeting" | "Note"
+      bd_contact_type:
+        | "Title Company"
+        | "Real Estate Agent"
+        | "Attorney"
+        | "Other Referral Source"
+      bd_pipeline_stage:
+        | "New Lead"
+        | "Contacted"
+        | "Meeting Scheduled"
+        | "Active Referral Source"
+        | "Inactive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -444,6 +545,20 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["notary", "admin", "employee"],
+      bd_activity_type: ["Call", "Email", "Meeting", "Note"],
+      bd_contact_type: [
+        "Title Company",
+        "Real Estate Agent",
+        "Attorney",
+        "Other Referral Source",
+      ],
+      bd_pipeline_stage: [
+        "New Lead",
+        "Contacted",
+        "Meeting Scheduled",
+        "Active Referral Source",
+        "Inactive",
+      ],
     },
   },
 } as const

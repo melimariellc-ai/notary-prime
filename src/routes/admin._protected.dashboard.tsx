@@ -91,6 +91,14 @@ function DashboardPage() {
               <Link to="/admin" className="btn-gold rounded-full px-6 py-3 text-sm font-medium">
                 Appointment requests
               </Link>
+              {(isAdmin || role === "employee") && (
+                <Link
+                  to="/admin/crm"
+                  className="rounded-full border border-gold/50 px-6 py-3 text-sm font-medium hover:bg-gold/10"
+                >
+                  Business development CRM
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={signOut}
