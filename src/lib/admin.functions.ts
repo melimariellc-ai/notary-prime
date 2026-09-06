@@ -35,6 +35,9 @@ export type Appointment = {
   sms_error: string | null;
   sms_sent_at: string | null;
   assigned_notary_id: string | null;
+  referred_by: string | null;
+  fee_amount: number | null;
+
 };
 
 
