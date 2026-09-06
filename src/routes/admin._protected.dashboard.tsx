@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LogOut, Mail, Shield, UserPlus } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { supabase } from "@/integrations/supabase/client";
-import { createAdminUser } from "@/lib/users.functions";
+import { createAdminUser, getMyRole } from "@/lib/users.functions";
 
 export const Route = createFileRoute("/admin/_protected/dashboard")({
   head: () => ({
@@ -18,12 +18,22 @@ export const Route = createFileRoute("/admin/_protected/dashboard")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  loader: () => getMyRole(),
   component: DashboardPage,
+  errorComponent: () => (
+    <div className="container-luxe py-32 text-center text-muted-foreground">
+      Something went wrong. Please refresh.
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="container-luxe py-32 text-center text-muted-foreground">Page not found.</div>
+  ),
 });
 
 function DashboardPage() {
   const router = useRouter();
   const user = Route.useRouteContext().user;
+  const { role, isAdmin } = Route.useLoaderData();
   const addUser = useServerFn(createAdminUser);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -72,6 +82,7 @@ function DashboardPage() {
           <div className="rounded-3xl border border-border bg-card p-8">
             <p className="text-sm text-muted-foreground">
               Signed in as <span className="text-foreground font-medium">{user?.email}</span>
+              {role && <span className="ml-2 capitalize text-xs uppercase tracking-[0.18em]">· {role}</span>}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <Link to="/admin" className="btn-gold rounded-full px-6 py-3 text-sm font-medium">
@@ -87,6 +98,7 @@ function DashboardPage() {
             </div>
           </div>
 
+          {isAdmin && (
           <div className="mt-6 rounded-3xl border border-border bg-card p-8">
             <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
               <UserPlus className="h-5 w-5 text-gold" /> Add user
@@ -152,6 +164,7 @@ function DashboardPage() {
               </button>
             </form>
           </div>
+          )}
         </div>
 
       </section>
