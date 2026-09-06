@@ -32,6 +32,7 @@ import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/pub
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as AdminProtectedCrmIndexRouteImport } from './routes/admin._protected.crm.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as AdminProtectedCrmContactIdRouteImport } from './routes/admin._protected.crm.$contactId'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
@@ -149,6 +150,12 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminProtectedCrmContactIdRoute =
+  AdminProtectedCrmContactIdRouteImport.update({
+    id: '/crm/$contactId',
+    path: '/crm/$contactId',
+    getParentRoute: () => AdminProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/': typeof AdminProtectedIndexRoute
+  '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/crm/': typeof AdminProtectedCrmIndexRoute
 }
@@ -194,6 +202,7 @@ export interface FileRoutesByTo {
   '/service-areas': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
+  '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/crm': typeof AdminProtectedCrmIndexRoute
 }
@@ -220,6 +229,7 @@ export interface FileRoutesById {
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
+  '/admin/_protected/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/_protected/crm/': typeof AdminProtectedCrmIndexRoute
 }
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/api/public/appointment-notify'
     | '/admin/'
+    | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
     | '/admin/crm/'
   fileRoutesByTo: FileRoutesByTo
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/service-areas'
     | '/admin/dashboard'
     | '/api/public/appointment-notify'
+    | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
     | '/admin/crm'
   id:
@@ -294,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/_protected/dashboard'
     | '/api/public/appointment-notify'
     | '/admin/_protected/'
+    | '/admin/_protected/crm/$contactId'
     | '/lovable/email/queue/process'
     | '/admin/_protected/crm/'
   fileRoutesById: FileRoutesById
@@ -481,18 +494,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_protected/crm/$contactId': {
+      id: '/admin/_protected/crm/$contactId'
+      path: '/crm/$contactId'
+      fullPath: '/admin/crm/$contactId'
+      preLoaderRoute: typeof AdminProtectedCrmContactIdRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
   }
 }
 
 interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
   AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
+  AdminProtectedCrmContactIdRoute: typeof AdminProtectedCrmContactIdRoute
   AdminProtectedCrmIndexRoute: typeof AdminProtectedCrmIndexRoute
 }
 
 const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
   AdminProtectedIndexRoute: AdminProtectedIndexRoute,
+  AdminProtectedCrmContactIdRoute: AdminProtectedCrmContactIdRoute,
   AdminProtectedCrmIndexRoute: AdminProtectedCrmIndexRoute,
 }
 
