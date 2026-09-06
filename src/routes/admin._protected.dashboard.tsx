@@ -85,7 +85,59 @@ function DashboardPage() {
               </button>
             </div>
           </div>
+
+          <div className="mt-6 rounded-3xl border border-border bg-card p-8">
+            <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
+              <UserPlus className="h-5 w-5 text-gold" /> Add user
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Create an account for a team member. Give them the temporary password and ask them to change it after signing in.
+            </p>
+
+            <form onSubmit={onAddUser} className="mt-6">
+              <label htmlFor="new-email" className="text-sm font-medium">Email</label>
+              <div className="mt-2 relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  id="new-email"
+                  type="email"
+                  required
+                  autoComplete="off"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                />
+              </div>
+
+              <label htmlFor="new-password" className="mt-6 block text-sm font-medium">Temporary password</label>
+              <div className="mt-2 relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  id="new-password"
+                  type="text"
+                  required
+                  minLength={8}
+                  autoComplete="off"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                />
+              </div>
+
+              {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
+              {notice && <p className="mt-3 text-sm text-muted-foreground">{notice}</p>}
+
+              <button
+                type="submit"
+                disabled={busy || !newEmail || newPassword.length < 8}
+                className="btn-gold mt-6 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
+              >
+                {busy ? "Creating…" : "Create account"}
+              </button>
+            </form>
+          </div>
         </div>
+
       </section>
     </>
   );
