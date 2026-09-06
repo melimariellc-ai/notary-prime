@@ -20,6 +20,7 @@ export type Database = {
           assigned_notary_id: string | null
           created_at: string
           email: string
+          fee_amount: number | null
           id: string
           meeting_type: string
           name: string
@@ -27,6 +28,7 @@ export type Database = {
           phone: string
           preferred_date: string
           preferred_time: string
+          referred_by: string | null
           service: string
           sms_error: string | null
           sms_sent_at: string | null
@@ -38,6 +40,7 @@ export type Database = {
           assigned_notary_id?: string | null
           created_at?: string
           email: string
+          fee_amount?: number | null
           id?: string
           meeting_type: string
           name: string
@@ -45,6 +48,7 @@ export type Database = {
           phone: string
           preferred_date: string
           preferred_time: string
+          referred_by?: string | null
           service: string
           sms_error?: string | null
           sms_sent_at?: string | null
@@ -56,6 +60,7 @@ export type Database = {
           assigned_notary_id?: string | null
           created_at?: string
           email?: string
+          fee_amount?: number | null
           id?: string
           meeting_type?: string
           name?: string
@@ -63,13 +68,22 @@ export type Database = {
           phone?: string
           preferred_date?: string
           preferred_time?: string
+          referred_by?: string | null
           service?: string
           sms_error?: string | null
           sms_sent_at?: string | null
           sms_status?: string
           submitted_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "appointments_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "business_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_requests: {
         Row: {
@@ -129,7 +143,6 @@ export type Database = {
           phone: string | null
           pipeline_stage: Database["public"]["Enums"]["bd_pipeline_stage"]
           referral_source: string | null
-          total_jobs_referred: number
           updated_at: string
         }
         Insert: {
@@ -144,7 +157,6 @@ export type Database = {
           phone?: string | null
           pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
           referral_source?: string | null
-          total_jobs_referred?: number
           updated_at?: string
         }
         Update: {
@@ -159,7 +171,6 @@ export type Database = {
           phone?: string | null
           pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
           referral_source?: string | null
-          total_jobs_referred?: number
           updated_at?: string
         }
         Relationships: []
