@@ -16,25 +16,28 @@ function notaryEmail(name: string, link: string) {
   const subject = "Welcome to the Enliven Notary Team!";
   const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a">
 <p>Hi ${safeName},</p>
-<p>Welcome aboard — we're genuinely glad to have you as part of the Enliven Notary team. Your experience and certification are exactly what makes this business able to serve the Dallas–Fort Worth area the way we do, and we're excited to have you representing that with us.</p>
-<p>Click the link below to set up your password and get into your account:</p>
-<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Set up your password</a></p>
-<p>Once you're in, you'll be able to see your assigned appointments and everything you need to get started.</p>
-<p>If anything's unclear or you run into any issues, reach out anytime at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a> — we're here to help you succeed.</p>
-<p>Glad to have you with us,<br/>Enliven Notary</p>
+<p>Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we serve clients throughout the Dallas Fort Worth area.</p>
+<p>Your account is ready. To get started, click the link below to create your password and access your account.</p>
+<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Create your password</a></p>
+<p>Once you're signed in, you'll be able to view your assigned appointments, appointment details, and everything you need to complete your assignments.</p>
+<p>If you have any questions or need assistance, please contact us at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>. We're always happy to help.</p>
+<p>We're glad to have you with us and look forward to working together!</p>
+<p>Enliven Notary</p>
 </div>`;
   const text = `Hi ${name},
 
-Welcome aboard — we're genuinely glad to have you as part of the Enliven Notary team. Your experience and certification are exactly what makes this business able to serve the Dallas-Fort Worth area the way we do, and we're excited to have you representing that with us.
+Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we serve clients throughout the Dallas Fort Worth area.
 
-Click the link below to set up your password and get into your account:
+Your account is ready. To get started, click the link below to create your password and access your account.
+
 ${link}
 
-Once you're in, you'll be able to see your assigned appointments and everything you need to get started.
+Once you're signed in, you'll be able to view your assigned appointments, appointment details, and everything you need to complete your assignments.
 
-If anything's unclear or you run into any issues, reach out anytime at info@enlivennotary.com — we're here to help you succeed.
+If you have any questions or need assistance, please contact us at info@enlivennotary.com. We're always happy to help.
 
-Glad to have you with us,
+We're glad to have you with us and look forward to working together!
+
 Enliven Notary`;
   return { subject, html, text };
 }
