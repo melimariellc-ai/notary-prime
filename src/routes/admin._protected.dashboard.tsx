@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { LogOut, Lock, Mail, UserPlus } from "lucide-react";
+import { LogOut, Mail, Shield, UserPlus } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { supabase } from "@/integrations/supabase/client";
 import { createAdminUser } from "@/lib/users.functions";
