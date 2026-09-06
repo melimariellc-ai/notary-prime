@@ -44,34 +44,38 @@ Enliven Notary`;
 
 function adminEmail(name: string, link: string) {
   const safeName = escapeHtml(name);
-  const subject = "Welcome to the Enliven Notary Team!";
+  const subject = "Welcome to Enliven Notary!";
   const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a">
 <p>Hi ${safeName},</p>
-<p>Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we continue growing and serving clients throughout the Dallas Fort Worth area.</p>
-<p>Your account is ready. To get started, click the link below to create your password and access your account.</p>
-<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Create your password</a></p>
-<p>Once you're signed in, you'll have access to the tools and information you need for your role, including managing appointments, supporting daily operations, and helping keep everything running smoothly.</p>
-<p>If you have any questions or need assistance getting started, please contact us at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>. We're always happy to help.</p>
-<p>We're glad to have you with us and look forward to working together!</p>
+<p>We're excited to officially welcome you to Enliven Notary!</p>
+<p>As part of our team, you'll play an important role in helping us manage our day to day operations and provide a smooth experience for both our clients and notaries.</p>
+<p>Your account has been created. Please use the link below to set up your password and access the Enliven admin portal.</p>
+<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Set Up Your Password</a></p>
+<p>Once you're signed in, you'll have access to the areas of the platform associated with your role. This may include managing appointments, coordinating with notaries, assisting clients, and supporting other daily operations.</p>
+<p>If you have any questions while getting started, please reach out to us at <a href="mailto:info@enlivennotary.com">info@enlivennotary.com</a>.</p>
+<p>We're excited to have you on the team and look forward to growing Enliven together!</p>
 <p>Enliven Notary</p>
 </div>`;
   const text = `Hi ${name},
 
-Welcome to Enliven Notary! We're excited to have you on our team and look forward to working with you as we continue growing and serving clients throughout the Dallas Fort Worth area.
+We're excited to officially welcome you to Enliven Notary!
 
-Your account is ready. To get started, click the link below to create your password and access your account.
+As part of our team, you'll play an important role in helping us manage our day to day operations and provide a smooth experience for both our clients and notaries.
+
+Your account has been created. Please use the link below to set up your password and access the Enliven admin portal.
 
 ${link}
 
-Once you're signed in, you'll have access to the tools and information you need for your role, including managing appointments, supporting daily operations, and helping keep everything running smoothly.
+Once you're signed in, you'll have access to the areas of the platform associated with your role. This may include managing appointments, coordinating with notaries, assisting clients, and supporting other daily operations.
 
-If you have any questions or need assistance getting started, please contact us at info@enlivennotary.com. We're always happy to help.
+If you have any questions while getting started, please reach out to us at info@enlivennotary.com.
 
-We're glad to have you with us and look forward to working together!
+We're excited to have you on the team and look forward to growing Enliven together!
 
 Enliven Notary`;
   return { subject, html, text };
 }
+
 
 const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
 type AllowedRole = (typeof ALLOWED_ROLES)[number];
