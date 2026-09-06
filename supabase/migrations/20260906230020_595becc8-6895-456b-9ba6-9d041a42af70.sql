@@ -1,0 +1,1 @@
+CREATE POLICY "Employees can read all profiles" ON public.profiles FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'employee'::app_role));
