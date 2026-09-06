@@ -135,7 +135,8 @@ function DashboardPage() {
                   className="w-full appearance-none rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
                 >
                   <option value="notary">Notary</option>
-                  <option value="admin">Employee/Admin</option>
+                  <option value="employee">Employee</option>
+                  <option value="admin">Admin</option>
                 </select>
               </div>
 
