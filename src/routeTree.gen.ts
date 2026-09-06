@@ -24,6 +24,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
+import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
@@ -102,6 +103,11 @@ const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
   path: '/service-areas/$city',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
+  id: '/_protected/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicAppointmentNotifyRoute =
   ApiPublicAppointmentNotifyRouteImport.update({
     id: '/api/public/appointment-notify',
@@ -119,7 +125,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -132,13 +138,13 @@ export interface FileRoutesByFullPath {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
+  '/admin/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
-  '/admin': typeof AdminRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -151,6 +157,7 @@ export interface FileRoutesByTo {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
+  '/admin': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -158,7 +165,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -171,6 +178,7 @@ export interface FileRoutesById {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
+  '/admin/_protected/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
@@ -192,13 +200,13 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/api/public/appointment-notify'
+    | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/accessibility'
-    | '/admin'
     | '/book'
     | '/contact'
     | '/faq'
@@ -211,6 +219,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas'
     | '/api/public/appointment-notify'
+    | '/admin'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/api/public/appointment-notify'
+    | '/admin/_protected/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
@@ -237,7 +247,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccessibilityRoute: typeof AccessibilityRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
@@ -360,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasCityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_protected/': {
+      id: '/admin/_protected/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminProtectedIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/appointment-notify': {
       id: '/api/public/appointment-notify'
       path: '/api/public/appointment-notify'
@@ -377,11 +394,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminProtectedIndexRoute: AdminProtectedIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccessibilityRoute: AccessibilityRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
