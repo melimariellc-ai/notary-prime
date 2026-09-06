@@ -63,16 +63,19 @@ Enliven Notary`;
   return { subject, html, text };
 }
 
+const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
+type AllowedRole = (typeof ALLOWED_ROLES)[number];
+
 export const createAdminUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { name: string; email: string; role: string }) => {
     const name = String(data.name ?? "").trim().slice(0, 100);
     const email = String(data.email ?? "").trim().toLowerCase();
-    const role = String(data.role ?? "");
+    const role = String(data.role ?? "").toLowerCase();
     if (name.length < 2) throw new Error("Please enter the person's name.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Please enter a valid email address.");
-    if (role !== "notary" && role !== "admin") throw new Error("Please choose a role.");
-    return { name, email, role: role as "notary" | "admin" };
+    if (!(ALLOWED_ROLES as readonly string[]).includes(role)) throw new Error("Please choose a valid role.");
+    return { name, email, role: role as AllowedRole };
   })
   .handler(async ({ data }) => {
     const resendKey = process.env["RESEND_API_KEY"];
@@ -86,13 +89,31 @@ export const createAdminUser = createServerFn({ method: "POST" })
       user_metadata: { full_name: data.name, role: data.role },
     });
     if (error || !created?.user) {
+      const raw = (error?.message ?? "").toLowerCase();
+      if (
+        error?.status === 422 ||
+        raw.includes("already been registered") ||
+        raw.includes("already registered") ||
+        raw.includes("already exists")
+      ) {
+        return {
+          ok: false as const,
+          message: `${data.email} already has an account. Ask them to sign in, or use a different email address.`,
+        };
+      }
       return { ok: false as const, message: error?.message ?? "Could not create that account." };
     }
+
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .upsert({ id: created.user.id, name: data.name, email: data.email, role: data.role });
+    if (profileError) console.error("Failed to store profile", profileError);
 
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
       .insert({ user_id: created.user.id, role: data.role });
     if (roleError) console.error("Failed to store role", roleError);
+
 
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
