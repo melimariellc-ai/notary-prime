@@ -39,7 +39,7 @@ const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
 
 function ContactDetailPage() {
-  const { contact, activities } = Route.useLoaderData();
+  const { contact, activities, appointments, referralCount, referralValue } = Route.useLoaderData();
   const router = useRouter();
   const logActivity = useServerFn(addContactActivity);
   const saveStage = useServerFn(setPipelineStage);
