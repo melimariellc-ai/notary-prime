@@ -1,7 +1,10 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { LogOut } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { LogOut, Lock, Mail, UserPlus } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { supabase } from "@/integrations/supabase/client";
+import { createAdminUser } from "@/lib/users.functions";
 
 export const Route = createFileRoute("/admin/_protected/dashboard")({
   head: () => ({
@@ -21,11 +24,39 @@ export const Route = createFileRoute("/admin/_protected/dashboard")({
 function DashboardPage() {
   const router = useRouter();
   const user = Route.useRouteContext().user;
+  const addUser = useServerFn(createAdminUser);
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function onAddUser(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setNotice(null);
+    setError(null);
+    try {
+      const res = await addUser({ data: { email: newEmail, password: newPassword } });
+      if (res.ok) {
+        setNotice(res.message);
+        setNewEmail("");
+        setNewPassword("");
+      } else {
+        setError(res.message);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not create that account.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function signOut() {
     await supabase.auth.signOut();
     await router.navigate({ to: "/admin/login", replace: true });
   }
+
 
   return (
     <>
