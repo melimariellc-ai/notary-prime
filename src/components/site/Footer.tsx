@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Mail, MapPin, MessageSquare, Phone } from "lucide-react";
 import logoAsset from "../../assets/enliven-logo.png.asset.json";
 
 export function Footer() {
@@ -62,20 +62,6 @@ export function Footer() {
               Making notarization simple by bringing professional notary services directly to
               you, or meeting securely online.
             </p>
-            <div className="flex gap-3 mt-6">
-              {[
-                { Icon: Instagram, label: "Instagram" },
-              ].map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="grid place-items-center h-9 w-9 rounded-full border border-white/15 hover:border-gold/60 hover:text-gold transition-colors"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
           </div>
 
           <div>
