@@ -91,7 +91,17 @@ export const createAdminUser = createServerFn({ method: "POST" })
     if (!(ALLOWED_ROLES as readonly string[]).includes(role)) throw new Error("Please choose a valid role.");
     return { name, email, role: role as AllowedRole };
   })
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // Only Admins may create accounts or set roles. Checked server-side against
+    // the database role table, so a direct API call cannot bypass it.
+    const { data: isAdmin, error: roleCheckError } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (roleCheckError || !isAdmin) {
+      return { ok: false as const, message: "Only Admin accounts can add users or change roles." };
+    }
+
     const resendKey = process.env["RESEND_API_KEY"];
     if (!resendKey) return { ok: false as const, message: "Email sending is not configured." };
 
@@ -170,4 +180,20 @@ export const createAdminUser = createServerFn({ method: "POST" })
       ok: true as const,
       message: `Account created for ${data.email} — a password setup email is on its way.`,
     };
+  });
+
+
+export const getMyRole = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId);
+    if (error) {
+      console.error("Failed to read role", error);
+      return { role: null as string | null, isAdmin: false };
+    }
+    const roles = (data ?? []).map((r) => r.role as string);
+    return { role: roles[0] ?? null, isAdmin: roles.includes("admin") };
   });
