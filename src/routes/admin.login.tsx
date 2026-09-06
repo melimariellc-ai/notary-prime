@@ -86,7 +86,7 @@ function LoginPage() {
               <input
                 id="password"
                 type="password"
-                autoComplete={mode === "setup" ? "new-password" : "current-password"}
+                autoComplete="current-password"
                 required
                 minLength={8}
                 value={password}
@@ -96,27 +96,15 @@ function LoginPage() {
             </div>
 
             {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-            {message && <p className="mt-3 text-sm text-muted-foreground">{message}</p>}
 
             <button
               type="submit"
               disabled={busy || !email || !password}
               className="btn-gold mt-6 w-full rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
             >
-              {busy ? "Please wait…" : mode === "setup" ? "Create account" : "Sign in"}
+              {busy ? "Please wait…" : "Sign in"}
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setMode(mode === "setup" ? "signin" : "setup");
-                setError(null);
-                setMessage(null);
-              }}
-              className="mt-4 w-full text-center text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
-            >
-              {mode === "setup" ? "Back to sign in" : "First-time setup: create owner account"}
-            </button>
           </form>
         </div>
       </section>
