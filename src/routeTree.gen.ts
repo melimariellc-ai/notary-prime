@@ -30,6 +30,7 @@ import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
+import { Route as AdminProtectedCrmIndexRouteImport } from './routes/admin._protected.crm.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
@@ -137,6 +138,11 @@ const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
+const AdminProtectedCrmIndexRoute = AdminProtectedCrmIndexRouteImport.update({
+  id: '/crm/',
+  path: '/crm/',
+  getParentRoute: () => AdminProtectedRoute,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/admin/crm/': typeof AdminProtectedCrmIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/admin/crm': typeof AdminProtectedCrmIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/admin/_protected/crm/': typeof AdminProtectedCrmIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/api/public/appointment-notify'
     | '/admin/'
     | '/lovable/email/queue/process'
+    | '/admin/crm/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/api/public/appointment-notify'
     | '/lovable/email/queue/process'
+    | '/admin/crm'
   id:
     | '__root__'
     | '/'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/api/public/appointment-notify'
     | '/admin/_protected/'
     | '/lovable/email/queue/process'
+    | '/admin/_protected/crm/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -455,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedDashboardRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
+    '/admin/_protected/crm/': {
+      id: '/admin/_protected/crm/'
+      path: '/crm'
+      fullPath: '/admin/crm/'
+      preLoaderRoute: typeof AdminProtectedCrmIndexRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -468,11 +487,13 @@ declare module '@tanstack/react-router' {
 interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
   AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
+  AdminProtectedCrmIndexRoute: typeof AdminProtectedCrmIndexRoute
 }
 
 const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
   AdminProtectedIndexRoute: AdminProtectedIndexRoute,
+  AdminProtectedCrmIndexRoute: AdminProtectedCrmIndexRoute,
 }
 
 const AdminProtectedRouteWithChildren = AdminProtectedRoute._addFileChildren(
