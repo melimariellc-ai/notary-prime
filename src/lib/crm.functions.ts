@@ -368,9 +368,6 @@ export const previewContactImport = createServerFn({ method: "POST" })
     return { rows };
   })
   .handler(async ({ data, context }) => {
-    const existing = await findDuplicates(context.supabase as never, "\u0000none\u0000", null);
-    void existing;
-
     const { data: all } = await context.supabase
       .from("business_contacts")
       .select("id, business_name, phone")
