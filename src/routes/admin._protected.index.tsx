@@ -3,7 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
-import { assignNotary, getAppointments, lockAdmin, unlockAdmin, type NotaryOption } from "@/lib/admin.functions";
+import { assignNotary, getAppointments, lockAdmin, unlockAdmin, type NotaryOption, type ReferralContactOption } from "@/lib/admin.functions";
+import { setAppointmentReferral } from "@/lib/crm.functions";
 
 export const Route = createFileRoute("/admin/_protected/")({
   head: () => ({
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/admin/_protected/")({
 });
 
 function AdminPage() {
-  const { locked, appointments, notaries } = Route.useLoaderData();
+  const { locked, appointments, notaries, referralContacts } = Route.useLoaderData();
   const router = useRouter();
   const unlock = useServerFn(unlockAdmin);
   const lock = useServerFn(lockAdmin);
@@ -200,6 +201,14 @@ function AdminPage() {
 
                   <AssignRow appointmentId={a.id} assigned={a.assigned_notary_id} notaries={notaries} />
 
+                  <ReferralRow
+                    appointmentId={a.id}
+                    referredBy={a.referred_by}
+                    feeAmount={a.fee_amount}
+                    contacts={referralContacts}
+                  />
+
+
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
                       {a.notes}
@@ -280,5 +289,77 @@ function SmsBadge({ status }: { status: string }) {
     <span className={`inline-flex items-center rounded-full border px-3 py-1 uppercase tracking-[0.18em] text-[10px] ${s.className}`}>
       {s.label}
     </span>
+  );
+}
+
+function ReferralRow({
+  appointmentId,
+  referredBy,
+  feeAmount,
+  contacts,
+}: {
+  appointmentId: string;
+  referredBy: string | null;
+  feeAmount: number | null;
+  contacts: ReferralContactOption[];
+}) {
+  const save = useServerFn(setAppointmentReferral);
+  const [contactId, setContactId] = useState(referredBy ?? "");
+  const [amount, setAmount] = useState(feeAmount === null ? "" : String(feeAmount));
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  async function commit(nextContact: string, nextAmount: string) {
+    setStatus("saving");
+    try {
+      const res = await save({
+        data: { appointmentId, contactId: nextContact || null, feeAmount: nextAmount === "" ? null : nextAmount },
+      });
+      setStatus(res.ok ? "saved" : "error");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border pt-4 text-sm">
+      <label htmlFor={`referral-${appointmentId}`} className="text-muted-foreground">
+        Referred by
+      </label>
+      <select
+        id={`referral-${appointmentId}`}
+        value={contactId}
+        onChange={(e) => {
+          setContactId(e.target.value);
+          void commit(e.target.value, amount);
+        }}
+        className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+      >
+        <option value="">No referral source</option>
+        {contacts.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.business_name}
+          </option>
+        ))}
+      </select>
+      <label htmlFor={`fee-${appointmentId}`} className="text-muted-foreground">
+        Job amount ($)
+      </label>
+      <input
+        id={`fee-${appointmentId}`}
+        type="number"
+        min="0"
+        step="0.01"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        onBlur={() => void commit(contactId, amount)}
+        className="w-28 rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+      />
+      {status === "saving" && <span className="text-xs text-muted-foreground">Saving…</span>}
+      {status === "saved" && <span className="text-xs text-muted-foreground">Saved</span>}
+      {status === "error" && <span className="text-xs text-destructive">Could not save</span>}
+      {contacts.length === 0 && (
+        <span className="text-xs text-muted-foreground">No CRM contacts yet.</span>
+      )}
+    </div>
   );
 }

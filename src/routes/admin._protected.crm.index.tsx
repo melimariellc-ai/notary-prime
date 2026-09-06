@@ -1,15 +1,20 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { CalendarClock, Mail, Phone, Plus, Users } from "lucide-react";
+import { CalendarClock, Mail, Phone, Plus, Search, Upload, Users } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import {
   CONTACT_TYPES,
   PIPELINE_STAGES,
+  checkContactDuplicates,
+  commitContactImport,
   createBusinessContact,
   listBusinessContacts,
+  previewContactImport,
   setPipelineStage,
   type BusinessContact,
+  type DuplicateMatch,
+  type ImportRow,
 } from "@/lib/crm.functions";
 
 export const Route = createFileRoute("/admin/_protected/crm/")({
@@ -39,15 +44,22 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
 const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
 
+const money = (value: number) =>
+  value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+type Referrals = Record<string, { count: number; value: number }>;
+
 function CrmPage() {
-  const { contacts } = Route.useLoaderData();
+  const { contacts, referrals } = Route.useLoaderData();
   const router = useRouter();
   const [tab, setTab] = useState<"pipeline" | "followups">("pipeline");
   const [typeFilter, setTypeFilter] = useState("");
+  const [stageFilter, setStageFilter] = useState("");
+  const [query, setQuery] = useState("");
 
   const today = todayISO();
   const dueContacts = useMemo(
@@ -58,7 +70,20 @@ function CrmPage() {
     [contacts, today],
   );
 
-  const visible = typeFilter ? contacts.filter((c) => c.contact_type === typeFilter) : contacts;
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return contacts.filter((c) => {
+      if (typeFilter && c.contact_type !== typeFilter) return false;
+      if (stageFilter && c.pipeline_stage !== stageFilter) return false;
+      if (!q) return true;
+      return (
+        c.business_name.toLowerCase().includes(q) ||
+        (c.contact_person ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [contacts, typeFilter, stageFilter, query]);
+
+  const stages = stageFilter ? PIPELINE_STAGES.filter((s) => s === stageFilter) : PIPELINE_STAGES;
 
   return (
     <>
@@ -94,35 +119,69 @@ function CrmPage() {
 
           {tab === "pipeline" ? (
             <>
-              <div className="mt-8 flex flex-wrap items-center gap-3 text-sm">
-                <label htmlFor="type-filter" className="text-muted-foreground">Contact type</label>
-                <select
-                  id="type-filter"
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
-                >
-                  <option value="">All types</option>
-                  {CONTACT_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label htmlFor="contact-search" className="text-sm text-muted-foreground">Search</label>
+                  <div className="relative mt-2">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gold" />
+                    <input
+                      id="contact-search"
+                      type="search"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Business or contact person"
+                      className={`${inputClass} pl-11`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="type-filter" className="text-sm text-muted-foreground">Contact type</label>
+                  <select
+                    id="type-filter"
+                    value={typeFilter}
+                    onChange={(e) => setTypeFilter(e.target.value)}
+                    className={`mt-2 ${inputClass}`}
+                  >
+                    <option value="">All types</option>
+                    {CONTACT_TYPES.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="stage-filter" className="text-sm text-muted-foreground">Pipeline stage</label>
+                  <select
+                    id="stage-filter"
+                    value={stageFilter}
+                    onChange={(e) => setStageFilter(e.target.value)}
+                    className={`mt-2 ${inputClass}`}
+                  >
+                    <option value="">All stages</option>
+                    {PIPELINE_STAGES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              <div className="mt-6 grid gap-4 lg:grid-cols-5">
-                {PIPELINE_STAGES.map((stage) => {
+              <p className="mt-4 text-xs text-muted-foreground">
+                Showing {visible.length} of {contacts.length} contacts.
+              </p>
+
+              <div className={`mt-6 grid gap-4 ${stageFilter ? "" : "lg:grid-cols-5"}`}>
+                {stages.map((stage) => {
                   const column = visible.filter((c) => c.pipeline_stage === stage);
                   return (
                     <div key={stage} className="rounded-3xl border border-border bg-card p-4">
                       <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                         {stage} · {column.length}
                       </h2>
-                      <div className="mt-4 grid gap-3">
+                      <div className={`mt-4 grid gap-3 ${stageFilter ? "md:grid-cols-3" : ""}`}>
                         {column.length === 0 && (
                           <p className="text-xs text-muted-foreground">No contacts.</p>
                         )}
                         {column.map((c) => (
-                          <ContactCard key={c.id} contact={c} today={today} />
+                          <ContactCard key={c.id} contact={c} today={today} referrals={referrals} />
                         ))}
                       </div>
                     </div>
@@ -137,22 +196,36 @@ function CrmPage() {
                   Nothing due today. Contacts appear here once their next follow-up date arrives.
                 </p>
               ) : (
-                dueContacts.map((c) => <ContactCard key={c.id} contact={c} today={today} wide />)
+                dueContacts.map((c) => (
+                  <ContactCard key={c.id} contact={c} today={today} referrals={referrals} wide />
+                ))
               )}
             </div>
           )}
 
           <AddContactForm onSaved={() => router.invalidate()} />
+          <BulkImport onImported={() => router.invalidate()} />
         </div>
       </section>
     </>
   );
 }
 
-function ContactCard({ contact, today, wide }: { contact: BusinessContact; today: string; wide?: boolean }) {
+function ContactCard({
+  contact,
+  today,
+  referrals,
+  wide,
+}: {
+  contact: BusinessContact;
+  today: string;
+  referrals: Referrals;
+  wide?: boolean;
+}) {
   const save = useServerFn(setPipelineStage);
   const router = useRouter();
   const overdue = !!contact.next_follow_up_date && contact.next_follow_up_date <= today;
+  const stats = referrals[contact.id] ?? { count: 0, value: 0 };
 
   return (
     <article className={`rounded-2xl border border-border p-4 ${wide ? "bg-card md:p-6" : ""}`}>
@@ -178,7 +251,7 @@ function ContactCard({ contact, today, wide }: { contact: BusinessContact; today
         )}
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        Jobs referred: <span className="text-foreground">{contact.total_jobs_referred}</span>
+        Jobs referred: <span className="text-foreground">{stats.count}</span> · {money(stats.value)}
       </p>
       {contact.next_follow_up_date && (
         <p className={`mt-1 text-xs ${overdue ? "text-destructive" : "text-muted-foreground"}`}>
@@ -205,37 +278,66 @@ function ContactCard({ contact, today, wide }: { contact: BusinessContact; today
   );
 }
 
+function DuplicateWarning({ matches }: { matches: DuplicateMatch[] }) {
+  return (
+    <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm">
+      <p className="font-medium">Possible duplicate{matches.length === 1 ? "" : "s"} already in the CRM:</p>
+      <ul className="mt-2 grid gap-1">
+        {matches.map((m) => (
+          <li key={`${m.id}-${m.reason}`}>
+            <Link
+              to="/admin/crm/$contactId"
+              params={{ contactId: m.id }}
+              className="text-gold underline underline-offset-4"
+            >
+              {m.business_name}
+            </Link>{" "}
+            <span className="text-muted-foreground">
+              — matching {m.reason === "name" ? "business name" : "phone number"}
+              {m.phone ? ` (${m.phone})` : ""}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function AddContactForm({ onSaved }: { onSaved: () => void }) {
   const create = useServerFn(createBusinessContact);
+  const check = useServerFn(checkContactDuplicates);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([]);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  function fields(fd: FormData) {
+    return {
+      business_name: String(fd.get("business_name") ?? ""),
+      contact_person: String(fd.get("contact_person") ?? ""),
+      contact_type: String(fd.get("contact_type") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      pipeline_stage: String(fd.get("pipeline_stage") ?? ""),
+      first_contacted_date: String(fd.get("first_contacted_date") ?? ""),
+      next_follow_up_date: String(fd.get("next_follow_up_date") ?? ""),
+      referral_source: String(fd.get("referral_source") ?? ""),
+    };
+  }
+
+  async function submit(form: HTMLFormElement, force: boolean) {
     const fd = new FormData(form);
     setBusy(true);
     setError(null);
     try {
-      const res = await create({
-        data: {
-          business_name: String(fd.get("business_name") ?? ""),
-          contact_person: String(fd.get("contact_person") ?? ""),
-          contact_type: String(fd.get("contact_type") ?? ""),
-          phone: String(fd.get("phone") ?? ""),
-          email: String(fd.get("email") ?? ""),
-          pipeline_stage: String(fd.get("pipeline_stage") ?? ""),
-          first_contacted_date: String(fd.get("first_contacted_date") ?? ""),
-          next_follow_up_date: String(fd.get("next_follow_up_date") ?? ""),
-          referral_source: String(fd.get("referral_source") ?? ""),
-          total_jobs_referred: String(fd.get("total_jobs_referred") ?? "0"),
-        },
-      });
+      const res = await create({ data: { ...fields(fd), force } });
       if (res.ok) {
         form.reset();
+        setDuplicates([]);
         setOpen(false);
         onSaved();
+      } else if (res.duplicates.length > 0) {
+        setDuplicates(res.duplicates);
       } else {
         setError(res.message);
       }
@@ -257,10 +359,32 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
       </button>
 
       {open && (
-        <form onSubmit={onSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void submit(e.currentTarget, false);
+          }}
+          className="mt-6 grid gap-5 sm:grid-cols-2"
+        >
           <div>
             <label htmlFor="business_name" className="text-sm font-medium">Business / organization *</label>
-            <input id="business_name" name="business_name" required className={`mt-2 ${inputClass}`} />
+            <input
+              id="business_name"
+              name="business_name"
+              required
+              className={`mt-2 ${inputClass}`}
+              onBlur={async (e) => {
+                const name = e.target.value.trim();
+                const phone = (e.currentTarget.form?.elements.namedItem("phone") as HTMLInputElement | null)?.value ?? "";
+                if (!name) return;
+                try {
+                  const res = await check({ data: { business_name: name, phone } });
+                  setDuplicates(res.matches);
+                } catch {
+                  /* non-blocking */
+                }
+              }}
+            />
           </div>
           <div>
             <label htmlFor="contact_person" className="text-sm font-medium">Contact person</label>
@@ -298,10 +422,6 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             <label htmlFor="next_follow_up_date" className="text-sm font-medium">Next follow-up date</label>
             <input id="next_follow_up_date" name="next_follow_up_date" type="date" className={`mt-2 ${inputClass}`} />
           </div>
-          <div>
-            <label htmlFor="total_jobs_referred" className="text-sm font-medium">Total jobs referred</label>
-            <input id="total_jobs_referred" name="total_jobs_referred" type="number" min="0" defaultValue="0" className={`mt-2 ${inputClass}`} />
-          </div>
           <div className="sm:col-span-2">
             <label htmlFor="referral_source" className="text-sm font-medium">Referral source</label>
             <input
@@ -312,6 +432,25 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             />
           </div>
 
+          {duplicates.length > 0 && (
+            <div className="sm:col-span-2 grid gap-3">
+              <DuplicateWarning matches={duplicates} />
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={(e) => {
+                    const form = e.currentTarget.closest("form");
+                    if (form) void submit(form as HTMLFormElement, true);
+                  }}
+                  className="rounded-full border border-border px-6 py-3 text-sm font-medium disabled:opacity-60"
+                >
+                  Save anyway
+                </button>
+              </div>
+            </div>
+          )}
+
           {error && <p className="sm:col-span-2 text-sm text-destructive">{error}</p>}
 
           <div className="sm:col-span-2">
@@ -320,6 +459,245 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             </button>
           </div>
         </form>
+      )}
+    </div>
+  );
+}
+
+/* --------------------------------- CSV import --------------------------------- */
+
+function parseCsv(input: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+  const text = input.replace(/\r\n?/g, "\n");
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 1;
+        } else quoted = false;
+      } else field += ch;
+      continue;
+    }
+    if (ch === '"') quoted = true;
+    else if (ch === ",") {
+      row.push(field);
+      field = "";
+    } else if (ch === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else field += ch;
+  }
+  row.push(field);
+  rows.push(row);
+  return rows.filter((r) => r.some((c) => c.trim() !== ""));
+}
+
+const HEADER_MAP: Record<string, string> = {
+  "business name": "business_name",
+  business: "business_name",
+  business_name: "business_name",
+  organization: "business_name",
+  "contact person": "contact_person",
+  contact_person: "contact_person",
+  contact: "contact_person",
+  "contact type": "contact_type",
+  contact_type: "contact_type",
+  type: "contact_type",
+  phone: "phone",
+  "phone number": "phone",
+  email: "email",
+  "referral source": "referral_source",
+  referral_source: "referral_source",
+};
+
+function BulkImport({ onImported }: { onImported: () => void }) {
+  const preview = useServerFn(previewContactImport);
+  const commit = useServerFn(commitContactImport);
+  const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState<ImportRow[] | null>(null);
+  const [skipDupes, setSkipDupes] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
+
+  async function onFile(file: File) {
+    setError(null);
+    setDone(null);
+    setRows(null);
+    const grid = parseCsv(await file.text());
+    if (grid.length < 2) {
+      setError("That file has no data rows.");
+      return;
+    }
+    const header = grid[0]!.map((h) => HEADER_MAP[h.trim().toLowerCase()] ?? "");
+    if (!header.includes("business_name")) {
+      setError('The file needs a "business name" column.');
+      return;
+    }
+    const parsed = grid.slice(1).map((cells) => {
+      const obj: Record<string, string> = {};
+      header.forEach((key, i) => {
+        if (key) obj[key] = cells[i] ?? "";
+      });
+      return obj;
+    });
+    setBusy(true);
+    try {
+      const res = await preview({ data: { rows: parsed } });
+      setRows(res.rows);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not read that file.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const importable = (rows ?? []).filter(
+    (r) => r.errors.length === 0 && (!skipDupes || r.duplicates.length === 0),
+  );
+
+  async function onCommit() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await commit({
+        data: {
+          rows: importable.map((r) => ({
+            business_name: r.business_name,
+            contact_person: r.contact_person,
+            contact_type: r.contact_type,
+            phone: r.phone,
+            email: r.email,
+            referral_source: r.referral_source,
+          })),
+        },
+      });
+      if (res.ok) {
+        setRows(null);
+        setDone(`Imported ${res.imported} contact${res.imported === 1 ? "" : "s"}.`);
+        onImported();
+      } else {
+        setError(res.message);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not import those contacts.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-2 font-display text-2xl tracking-tight"
+      >
+        <Upload className="h-5 w-5 text-gold" /> Bulk import
+      </button>
+
+      {open && (
+        <div className="mt-6 grid gap-5">
+          <p className="text-sm text-muted-foreground">
+            Upload a CSV with these column headings: business name, contact person, contact type, phone, email,
+            referral source. You&rsquo;ll see a preview before anything is saved.
+          </p>
+          <div>
+            <label htmlFor="csv-file" className="text-sm font-medium">CSV file</label>
+            <input
+              id="csv-file"
+              type="file"
+              accept=".csv,text/csv"
+              className={`mt-2 ${inputClass}`}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void onFile(file);
+              }}
+            />
+          </div>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          {done && <p className="text-sm text-gold">{done}</p>}
+
+          {rows && (
+            <>
+              <div className="overflow-x-auto rounded-2xl border border-border">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-muted/40 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    <tr>
+                      <th className="px-3 py-2">#</th>
+                      <th className="px-3 py-2">Business</th>
+                      <th className="px-3 py-2">Contact</th>
+                      <th className="px-3 py-2">Type</th>
+                      <th className="px-3 py-2">Phone</th>
+                      <th className="px-3 py-2">Email</th>
+                      <th className="px-3 py-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => (
+                      <tr key={r.rowNumber} className="border-t border-border">
+                        <td className="px-3 py-2 text-muted-foreground">{r.rowNumber}</td>
+                        <td className="px-3 py-2">{r.business_name || "—"}</td>
+                        <td className="px-3 py-2">{r.contact_person ?? "—"}</td>
+                        <td className="px-3 py-2">{r.contact_type}</td>
+                        <td className="px-3 py-2">{r.phone ?? "—"}</td>
+                        <td className="px-3 py-2 break-all">{r.email ?? "—"}</td>
+                        <td className="px-3 py-2 text-xs">
+                          {r.errors.length > 0 ? (
+                            <span className="text-destructive">{r.errors.join(" ")}</span>
+                          ) : r.duplicates.length > 0 ? (
+                            <span className="text-gold">
+                              Possible duplicate of {r.duplicates.map((d) => d.business_name).join(", ")}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">Ready</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={skipDupes}
+                  onChange={(e) => setSkipDupes(e.target.checked)}
+                  className="h-4 w-4"
+                />
+                Skip rows flagged as possible duplicates
+              </label>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  disabled={busy || importable.length === 0}
+                  onClick={() => void onCommit()}
+                  className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
+                >
+                  {busy ? "Importing…" : `Import ${importable.length} contact${importable.length === 1 ? "" : "s"}`}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRows(null)}
+                  className="rounded-full border border-border px-6 py-3 text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       )}
     </div>
   );

@@ -39,7 +39,7 @@ const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
 
 function ContactDetailPage() {
-  const { contact, activities } = Route.useLoaderData();
+  const { contact, activities, appointments, referralCount, referralValue } = Route.useLoaderData();
   const router = useRouter();
   const logActivity = useServerFn(addContactActivity);
   const saveStage = useServerFn(setPipelineStage);
@@ -125,8 +125,16 @@ function ContactDetailPage() {
                 </span>
               </p>
               <p>
-                Jobs referred: <span className="text-foreground">{contact.total_jobs_referred}</span>
+                Jobs referred: <span className="text-foreground">{referralCount}</span> ·{" "}
+                <span className="text-foreground">
+                  {referralValue.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
               </p>
+
               <p>
                 Found via: <span className="text-foreground">{contact.referral_source || "—"}</span>
               </p>
@@ -148,6 +156,36 @@ function ContactDetailPage() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
+            <h2 className="font-display text-2xl tracking-tight">
+              Referred appointments <span className="text-sm text-muted-foreground">({referralCount})</span>
+            </h2>
+            {appointments.length === 0 ? (
+              <p className="mt-4 text-sm text-muted-foreground">
+                No appointments are linked to this contact yet. Link a booking to this contact from the appointments
+                list and it will be counted here automatically.
+              </p>
+            ) : (
+              <ul className="mt-4 grid gap-2 text-sm">
+                {appointments.map((a) => (
+                  <li key={a.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2">
+                    <span>
+                      {a.name} — <span className="text-muted-foreground">{a.service}</span>
+                    </span>
+                    <span className="text-muted-foreground">
+                      {new Date(`${a.preferred_date}T00:00:00`).toLocaleDateString()} ·{" "}
+                      <span className="text-foreground">
+                        {a.fee_amount === null
+                          ? "no amount"
+                          : a.fee_amount.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">

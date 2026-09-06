@@ -35,6 +35,9 @@ export type Appointment = {
   sms_error: string | null;
   sms_sent_at: string | null;
   assigned_notary_id: string | null;
+  referred_by: string | null;
+  fee_amount: number | null;
+
 };
 
 
@@ -60,13 +63,19 @@ export const getAppointments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const session = await useSession<AdminSession>(sessionConfig);
-    if (!session.data.unlocked) return { locked: true as const, appointments: [] as Appointment[], notaries: [] as NotaryOption[] };
+    if (!session.data.unlocked)
+      return {
+        locked: true as const,
+        appointments: [] as Appointment[],
+        notaries: [] as NotaryOption[],
+        referralContacts: [] as ReferralContactOption[],
+      };
 
     // Read as the signed-in user so database row-level security decides which
     // appointments they may see (admins/employees: all, notaries: their own).
     const { data, error } = await context.supabase
       .from("appointments")
-      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, assigned_notary_id")
+      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, assigned_notary_id, referred_by, fee_amount")
       .order("submitted_at", { ascending: false })
       .limit(500);
 
@@ -81,12 +90,26 @@ export const getAppointments = createServerFn({ method: "GET" })
       .eq("role", "notary")
       .order("name", { ascending: true });
 
+    const { data: contacts } = await context.supabase
+      .from("business_contacts")
+      .select("id, business_name")
+      .order("business_name", { ascending: true })
+      .limit(1000);
+
     return {
       locked: false as const,
-      appointments: (data ?? []) as Appointment[],
+      appointments: (data ?? []).map((a) => ({
+        ...a,
+        fee_amount: a.fee_amount === null ? null : Number(a.fee_amount),
+      })) as Appointment[],
       notaries: (notaries ?? []).map((n) => ({ id: n.id, name: n.name, email: n.email })) as NotaryOption[],
+      referralContacts: (contacts ?? []) as ReferralContactOption[],
     };
   });
+
+export type ReferralContactOption = { id: string; business_name: string };
+
+
 
 
 export type NotaryOption = { id: string; name: string; email: string };
