@@ -24,8 +24,11 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
+import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
@@ -103,10 +106,19 @@ const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
   path: '/service-areas/$city',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
-  id: '/_protected/',
-  path: '/',
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminProtectedRoute = AdminProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminProtectedRoute,
 } as any)
 const ApiPublicAppointmentNotifyRoute =
   ApiPublicAppointmentNotifyRouteImport.update({
@@ -114,6 +126,11 @@ const ApiPublicAppointmentNotifyRoute =
     path: '/api/public/appointment-notify',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminProtectedRoute,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -135,8 +152,10 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/login': typeof AdminLoginRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
+  '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -145,6 +164,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminProtectedIndexRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
@@ -154,10 +174,11 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/login': typeof AdminLoginRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
+  '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
-  '/admin': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -175,8 +196,11 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/admin/_protected': typeof AdminProtectedRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
+  '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -197,8 +221,10 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/admin/login'
     | '/service-areas/$city'
     | '/service-areas/'
+    | '/admin/dashboard'
     | '/api/public/appointment-notify'
     | '/admin/'
     | '/lovable/email/queue/process'
@@ -207,6 +233,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/book'
     | '/contact'
     | '/faq'
@@ -216,10 +243,11 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/admin/login'
     | '/service-areas/$city'
     | '/service-areas'
+    | '/admin/dashboard'
     | '/api/public/appointment-notify'
-    | '/admin'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -236,8 +264,11 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms-of-service'
+    | '/admin/_protected'
+    | '/admin/login'
     | '/service-areas/$city'
     | '/service-areas/'
+    | '/admin/_protected/dashboard'
     | '/api/public/appointment-notify'
     | '/admin/_protected/'
     | '/lovable/email/queue/process'
@@ -370,12 +401,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasCityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/_protected': {
+      id: '/admin/_protected'
+      path: ''
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminProtectedRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/_protected/': {
       id: '/admin/_protected/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminProtectedIndexRouteImport
-      parentRoute: typeof AdminRoute
+      parentRoute: typeof AdminProtectedRoute
     }
     '/api/public/appointment-notify': {
       id: '/api/public/appointment-notify'
@@ -383,6 +428,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/appointment-notify'
       preLoaderRoute: typeof ApiPublicAppointmentNotifyRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/_protected/dashboard': {
+      id: '/admin/_protected/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminProtectedDashboardRouteImport
+      parentRoute: typeof AdminProtectedRoute
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -394,12 +446,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminRouteChildren {
+interface AdminProtectedRouteChildren {
+  AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
   AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
 }
 
-const AdminRouteChildren: AdminRouteChildren = {
+const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
+  AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
   AdminProtectedIndexRoute: AdminProtectedIndexRoute,
+}
+
+const AdminProtectedRouteWithChildren = AdminProtectedRoute._addFileChildren(
+  AdminProtectedRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminProtectedRoute: typeof AdminProtectedRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminProtectedRoute: AdminProtectedRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
