@@ -125,8 +125,16 @@ function ContactDetailPage() {
                 </span>
               </p>
               <p>
-                Jobs referred: <span className="text-foreground">{contact.total_jobs_referred}</span>
+                Jobs referred: <span className="text-foreground">{referralCount}</span> ·{" "}
+                <span className="text-foreground">
+                  {referralValue.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
               </p>
+
               <p>
                 Found via: <span className="text-foreground">{contact.referral_source || "—"}</span>
               </p>
