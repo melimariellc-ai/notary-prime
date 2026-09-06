@@ -38,11 +38,11 @@ function DashboardPage() {
     setNotice(null);
     setError(null);
     try {
-      const res = await addUser({ data: { email: newEmail, password: newPassword } });
+      const res = await addUser({ data: { name: newName, email: newEmail, role: newRole } });
       if (res.ok) {
         setNotice(res.message);
+        setNewName("");
         setNewEmail("");
-        setNewPassword("");
       } else {
         setError(res.message);
       }
