@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Instagram, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
 import logoAsset from "../../assets/enliven-logo.png.asset.json";
 
 export function Footer() {
@@ -65,7 +65,6 @@ export function Footer() {
             <div className="flex gap-3 mt-6">
               {[
                 { Icon: Instagram, label: "Instagram" },
-                { Icon: Linkedin, label: "LinkedIn" },
               ].map(({ Icon, label }) => (
                 <a
                   key={label}
