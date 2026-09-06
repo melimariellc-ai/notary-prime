@@ -17,6 +17,7 @@ export type Database = {
       appointments: {
         Row: {
           address: string | null
+          assigned_notary_id: string | null
           created_at: string
           email: string
           id: string
@@ -34,6 +35,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          assigned_notary_id?: string | null
           created_at?: string
           email: string
           id?: string
@@ -51,6 +53,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          assigned_notary_id?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -71,6 +74,7 @@ export type Database = {
       booking_requests: {
         Row: {
           address: string | null
+          assigned_notary_id: string | null
           created_at: string
           email: string
           id: string
@@ -84,6 +88,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          assigned_notary_id?: string | null
           created_at?: string
           email: string
           id?: string
@@ -97,6 +102,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          assigned_notary_id?: string | null
           created_at?: string
           email?: string
           id?: string

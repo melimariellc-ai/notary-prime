@@ -1,4 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 import { useSession } from "@tanstack/react-start/server";
 import { createHash, timingSafeEqual } from "node:crypto";
 
@@ -53,21 +55,25 @@ export const lockAdmin = createServerFn({ method: "POST" }).handler(async () => 
   return { ok: true as const };
 });
 
-export const getAppointments = createServerFn({ method: "GET" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig);
-  if (!session.data.unlocked) return { locked: true as const, appointments: [] as Appointment[] };
+export const getAppointments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const session = await useSession<AdminSession>(sessionConfig);
+    if (!session.data.unlocked) return { locked: true as const, appointments: [] as Appointment[] };
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("appointments")
-    .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at")
-    .order("submitted_at", { ascending: false })
-    .limit(500);
+    // Read as the signed-in user so database row-level security decides which
+    // appointments they may see (admins/employees: all, notaries: their own).
+    const { data, error } = await context.supabase
+      .from("appointments")
+      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at")
+      .order("submitted_at", { ascending: false })
+      .limit(500);
 
-  if (error) {
-    console.error("Failed to load appointments", error);
-    throw new Error("Could not load appointments.");
-  }
+    if (error) {
+      console.error("Failed to load appointments", error);
+      throw new Error("Could not load appointments.");
+    }
 
-  return { locked: false as const, appointments: (data ?? []) as Appointment[] };
-});
+    return { locked: false as const, appointments: (data ?? []) as Appointment[] };
+  });
+
