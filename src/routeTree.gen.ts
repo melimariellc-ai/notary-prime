@@ -30,6 +30,7 @@ import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
 import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
+import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as AdminProtectedCrmIndexRouteImport } from './routes/admin._protected.crm.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -141,6 +142,11 @@ const ApiPublicAppointmentNotifyRoute =
     path: '/api/public/appointment-notify',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminProtectedUsersRoute = AdminProtectedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminProtectedRoute,
+} as any)
 const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/admin/': typeof AdminProtectedIndexRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/_protected/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/dashboard'
+    | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/admin/'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas'
     | '/admin/dashboard'
+    | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/admin/crm/$contactId'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/_protected/dashboard'
+    | '/admin/_protected/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/admin/_protected/'
@@ -494,6 +506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAppointmentNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_protected/users': {
+      id: '/admin/_protected/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminProtectedUsersRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
     '/admin/_protected/dashboard': {
       id: '/admin/_protected/dashboard'
       path: '/dashboard'
@@ -527,6 +546,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
+  AdminProtectedUsersRoute: typeof AdminProtectedUsersRoute
   AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
   AdminProtectedCrmContactIdRoute: typeof AdminProtectedCrmContactIdRoute
   AdminProtectedCrmIndexRoute: typeof AdminProtectedCrmIndexRoute
@@ -534,6 +554,7 @@ interface AdminProtectedRouteChildren {
 
 const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
+  AdminProtectedUsersRoute: AdminProtectedUsersRoute,
   AdminProtectedIndexRoute: AdminProtectedIndexRoute,
   AdminProtectedCrmContactIdRoute: AdminProtectedCrmContactIdRoute,
   AdminProtectedCrmIndexRoute: AdminProtectedCrmIndexRoute,
