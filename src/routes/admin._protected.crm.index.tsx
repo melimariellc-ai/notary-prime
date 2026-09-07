@@ -1063,7 +1063,8 @@ function BulkImport({ onImported }: { onImported: () => void }) {
                           <span className="text-destructive">{r.errors.join(" ")}</span>
                         ) : r.duplicates.length > 0 ? (
                           <span className="text-accent-foreground">
-                            Possible duplicate of {r.duplicates.map((d) => d.business_name).join(", ")}
+                            Possible duplicate of{" "}
+                            {r.duplicates.map((d) => `${d.business_name} (${d.score}%)`).join(", ")}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">Ready</span>
