@@ -122,8 +122,8 @@ export const runReport = createServerFn({ method: "POST" })
       .lte("activity_date", data.to)
       .order("activity_date", { ascending: false })
       .limit(MAX_ROWS + 1);
-    if (data.stage) q = q.eq("business_contacts.pipeline_stage", data.stage);
-    if (data.type) q = q.eq("business_contacts.contact_type", data.type);
+    if (data.stage) q = q.eq("business_contacts.pipeline_stage" as never, data.stage as never);
+    if (data.type) q = q.eq("business_contacts.contact_type" as never, data.type as never);
 
     const { data: rows, error } = await q;
     if (error) {
