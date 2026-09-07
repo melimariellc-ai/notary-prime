@@ -24,7 +24,7 @@ function timeAgo(iso: string) {
 }
 
 function ActivityDescription({ description }: { description: string }) {
-  const match = description.match(/^(Subject:\s*(.+)|Reply received:\s*(.+))\n+([\s\S]+)$/);
+  const match = description.match(/^(Subject:\s*([^\n]+)|Reply received:\s*([^\n]+))(?:\n+([\s\S]+))?$/);
   if (!match) {
     return <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm text-muted-foreground">{description}</p>;
   }
@@ -42,9 +42,11 @@ function ActivityDescription({ description }: { description: string }) {
         <br />
         <span className="font-medium">{subject}</span>
       </p>
-      <p className="mt-2 line-clamp-3 whitespace-pre-line border-t border-border pt-2 text-muted-foreground">
-        {body}
-      </p>
+      {body && (
+        <p className="mt-2 line-clamp-3 whitespace-pre-line border-t border-border pt-2 text-muted-foreground">
+          {body}
+        </p>
+      )}
     </div>
   );
 }
