@@ -166,6 +166,8 @@ function AdminPage() {
                       {a.notes}
                     </p>
                   )}
+
+                  <AppointmentAuditToggle appointmentId={a.id} />
                 </article>
 
               ))}
