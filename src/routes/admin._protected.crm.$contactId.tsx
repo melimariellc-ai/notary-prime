@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { AuditTrail } from "@/components/admin/AuditTrail";
 import { STAGE_COLORS } from "@/components/admin/CrmOverview";
 import {
   ACTIVITY_TYPES,
@@ -344,6 +345,10 @@ function ContactDetailPage() {
               ))}
             </ol>
           )}
+
+          <div className="mt-12">
+            <AuditTrail table="business_contacts" recordId={contact.id} />
+          </div>
         </div>
       </AdminSection>
 

@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { AlertTriangle, Lock, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { AuditTrail } from "@/components/admin/AuditTrail";
 import { assignNotary, getAppointments, type NotaryOption, type ReferralContactOption } from "@/lib/admin.functions";
 import { setAppointmentReferral } from "@/lib/crm.functions";
 
@@ -166,6 +167,8 @@ function AdminPage() {
                       {a.notes}
                     </p>
                   )}
+
+                  <AppointmentAuditToggle appointmentId={a.id} />
                 </article>
 
               ))}
@@ -311,6 +314,27 @@ function ReferralRow({
       {status === "error" && <span className="text-xs text-destructive">Could not save</span>}
       {contacts.length === 0 && (
         <span className="text-xs text-muted-foreground">No CRM contacts yet.</span>
+      )}
+    </div>
+  );
+}
+
+function AppointmentAuditToggle({ appointmentId }: { appointmentId: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-6 border-t border-border pt-4">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="inline-flex items-center gap-2 text-sm font-medium text-accent-foreground underline underline-offset-4"
+      >
+        {open ? "Hide change history" : "View change history"}
+      </button>
+      {open && (
+        <div className="mt-4">
+          <AuditTrail table="appointments" recordId={appointmentId} />
+        </div>
       )}
     </div>
   );
