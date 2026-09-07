@@ -36,35 +36,17 @@ export type Appointment = {
 };
 
 
-export const unlockAdmin = createServerFn({ method: "POST" })
-  .inputValidator((data: { passcode: string }) => ({ passcode: String(data.passcode ?? "") }))
-  .handler(async ({ data }) => {
-    const expected = process.env["ADMIN_PASSCODE"];
-    if (!expected) return { ok: false as const };
-    if (!matches(data.passcode, expected)) return { ok: false as const };
-
-    const session = await useSession<AdminSession>(sessionConfig);
-    await session.update({ unlocked: true });
-    return { ok: true as const };
-  });
-
-export const lockAdmin = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig);
-  await session.clear();
-  return { ok: true as const };
-});
-
 export const getAppointments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const session = await useSession<AdminSession>(sessionConfig);
-    if (!session.data.unlocked)
+    if (!(await canManageAppointments(context.supabase, context.userId)))
       return {
-        locked: true as const,
+        forbidden: true as const,
         appointments: [] as Appointment[],
         notaries: [] as NotaryOption[],
         referralContacts: [] as ReferralContactOption[],
       };
+
 
     // Read as the signed-in user so database row-level security decides which
     // appointments they may see (admins/employees: all, notaries: their own).
