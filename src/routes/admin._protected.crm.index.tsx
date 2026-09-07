@@ -95,9 +95,11 @@ function CrmSkeleton() {
 }
 
 function CrmPage() {
-  const { contacts, referrals } = Route.useLoaderData();
+  const { contacts, referrals, savedViews } = Route.useLoaderData();
   const router = useRouter();
   const bulkStage = useServerFn(bulkSetPipelineStage);
+  const persistView = useServerFn(saveView);
+  const removeView = useServerFn(deleteSavedView);
 
   const [view, setView] = useState<"list" | "kanban">("list");
   const [typeFilter, setTypeFilter] = useState("");
@@ -106,10 +108,81 @@ function CrmPage() {
   const [dueOnly, setDueOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("business_name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [columns, setColumns] = useState<ColumnKey[]>(["type", "stage", "follow_up", "referrals"]);
+  const [activeViewId, setActiveViewId] = useState<string | null>(null);
+  const [showColumns, setShowColumns] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [bulkTarget, setBulkTarget] = useState<string>(PIPELINE_STAGES[0]);
   const [showAdd, setShowAdd] = useState(false);
   const [showImport, setShowImport] = useState(false);
+
+  const currentConfig: ViewConfig = {
+    query,
+    typeFilter,
+    stageFilter,
+    dueOnly,
+    sortKey,
+    sortDir,
+    columns,
+    view,
+  };
+
+  function applyView(v: SavedView) {
+    setActiveViewId(v.id);
+    setQuery(v.config.query);
+    setTypeFilter(v.config.typeFilter);
+    setStageFilter(v.config.stageFilter);
+    setDueOnly(v.config.dueOnly);
+    setSortKey(v.config.sortKey as SortKey);
+    setSortDir(v.config.sortDir);
+    setColumns(v.config.columns);
+    setView(v.config.view);
+    setSelected([]);
+  }
+
+  function resetView() {
+    setActiveViewId(null);
+    setQuery("");
+    setTypeFilter("");
+    setStageFilter("");
+    setDueOnly(false);
+    setSortKey("business_name");
+    setSortDir("asc");
+    setColumns(["type", "stage", "follow_up", "referrals"]);
+    setView("list");
+    setSelected([]);
+  }
+
+  async function onSaveView(name: string) {
+    try {
+      const res = await persistView({ data: { name, config: currentConfig } });
+      if (res.ok) {
+        setActiveViewId(res.view.id);
+        toast.success(`Saved “${res.view.name}”.`);
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save that view.");
+    }
+  }
+
+  async function onDeleteView(v: SavedView) {
+    try {
+      const res = await removeView({ data: { id: v.id } });
+      if (res.ok) {
+        if (activeViewId === v.id) resetView();
+        toast.success(`Deleted “${v.name}”.`);
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete that view.");
+    }
+  }
+
 
   const today = todayISO();
   const dueCount = contacts.filter((c) => c.next_follow_up_date && c.next_follow_up_date <= today).length;
