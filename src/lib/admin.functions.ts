@@ -32,7 +32,7 @@ export type Appointment = {
   assigned_notary_id: string | null;
   referred_by: string | null;
   fee_amount: number | null;
-
+  sms_dismissed_at: string | null;
 };
 
 
@@ -52,7 +52,7 @@ export const getAppointments = createServerFn({ method: "GET" })
     // appointments they may see (admins/employees: all, notaries: their own).
     const { data, error } = await context.supabase
       .from("appointments")
-      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, assigned_notary_id, referred_by, fee_amount")
+      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, sms_dismissed_at, assigned_notary_id, referred_by, fee_amount")
       .order("submitted_at", { ascending: false })
       .limit(500);
 
@@ -128,6 +128,33 @@ export const assignNotary = createServerFn({ method: "POST" })
     if (error) {
       console.error("Failed to assign notary", error);
       return { ok: false as const, message: "Could not update the assignment." };
+    }
+    return { ok: true as const };
+  });
+
+/** Acknowledge (or restore) an SMS delivery failure without deleting the record. */
+export const setSmsDismissed = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { appointmentId: string; dismissed: boolean }) => {
+    const appointmentId = String(data.appointmentId ?? "");
+    if (!/^[0-9a-f-]{36}$/i.test(appointmentId)) throw new Error("Invalid appointment.");
+    return { appointmentId, dismissed: Boolean(data.dismissed) };
+  })
+  .handler(async ({ data, context }) => {
+    if (!(await canManageAppointments(context.supabase, context.userId)))
+      return { ok: false as const, message: "You do not have permission to update this log." };
+
+    const { error } = await context.supabase
+      .from("appointments")
+      .update({
+        sms_dismissed_at: data.dismissed ? new Date().toISOString() : null,
+        sms_dismissed_by: data.dismissed ? context.userId : null,
+      })
+      .eq("id", data.appointmentId);
+
+    if (error) {
+      console.error("Failed to update SMS dismissal", error);
+      return { ok: false as const, message: "Could not update the delivery log." };
     }
     return { ok: true as const };
   });
