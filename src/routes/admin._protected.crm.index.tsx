@@ -541,7 +541,7 @@ function KanbanView({
   }
 
   return (
-    <div className="mt-6 grid gap-4 lg:grid-cols-5">
+    <div className="mt-6 flex gap-4 overflow-x-auto pb-4">
       {PIPELINE_STAGES.map((stage) => {
         const column = rows.filter((c) => c.pipeline_stage === stage);
         return (
