@@ -142,7 +142,7 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: "Enliven Notary <outreach@enlivennotary.com>",
+        from: "Enliven Notary <outreach@send.enlivennotary.com>",
         reply_to: "info@enlivennotary.com",
         to: [contact.email],
         subject: data.subject,
@@ -154,7 +154,10 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
     if (!res.ok) {
       const detail = await res.text();
       console.error("Resend outreach send failed", res.status, detail.slice(0, 500));
-      return { ok: false as const, message: "The email could not be sent. Please try again." };
+      return {
+        ok: false as const,
+        message: `The email could not be sent (${res.status}). ${detail.slice(0, 200)}`,
+      };
     }
 
     const { error: logError } = await context.supabase.from("contact_activities").insert({
