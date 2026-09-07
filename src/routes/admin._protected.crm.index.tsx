@@ -111,7 +111,7 @@ function CrmPage() {
 
   const [view, setView] = useState<"list" | "kanban">("list");
   const [typeFilter, setTypeFilter] = useState("");
-  const [stageFilter, setStageFilter] = useState("");
+  const [stageFilter, setStageFilter] = useState(Route.useSearch().stage ?? "");
   const [query, setQuery] = useState("");
   const [dueOnly, setDueOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("business_name");
