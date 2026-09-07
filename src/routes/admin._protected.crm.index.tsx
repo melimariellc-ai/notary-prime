@@ -622,22 +622,34 @@ function ListView({
                     <span className="mt-0.5 block text-xs text-muted-foreground">{c.contact_person}</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">{c.contact_type}</td>
-                <td className="px-4 py-3">
-                  <StageChip stage={c.pipeline_stage} />
-                </td>
-                <td className="px-4 py-3">
-                  {c.next_follow_up_date ? (
-                    <span className={overdue ? "text-destructive" : "text-muted-foreground"}>
-                      {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {stats.count} job{stats.count === 1 ? "" : "s"} · {money(stats.value)}
-                </td>
+                {show("type") && <td className="px-4 py-3 text-muted-foreground">{c.contact_type}</td>}
+                {show("stage") && (
+                  <td className="px-4 py-3">
+                    <StageChip stage={c.pipeline_stage} />
+                  </td>
+                )}
+                {show("follow_up") && (
+                  <td className="px-4 py-3">
+                    {c.next_follow_up_date ? (
+                      <span className={overdue ? "text-destructive" : "text-muted-foreground"}>
+                        {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                )}
+                {show("referrals") && (
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {stats.count} job{stats.count === 1 ? "" : "s"} · {money(stats.value)}
+                  </td>
+                )}
+                {show("phone") && (
+                  <td className="px-4 py-3 text-muted-foreground">{c.phone || "—"}</td>
+                )}
+                {show("email") && (
+                  <td className="px-4 py-3 text-muted-foreground">{c.email || "—"}</td>
+                )}
               </tr>
             );
           })}
