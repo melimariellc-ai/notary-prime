@@ -1,23 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { useSession } from "@tanstack/react-start/server";
-import { createHash, timingSafeEqual } from "node:crypto";
-
-const sessionConfig = {
-  password: process.env["SESSION_SECRET"] ?? "development-only-session-secret-please-set-me",
-  name: "enliven-admin",
-  maxAge: 60 * 60 * 12,
-  cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
-};
-
-type AdminSession = { unlocked?: boolean };
-
-function matches(input: string, expected: string): boolean {
-  const a = createHash("sha256").update(input, "utf8").digest();
-  const b = createHash("sha256").update(expected, "utf8").digest();
-  return timingSafeEqual(a, b);
+/** Appointment records are managed by Admin and Employee accounts only. */
+async function canManageAppointments(supabase: SupabaseClient, userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  if (error) {
+    console.error("Failed to read roles", error);
+    return false;
+  }
+  const roles = (data ?? []).map((r) => r.role as string);
+  return roles.includes("admin") || roles.includes("employee");
 }
+
 
 export type Appointment = {
   id: string;
@@ -41,35 +36,17 @@ export type Appointment = {
 };
 
 
-export const unlockAdmin = createServerFn({ method: "POST" })
-  .inputValidator((data: { passcode: string }) => ({ passcode: String(data.passcode ?? "") }))
-  .handler(async ({ data }) => {
-    const expected = process.env["ADMIN_PASSCODE"];
-    if (!expected) return { ok: false as const };
-    if (!matches(data.passcode, expected)) return { ok: false as const };
-
-    const session = await useSession<AdminSession>(sessionConfig);
-    await session.update({ unlocked: true });
-    return { ok: true as const };
-  });
-
-export const lockAdmin = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig);
-  await session.clear();
-  return { ok: true as const };
-});
-
 export const getAppointments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const session = await useSession<AdminSession>(sessionConfig);
-    if (!session.data.unlocked)
+    if (!(await canManageAppointments(context.supabase, context.userId)))
       return {
-        locked: true as const,
+        forbidden: true as const,
         appointments: [] as Appointment[],
         notaries: [] as NotaryOption[],
         referralContacts: [] as ReferralContactOption[],
       };
+
 
     // Read as the signed-in user so database row-level security decides which
     // appointments they may see (admins/employees: all, notaries: their own).
@@ -97,7 +74,7 @@ export const getAppointments = createServerFn({ method: "GET" })
       .limit(1000);
 
     return {
-      locked: false as const,
+      forbidden: false as const,
       appointments: (data ?? []).map((a) => ({
         ...a,
         fee_amount: a.fee_amount === null ? null : Number(a.fee_amount),
@@ -140,8 +117,8 @@ export const assignNotary = createServerFn({ method: "POST" })
     return { appointmentId, notaryId };
   })
   .handler(async ({ data, context }) => {
-    const session = await useSession<AdminSession>(sessionConfig);
-    if (!session.data.unlocked) return { ok: false as const, message: "Dashboard is locked." };
+    if (!(await canManageAppointments(context.supabase, context.userId)))
+      return { ok: false as const, message: "You do not have permission to assign appointments." };
 
     const { error } = await context.supabase
       .from("appointments")
