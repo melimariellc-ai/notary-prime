@@ -533,6 +533,7 @@ function ListView({
   sortKey,
   sortDir,
   onSort,
+  columns,
 }: {
   rows: BusinessContact[];
   referrals: Referrals;
@@ -543,7 +544,9 @@ function ListView({
   sortKey: SortKey;
   sortDir: "asc" | "desc";
   onSort: (key: SortKey) => void;
+  columns: ColumnKey[];
 }) {
+  const show = (key: ColumnKey) => columns.includes(key);
   const allChecked = rows.length > 0 && rows.every((r) => selected.includes(r.id));
 
   const Header = ({ label, keyName }: { label: string; keyName: SortKey }) => (
