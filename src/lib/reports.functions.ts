@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { CONTACT_TYPES, PIPELINE_STAGES } from "@/lib/crm.functions";
+import { CONTACT_TYPES, PIPELINE_STAGES, type ContactType, type PipelineStage } from "@/lib/crm.functions";
 
 export const REPORT_DATASETS = ["contacts", "activities"] as const;
 export type ReportDataset = (typeof REPORT_DATASETS)[number];
@@ -83,8 +83,8 @@ export const runReport = createServerFn({ method: "POST" })
         .lte("created_at", `${data.to}T23:59:59Z`)
         .order("created_at", { ascending: false })
         .limit(MAX_ROWS + 1);
-      if (data.stage) q = q.eq("pipeline_stage", data.stage);
-      if (data.type) q = q.eq("contact_type", data.type);
+      if (data.stage) q = q.eq("pipeline_stage", data.stage as PipelineStage);
+      if (data.type) q = q.eq("contact_type", data.type as ContactType);
 
       const { data: rows, error } = await q;
       if (error) {
