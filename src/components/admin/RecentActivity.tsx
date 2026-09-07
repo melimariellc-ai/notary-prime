@@ -23,6 +23,34 @@ function timeAgo(iso: string) {
   return new Date(iso).toLocaleDateString();
 }
 
+function ActivityDescription({ description }: { description: string }) {
+  const match = description.match(/^(Subject:\s*([^\n]+)|Reply received:\s*([^\n]+))(?:\n+([\s\S]+))?$/);
+  if (!match) {
+    return <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm text-muted-foreground">{description}</p>;
+  }
+
+  const subject = (match[2] ?? match[3] ?? "").trim();
+  const body = match[4]?.trim() ?? "";
+  const isReply = description.startsWith("Reply received:");
+
+  return (
+    <div className="mt-2 text-sm leading-relaxed">
+      <p>
+        <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+          {isReply ? "Reply · Subject" : "Subject"}
+        </span>
+        <br />
+        <span className="font-medium">{subject}</span>
+      </p>
+      {body && (
+        <p className="mt-2 line-clamp-3 whitespace-pre-line border-t border-border pt-2 text-muted-foreground">
+          {body}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function RecentActivityCard() {
   const fetchRecent = useServerFn(listRecentActivity);
   const { data, isLoading } = useQuery({ queryKey: ["recent-activity"], queryFn: () => fetchRecent() });
@@ -73,7 +101,7 @@ export function RecentActivityCard() {
                     </span>
                     <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
                   </p>
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.description}</p>
+                  <ActivityDescription description={item.description} />
                 </div>
               </li>
             );
