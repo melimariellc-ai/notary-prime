@@ -58,6 +58,10 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { stage?: string } => {
+    const stage = typeof search.stage === "string" ? search.stage : undefined;
+    return stage && (PIPELINE_STAGES as readonly string[]).includes(stage) ? { stage } : {};
+  },
   loader: async () => {
     const [data, views] = await Promise.all([listBusinessContacts(), listSavedViews()]);
     return { ...data, savedViews: views.views };
@@ -107,7 +111,7 @@ function CrmPage() {
 
   const [view, setView] = useState<"list" | "kanban">("list");
   const [typeFilter, setTypeFilter] = useState("");
-  const [stageFilter, setStageFilter] = useState("");
+  const [stageFilter, setStageFilter] = useState(Route.useSearch().stage ?? "");
   const [query, setQuery] = useState("");
   const [dueOnly, setDueOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("business_name");

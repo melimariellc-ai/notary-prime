@@ -29,7 +29,7 @@ function Donut({ counts, total }: { counts: { stage: string; count: number }[]; 
 
   return (
     <div className="relative mx-auto h-52 w-52">
-      <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="img" aria-label="Pipeline stage mix">
+      <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="group" aria-label="Pipeline stage mix">
         <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--color-muted)" strokeWidth="20" />
         {total > 0 &&
           counts.map(({ stage, count }) => {
@@ -37,17 +37,24 @@ function Donut({ counts, total }: { counts: { stage: string; count: number }[]; 
             const length = (count / total) * circumference;
             const dash = `${length} ${circumference - length}`;
             const el = (
-              <circle
+              <Link
                 key={stage}
-                cx="90"
-                cy="90"
-                r={radius}
-                fill="none"
-                stroke={STAGE_COLORS[stage]}
-                strokeWidth="20"
-                strokeDasharray={dash}
-                strokeDashoffset={-offset}
-              />
+                to="/admin/crm"
+                search={{ stage }}
+                aria-label={`${stage}: ${count} contacts. View filtered list.`}
+                className="cursor-pointer outline-none [&>circle]:transition-[stroke-width,opacity] [&>circle]:hover:stroke-[26] focus-visible:[&>circle]:stroke-[26]"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  r={radius}
+                  fill="none"
+                  stroke={STAGE_COLORS[stage]}
+                  strokeWidth="20"
+                  strokeDasharray={dash}
+                  strokeDashoffset={-offset}
+                />
+              </Link>
             );
             offset += length;
             return el;
@@ -117,11 +124,17 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
           <h2 className="font-display text-2xl tracking-tight">Pipeline breakdown</h2>
-          <div className="mt-6 grid gap-5">
+          <div className="mt-6 grid gap-2">
             {counts.map(({ stage, count }) => (
-              <div key={stage}>
+              <Link
+                key={stage}
+                to="/admin/crm"
+                search={{ stage }}
+                aria-label={`View ${count} contacts in ${stage}`}
+                className="group -mx-3 rounded-2xl px-3 py-2 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
                 <div className="flex items-baseline justify-between text-sm">
-                  <span>{stage}</span>
+                  <span className="transition-colors group-hover:text-accent-foreground">{stage}</span>
                   <span className="text-muted-foreground">{count}</span>
                 </div>
                 <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -133,7 +146,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
                     }}
                   />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -145,13 +158,19 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
           </div>
           <ul className="mt-6 grid gap-2 text-xs">
             {counts.map(({ stage, count }) => (
-              <li key={stage} className="flex items-center gap-2 text-muted-foreground">
-                <span
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: STAGE_COLORS[stage] }}
-                />
-                <span className="flex-1 truncate text-foreground">{stage}</span>
-                <span>{total > 0 ? Math.round((count / total) * 100) : 0}%</span>
+              <li key={stage}>
+                <Link
+                  to="/admin/crm"
+                  search={{ stage }}
+                  className="-mx-2 flex items-center gap-2 rounded-lg px-2 py-1 text-muted-foreground transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: STAGE_COLORS[stage] }}
+                  />
+                  <span className="flex-1 truncate text-foreground">{stage}</span>
+                  <span>{total > 0 ? Math.round((count / total) * 100) : 0}%</span>
+                </Link>
               </li>
             ))}
           </ul>
