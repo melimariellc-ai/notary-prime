@@ -22,6 +22,37 @@ import logoAsset from "@/assets/enliven-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyRole } from "@/lib/users.functions";
 import { listBusinessContacts } from "@/lib/crm.functions";
+import { listInboundReplies } from "@/lib/inbound.functions";
+
+type NotificationItem = {
+  id: string;
+  kind: "reply" | "overdue";
+  title: string;
+  detail: string;
+  at: string;
+  contactId: string | null;
+};
+
+const NOTIF_READ_KEY = "admin-notifications-read";
+
+function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean }) {
+  return (
+    <div className="flex gap-2">
+      <span
+        aria-hidden="true"
+        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${unread ? "bg-gold" : "bg-transparent"}`}
+      />
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium">{n.title}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {n.kind === "reply" ? "Reply received · " : ""}
+          {n.detail}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 type NavItem = {
   to: string;
