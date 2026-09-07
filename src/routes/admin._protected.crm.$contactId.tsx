@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
+import { CustomFieldsPanel } from "@/components/admin/CustomFields";
 import { STAGE_COLORS } from "@/components/admin/CrmOverview";
 import {
   ACTIVITY_TYPES,
@@ -204,6 +205,8 @@ function ContactDetailPage() {
                 />
               </div>
             </dl>
+
+            <CustomFieldsPanel contactId={contact.id} values={contact.custom_fields ?? {}} />
 
             <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border pt-6 text-sm text-muted-foreground">
               {contact.phone && (

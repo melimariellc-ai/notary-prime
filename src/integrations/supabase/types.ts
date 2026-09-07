@@ -175,6 +175,7 @@ export type Database = {
           contact_person: string | null
           contact_type: Database["public"]["Enums"]["bd_contact_type"]
           created_at: string
+          custom_fields: Json
           email: string | null
           first_contacted_date: string | null
           id: string
@@ -189,6 +190,7 @@ export type Database = {
           contact_person?: string | null
           contact_type?: Database["public"]["Enums"]["bd_contact_type"]
           created_at?: string
+          custom_fields?: Json
           email?: string | null
           first_contacted_date?: string | null
           id?: string
@@ -203,6 +205,7 @@ export type Database = {
           contact_person?: string | null
           contact_type?: Database["public"]["Enums"]["bd_contact_type"]
           created_at?: string
+          custom_fields?: Json
           email?: string | null
           first_contacted_date?: string | null
           id?: string
@@ -254,6 +257,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_field_defs: {
+        Row: {
+          created_at: string
+          field_key: string
+          field_type: Database["public"]["Enums"]["custom_field_type"]
+          id: string
+          is_active: boolean
+          label: string
+          options: string[]
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          field_key: string
+          field_type?: Database["public"]["Enums"]["custom_field_type"]
+          id?: string
+          is_active?: boolean
+          label: string
+          options?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          field_key?: string
+          field_type?: Database["public"]["Enums"]["custom_field_type"]
+          id?: string
+          is_active?: boolean
+          label?: string
+          options?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       email_send_log: {
         Row: {
@@ -506,6 +545,7 @@ export type Database = {
         | "Meeting Scheduled"
         | "Active Referral Source"
         | "Inactive"
+      custom_field_type: "text" | "number" | "date" | "dropdown"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -648,6 +688,7 @@ export const Constants = {
         "Active Referral Source",
         "Inactive",
       ],
+      custom_field_type: ["text", "number", "date", "dropdown"],
     },
   },
 } as const
