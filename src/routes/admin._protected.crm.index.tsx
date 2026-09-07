@@ -44,7 +44,10 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: () => listBusinessContacts(),
+  loader: async () => {
+    const [data, views] = await Promise.all([listBusinessContacts(), listSavedViews()]);
+    return { ...data, savedViews: views.views };
+  },
   component: CrmPage,
   pendingComponent: CrmSkeleton,
   errorComponent: () => (
