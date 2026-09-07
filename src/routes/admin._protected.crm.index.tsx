@@ -501,6 +501,123 @@ function CrmPage() {
   );
 }
 
+function SavedViewsBar({
+  views,
+  activeId,
+  onApply,
+  onReset,
+  onSave,
+  onDelete,
+}: {
+  views: SavedView[];
+  activeId: string | null;
+  onApply: (v: SavedView) => void;
+  onReset: () => void;
+  onSave: (name: string) => Promise<void>;
+  onDelete: (v: SavedView) => Promise<void>;
+}) {
+  const [naming, setNaming] = useState(false);
+  const [name, setName] = useState("");
+
+  const active = views.find((v) => v.id === activeId) ?? null;
+
+  return (
+    <div className="mb-6 rounded-3xl border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <Star className="h-3.5 w-3.5 text-accent-foreground" /> Saved views
+        </span>
+        <button
+          type="button"
+          onClick={onReset}
+          aria-pressed={activeId === null}
+          className={`rounded-full px-4 py-2 text-xs transition-colors ${activeId === null ? "bg-accent text-accent-foreground" : "border border-border text-muted-foreground hover:text-foreground"}`}
+        >
+          All contacts
+        </button>
+        {views.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            onClick={() => onApply(v)}
+            aria-pressed={activeId === v.id}
+            className={`rounded-full px-4 py-2 text-xs transition-colors ${activeId === v.id ? "bg-accent text-accent-foreground" : "border border-border text-muted-foreground hover:text-foreground"}`}
+          >
+            {v.name}
+          </button>
+        ))}
+        <div className="ml-auto flex items-center gap-2">
+          {active && (
+            <button
+              type="button"
+              onClick={() => void onDelete(active)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Delete view
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setName(active?.name ?? "");
+              setNaming((v) => !v);
+            }}
+            aria-expanded={naming}
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 px-4 py-2 text-xs font-medium hover:bg-secondary"
+          >
+            <Plus className="h-3.5 w-3.5 text-accent-foreground" /> Save current view
+          </button>
+        </div>
+      </div>
+
+      {naming && (
+        <form
+          className="mt-4 flex flex-wrap items-end gap-3 border-t border-border pt-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const trimmed = name.trim();
+            if (!trimmed) {
+              toast.error("Give the view a name.");
+              return;
+            }
+            void onSave(trimmed).then(() => {
+              setNaming(false);
+              setName("");
+            });
+          }}
+        >
+          <div className="min-w-56 flex-1">
+            <label htmlFor="view-name" className="text-sm text-muted-foreground">
+              View name
+            </label>
+            <input
+              id="view-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={60}
+              placeholder="Hot Leads This Week"
+              className={`mt-2 ${inputClass}`}
+            />
+          </div>
+          <button type="submit" className="btn-gold rounded-full px-5 py-2.5 text-sm font-medium">
+            Save view
+          </button>
+          <button
+            type="button"
+            onClick={() => setNaming(false)}
+            className="rounded-full border border-border px-5 py-2.5 text-sm"
+          >
+            Cancel
+          </button>
+        </form>
+      )}
+      <p className="mt-3 text-xs text-muted-foreground">
+        Views save your search, filters, sort order, columns, and list or kanban mode. They are private to your account.
+      </p>
+    </div>
+  );
+}
+
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="rounded-3xl border border-dashed border-gold/50 bg-card p-12 text-center">
