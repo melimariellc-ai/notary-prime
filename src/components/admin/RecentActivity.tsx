@@ -42,7 +42,7 @@ function ActivityDescription({ description }: { description: string }) {
         <br />
         <span className="font-medium">{subject}</span>
       </p>
-      {body && (
+      {isReply && body && (
         <p className="mt-2 line-clamp-3 whitespace-pre-line border-t border-border pt-2 text-muted-foreground">
           {body}
         </p>
