@@ -284,7 +284,13 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
     }
   }
 
-  if (active.length === 0 && dismissed.length === 0) return null;
+  if (active.length === 0 && dismissed.length === 0)
+    return (
+      <div className="rounded-3xl border border-border bg-card/40 p-6 text-sm text-muted-foreground">
+        No text message delivery failures recorded — all clear.
+      </div>
+    );
+
 
   const Entry = ({ a, isDismissed }: { a: Appointment; isDismissed: boolean }) => (
     <li className="rounded-xl border border-border bg-card p-4">
