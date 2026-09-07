@@ -254,29 +254,13 @@ function validateContact(data: ContactInput) {
 }
 
 async function findDuplicates(
-  supabase: { from: (t: string) => any },
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => any },
   name: string,
   phone: string | null,
   excludeId?: string,
 ): Promise<DuplicateMatch[]> {
-  const { data } = await supabase
-    .from("business_contacts")
-    .select("id, business_name, phone")
-    .limit(2000);
-
-  const wantName = name.trim().toLowerCase();
-  const wantPhone = digits(phone);
-
-  return ((data ?? []) as { id: string; business_name: string; phone: string | null }[])
-    .filter((row) => row.id !== excludeId)
-    .map((row) => {
-      if (row.business_name.trim().toLowerCase() === wantName)
-        return { ...row, reason: "name" as const };
-      if (wantPhone && wantPhone.length >= 10 && digits(row.phone) === wantPhone)
-        return { ...row, reason: "phone" as const };
-      return null;
-    })
-    .filter((m): m is DuplicateMatch => m !== null);
+  const [matches] = await findSimilarContacts(supabase, [{ name, phone }]);
+  return (matches ?? []).filter((m) => m.id !== excludeId);
 }
 
 export const checkContactDuplicates = createServerFn({ method: "POST" })
