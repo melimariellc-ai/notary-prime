@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Mail, Shield, UserPlus } from "lucide-react";
-import { PageHero } from "@/components/site/PageHero";
+import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { createAdminUser, getMyRole } from "@/lib/users.functions";
 
 export const Route = createFileRoute("/admin/_protected/users")({
