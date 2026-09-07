@@ -344,6 +344,10 @@ function ContactDetailPage() {
               ))}
             </ol>
           )}
+
+          <div className="mt-12">
+            <AuditTrail table="business_contacts" recordId={contact.id} />
+          </div>
         </div>
       </AdminSection>
 
