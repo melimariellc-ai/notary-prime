@@ -31,6 +31,16 @@ import {
   type DuplicateMatch,
   type ImportRow,
 } from "@/lib/crm.functions";
+import {
+  COLUMN_KEYS,
+  COLUMN_LABELS,
+  deleteSavedView,
+  listSavedViews,
+  saveView,
+  type ColumnKey,
+  type SavedView,
+  type ViewConfig,
+} from "@/lib/views.functions";
 
 export const Route = createFileRoute("/admin/_protected/crm/")({
   head: () => ({
