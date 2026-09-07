@@ -343,7 +343,7 @@ function ContactDetailPage() {
                       {new Date(`${a.activity_date}T00:00:00`).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="mt-2 whitespace-pre-line text-sm leading-relaxed">{a.description}</p>
+                  <ActivityBody description={a.description} />
                 </li>
               ))}
             </ol>
