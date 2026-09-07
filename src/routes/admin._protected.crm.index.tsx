@@ -669,19 +669,21 @@ function KanbanCard({
 function DuplicateWarning({ matches }: { matches: DuplicateMatch[] }) {
   return (
     <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm">
-      <p className="font-medium">Possible duplicate{matches.length === 1 ? "" : "s"} already in the CRM:</p>
+      <p className="font-medium">
+        Close match{matches.length === 1 ? "" : "es"} already in the CRM — compare before adding:
+      </p>
       <ul className="mt-2 grid gap-1">
         {matches.map((m) => (
-          <li key={`${m.id}-${m.reason}`}>
+          <li key={`${m.id}-${m.reason}`} className="flex flex-wrap items-baseline gap-x-2">
             <Link
               to="/admin/crm/$contactId"
               params={{ contactId: m.id }}
               className="text-accent-foreground underline underline-offset-4"
             >
               {m.business_name}
-            </Link>{" "}
+            </Link>
             <span className="text-muted-foreground">
-              — matching {m.reason === "name" ? "business name" : "phone number"}
+              — {m.score}% match on {m.reason === "name" ? "business name" : "phone number"}
               {m.phone ? ` (${m.phone})` : ""}
             </span>
           </li>
@@ -1061,7 +1063,8 @@ function BulkImport({ onImported }: { onImported: () => void }) {
                           <span className="text-destructive">{r.errors.join(" ")}</span>
                         ) : r.duplicates.length > 0 ? (
                           <span className="text-accent-foreground">
-                            Possible duplicate of {r.duplicates.map((d) => d.business_name).join(", ")}
+                            Possible duplicate of{" "}
+                            {r.duplicates.map((d) => `${d.business_name} (${d.score}%)`).join(", ")}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">Ready</span>

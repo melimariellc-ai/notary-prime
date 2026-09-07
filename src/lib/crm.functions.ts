@@ -58,7 +58,54 @@ export type DuplicateMatch = {
   business_name: string;
   phone: string | null;
   reason: "name" | "phone";
+  /** 0-100 similarity of the closest matching field. */
+  score: number;
 };
+
+/** Contacts at or above this similarity are treated as possible duplicates. */
+export const DUPLICATE_THRESHOLD = 0.8;
+
+type SimilarRow = {
+  input_index: number;
+  id: string;
+  business_name: string;
+  phone: string | null;
+  name_score: number;
+  phone_score: number;
+  reason: "name" | "phone";
+};
+
+/** Fuzzy (pg_trgm) duplicate lookup for one or many candidate rows. */
+async function findSimilarContacts(
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => any },
+  candidates: { name: string; phone: string | null }[],
+): Promise<DuplicateMatch[][]> {
+  const buckets: DuplicateMatch[][] = candidates.map(() => []);
+  if (candidates.length === 0) return buckets;
+
+  const { data, error } = await supabase.rpc("find_similar_contacts", {
+    _names: candidates.map((c) => c.name ?? ""),
+    _phones: candidates.map((c) => c.phone ?? ""),
+    _threshold: DUPLICATE_THRESHOLD,
+  });
+  if (error) {
+    console.error("Fuzzy duplicate lookup failed", error);
+    return buckets;
+  }
+
+  for (const row of (data ?? []) as SimilarRow[]) {
+    const bucket = buckets[row.input_index - 1];
+    if (!bucket) continue;
+    bucket.push({
+      id: row.id,
+      business_name: row.business_name,
+      phone: row.phone,
+      reason: row.reason,
+      score: Math.round(Math.max(row.name_score, row.phone_score) * 100),
+    });
+  }
+  return buckets;
+}
 
 const COLUMNS =
   "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at";
@@ -207,29 +254,13 @@ function validateContact(data: ContactInput) {
 }
 
 async function findDuplicates(
-  supabase: { from: (t: string) => any },
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => any },
   name: string,
   phone: string | null,
   excludeId?: string,
 ): Promise<DuplicateMatch[]> {
-  const { data } = await supabase
-    .from("business_contacts")
-    .select("id, business_name, phone")
-    .limit(2000);
-
-  const wantName = name.trim().toLowerCase();
-  const wantPhone = digits(phone);
-
-  return ((data ?? []) as { id: string; business_name: string; phone: string | null }[])
-    .filter((row) => row.id !== excludeId)
-    .map((row) => {
-      if (row.business_name.trim().toLowerCase() === wantName)
-        return { ...row, reason: "name" as const };
-      if (wantPhone && wantPhone.length >= 10 && digits(row.phone) === wantPhone)
-        return { ...row, reason: "phone" as const };
-      return null;
-    })
-    .filter((m): m is DuplicateMatch => m !== null);
+  const [matches] = await findSimilarContacts(supabase, [{ name, phone }]);
+  return (matches ?? []).filter((m) => m.id !== excludeId);
 }
 
 export const checkContactDuplicates = createServerFn({ method: "POST" })
@@ -368,14 +399,8 @@ export const previewContactImport = createServerFn({ method: "POST" })
     return { rows };
   })
   .handler(async ({ data, context }) => {
-    const { data: all } = await context.supabase
-      .from("business_contacts")
-      .select("id, business_name, phone")
-      .limit(2000);
-    const rowsExisting = (all ?? []) as { id: string; business_name: string; phone: string | null }[];
-
     const seenNames = new Set<string>();
-    const result: ImportRow[] = data.rows.map((raw, i) => {
+    const parsed = data.rows.map((raw, i) => {
       const business_name = String(raw["business_name"] ?? "").trim().slice(0, 200);
       const typeRaw = String(raw["contact_type"] ?? "").trim();
       const matchedType = CONTACT_TYPES.find((t) => t.toLowerCase() === typeRaw.toLowerCase());
@@ -385,20 +410,8 @@ export const previewContactImport = createServerFn({ method: "POST" })
 
       const phone = String(raw["phone"] ?? "").trim().slice(0, 40) || null;
       const key = business_name.toLowerCase();
-      const duplicates: DuplicateMatch[] = [];
-      if (business_name && seenNames.has(key)) {
-        errors.push("Duplicated inside this file.");
-      }
+      if (business_name && seenNames.has(key)) errors.push("Duplicated inside this file.");
       if (business_name) seenNames.add(key);
-
-      const wantPhone = digits(phone);
-      for (const row of rowsExisting) {
-        if (business_name && row.business_name.trim().toLowerCase() === key) {
-          duplicates.push({ ...row, reason: "name" });
-        } else if (wantPhone.length >= 10 && digits(row.phone) === wantPhone) {
-          duplicates.push({ ...row, reason: "phone" });
-        }
-      }
 
       return {
         rowNumber: i + 1,
@@ -409,9 +422,18 @@ export const previewContactImport = createServerFn({ method: "POST" })
         email: String(raw["email"] ?? "").trim().slice(0, 200) || null,
         referral_source: String(raw["referral_source"] ?? "").trim().slice(0, 500) || null,
         errors,
-        duplicates,
       };
     });
+
+    const buckets = await findSimilarContacts(
+      context.supabase as never,
+      parsed.map((r) => ({ name: r.business_name, phone: r.phone })),
+    );
+
+    const result: ImportRow[] = parsed.map((row, i) => ({
+      ...row,
+      duplicates: buckets[i] ?? [],
+    }));
 
     return { rows: result };
   });

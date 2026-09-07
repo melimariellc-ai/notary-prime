@@ -389,6 +389,18 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      find_similar_contacts: {
+        Args: { _names: string[]; _phones: string[]; _threshold?: number }
+        Returns: {
+          business_name: string
+          id: string
+          input_index: number
+          name_score: number
+          phone: string
+          phone_score: number
+          reason: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
