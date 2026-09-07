@@ -235,19 +235,65 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 <Search className="h-4 w-4" />
               </button>
 
-              <Link
-                to="/admin/dashboard"
-                hash="needs-attention"
-                aria-label={`Overdue follow-ups: ${overdue.length}`}
-                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 hover:bg-white/10"
-              >
-                <Bell className="h-4 w-4" />
-                {overdue.length > 0 && (
-                  <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
-                    {overdue.length}
-                  </span>
+              <div className="relative" ref={notifRef}>
+                <button
+                  type="button"
+                  onClick={openNotifications}
+                  aria-expanded={notifOpen}
+                  aria-haspopup="menu"
+                  aria-label={`Notifications: ${unreadCount} unread`}
+                  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 hover:bg-white/10"
+                >
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
+                  >
+                    <p className="border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                      Notifications
+                    </p>
+                    {notifications.length === 0 ? (
+                      <p className="px-4 py-5 text-sm text-muted-foreground">
+                        You're all caught up — no overdue follow-ups or new replies.
+                      </p>
+                    ) : (
+                      <ul className="max-h-96 divide-y divide-border overflow-y-auto">
+                        {notifications.map((n) => (
+                          <li key={n.id}>
+                            {n.contactId ? (
+                              <Link
+                                to="/admin/crm/$contactId"
+                                params={{ contactId: n.contactId }}
+                                onClick={() => setNotifOpen(false)}
+                                className="block px-4 py-3 text-left hover:bg-secondary"
+                              >
+                                <NotificationBody n={n} unread={!readIds.includes(n.id)} />
+                              </Link>
+                            ) : (
+                              <Link
+                                to="/admin/dashboard"
+                                hash="needs-attention"
+                                onClick={() => setNotifOpen(false)}
+                                className="block px-4 py-3 text-left hover:bg-secondary"
+                              >
+                                <NotificationBody n={n} unread={!readIds.includes(n.id)} />
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
-              </Link>
+              </div>
+
             </>
           )}
 
