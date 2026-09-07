@@ -635,3 +635,248 @@ export const patchBusinessContact = createServerFn({ method: "POST" })
     }
     return { ok: true as const, message: "" };
   });
+
+/* ------------------------------ Duplicate management ------------------------------ */
+
+export type DuplicateGroupContact = BusinessContact & { referralCount: number; activityCount: number };
+
+export type DuplicateGroup = {
+  key: string;
+  /** Highest similarity across the pair, 0-100. */
+  score: number;
+  nameScore: number;
+  phoneScore: number;
+  matchedFields: string[];
+  contacts: DuplicateGroupContact[];
+};
+
+export const listDuplicateGroups = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("business_contacts")
+      .select(COLUMNS)
+      .order("created_at", { ascending: true })
+      .limit(1000);
+
+    if (error) {
+      console.error("Failed to load contacts for duplicate scan", error);
+      throw new Error("Could not scan for duplicates.");
+    }
+
+    const contacts = (data ?? []) as unknown as BusinessContact[];
+    if (contacts.length === 0) return { groups: [] as DuplicateGroup[] };
+
+    const { data: similar, error: rpcErr } = await context.supabase.rpc("find_similar_contacts", {
+      _names: contacts.map((c) => c.business_name ?? ""),
+      _phones: contacts.map((c) => c.phone ?? ""),
+      _threshold: DUPLICATE_THRESHOLD,
+    });
+    if (rpcErr) {
+      console.error("Duplicate scan failed", rpcErr);
+      throw new Error("Could not scan for duplicates.");
+    }
+
+    const byId = new Map(contacts.map((c) => [c.id, c]));
+
+    type Pair = { a: string; b: string; nameScore: number; phoneScore: number };
+    const pairs = new Map<string, Pair>();
+    for (const row of (similar ?? []) as SimilarRow[]) {
+      const source = contacts[row.input_index - 1];
+      if (!source || source.id === row.id) continue;
+      const [a, b] = source.id < row.id ? [source.id, row.id] : [row.id, source.id];
+      const key = `${a}|${b}`;
+      const existing = pairs.get(key);
+      const nameScore = Math.max(existing?.nameScore ?? 0, row.name_score ?? 0);
+      const phoneScore = Math.max(existing?.phoneScore ?? 0, row.phone_score ?? 0);
+      pairs.set(key, { a, b, nameScore, phoneScore });
+    }
+
+    // Union-find so a chain of similar contacts becomes one group.
+    const parent = new Map<string, string>();
+    const find = (id: string): string => {
+      const p = parent.get(id) ?? id;
+      if (p === id) return id;
+      const root = find(p);
+      parent.set(id, root);
+      return root;
+    };
+    const union = (x: string, y: string) => {
+      const rx = find(x);
+      const ry = find(y);
+      if (rx !== ry) parent.set(rx, ry);
+    };
+    for (const p of pairs.values()) union(p.a, p.b);
+
+    const clusters = new Map<string, Set<string>>();
+    const clusterPairs = new Map<string, Pair[]>();
+    for (const p of pairs.values()) {
+      const root = find(p.a);
+      const set = clusters.get(root) ?? new Set<string>();
+      set.add(p.a);
+      set.add(p.b);
+      clusters.set(root, set);
+      const list = clusterPairs.get(root) ?? [];
+      list.push(p);
+      clusterPairs.set(root, list);
+    }
+    if (clusters.size === 0) return { groups: [] as DuplicateGroup[] };
+
+    const allIds = [...new Set([...clusters.values()].flatMap((s) => [...s]))];
+
+    const { data: appts } = await context.supabase
+      .from("appointments")
+      .select("referred_by")
+      .in("referred_by", allIds)
+      .limit(5000);
+    const referralCounts: Record<string, number> = {};
+    for (const a of appts ?? []) {
+      const key = a.referred_by as string | null;
+      if (key) referralCounts[key] = (referralCounts[key] ?? 0) + 1;
+    }
+
+    const { data: acts } = await context.supabase
+      .from("contact_activities")
+      .select("contact_id")
+      .in("contact_id", allIds)
+      .limit(10000);
+    const activityCounts: Record<string, number> = {};
+    for (const a of acts ?? []) {
+      const key = a.contact_id as string;
+      activityCounts[key] = (activityCounts[key] ?? 0) + 1;
+    }
+
+    const groups: DuplicateGroup[] = [];
+    for (const [root, ids] of clusters) {
+      const members = [...ids]
+        .map((id) => byId.get(id))
+        .filter((c): c is BusinessContact => Boolean(c))
+        .map((c) => ({
+          ...c,
+          referralCount: referralCounts[c.id] ?? 0,
+          activityCount: activityCounts[c.id] ?? 0,
+        }));
+      if (members.length < 2) continue;
+
+      const list = clusterPairs.get(root) ?? [];
+      const nameScore = Math.round(Math.max(0, ...list.map((p) => p.nameScore)) * 100);
+      const phoneScore = Math.round(Math.max(0, ...list.map((p) => p.phoneScore)) * 100);
+      const matchedFields: string[] = [];
+      if (nameScore >= DUPLICATE_THRESHOLD * 100) matchedFields.push("Business name");
+      if (phoneScore >= DUPLICATE_THRESHOLD * 100) matchedFields.push("Phone");
+
+      groups.push({
+        key: root,
+        score: Math.max(nameScore, phoneScore),
+        nameScore,
+        phoneScore,
+        matchedFields,
+        contacts: members.sort((x, y) => x.created_at.localeCompare(y.created_at)),
+      });
+    }
+
+    groups.sort((a, b) => b.score - a.score);
+    return { groups };
+  });
+
+export const mergeBusinessContacts = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { keepId: string; mergeIds: string[] }) => {
+    const keepId = uuid(data.keepId);
+    const mergeIds = [...new Set((Array.isArray(data.mergeIds) ? data.mergeIds : []).map((id) => uuid(id)))].filter(
+      (id) => id !== keepId,
+    );
+    if (mergeIds.length === 0) throw new Error("Choose at least one duplicate to merge.");
+    return { keepId, mergeIds };
+  })
+  .handler(async ({ data, context }) => {
+    const ids = [data.keepId, ...data.mergeIds];
+    const { data: rows, error } = await context.supabase.from("business_contacts").select(COLUMNS).in("id", ids);
+    if (error || !rows) {
+      console.error("Merge lookup failed", error);
+      return { ok: false as const, message: "Could not load those contacts." };
+    }
+
+    const all = rows as unknown as BusinessContact[];
+    const keep = all.find((c) => c.id === data.keepId);
+    if (!keep) return { ok: false as const, message: "The contact to keep no longer exists." };
+    const others = all.filter((c) => c.id !== data.keepId);
+
+    // Fill only blanks on the surviving record.
+    const patch: Record<string, unknown> = {};
+    const fillable = [
+      "contact_person",
+      "phone",
+      "email",
+      "first_contacted_date",
+      "next_follow_up_date",
+      "referral_source",
+    ] as const;
+    for (const field of fillable) {
+      if (keep[field]) continue;
+      const donor = others.find((c) => c[field]);
+      if (donor) patch[field] = donor[field];
+    }
+    const custom_fields: CustomFieldValues = { ...(keep.custom_fields ?? {}) };
+    let customChanged = false;
+    for (const other of others) {
+      for (const [k, v] of Object.entries(other.custom_fields ?? {})) {
+        if (custom_fields[k] === undefined || custom_fields[k] === null || custom_fields[k] === "") {
+          if (v !== null && v !== undefined && v !== "") {
+            custom_fields[k] = v;
+            customChanged = true;
+          }
+        }
+      }
+    }
+    if (customChanged) patch["custom_fields"] = custom_fields;
+
+    if (Object.keys(patch).length > 0) {
+      const { error: upErr } = await context.supabase
+        .from("business_contacts")
+        .update(patch as never)
+        .eq("id", data.keepId);
+      if (upErr) {
+        console.error("Merge update failed", upErr);
+        return { ok: false as const, message: "Could not update the surviving contact." };
+      }
+    }
+
+    const { error: actErr } = await context.supabase
+      .from("contact_activities")
+      .update({ contact_id: data.keepId })
+      .in("contact_id", data.mergeIds);
+    if (actErr) {
+      console.error("Merge activity move failed", actErr);
+      return { ok: false as const, message: "Could not move the activity history." };
+    }
+
+    const { error: apptErr } = await context.supabase
+      .from("appointments")
+      .update({ referred_by: data.keepId })
+      .in("referred_by", data.mergeIds);
+    if (apptErr) console.error("Merge referral move failed", apptErr);
+
+    const { error: inboundErr } = await context.supabase
+      .from("inbound_emails")
+      .update({ contact_id: data.keepId })
+      .in("contact_id", data.mergeIds);
+    if (inboundErr) console.error("Merge inbound move failed", inboundErr);
+
+    const summary = others.map((c) => c.business_name).join(", ");
+    await context.supabase.from("contact_activities").insert({
+      contact_id: data.keepId,
+      activity_date: new Date().toISOString().slice(0, 10),
+      activity_type: "Note" as ActivityType,
+      description: `Merged duplicate record(s): ${summary}.`,
+      created_by: context.userId,
+    });
+
+    const { error: delErr } = await context.supabase.from("business_contacts").delete().in("id", data.mergeIds);
+    if (delErr) {
+      console.error("Merge delete failed", delErr);
+      return { ok: false as const, message: "History moved, but the duplicates could not be removed." };
+    }
+
+    return { ok: true as const, merged: data.mergeIds.length, message: "" };
+  });
