@@ -58,6 +58,10 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { stage?: string } => {
+    const stage = typeof search.stage === "string" ? search.stage : undefined;
+    return stage && (PIPELINE_STAGES as readonly string[]).includes(stage) ? { stage } : {};
+  },
   loader: async () => {
     const [data, views] = await Promise.all([listBusinessContacts(), listSavedViews()]);
     return { ...data, savedViews: views.views };
