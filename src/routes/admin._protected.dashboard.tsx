@@ -5,6 +5,8 @@ import { CalendarClock, UserPlus, Users } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CrmOverview, CrmOverviewSkeleton } from "@/components/admin/CrmOverview";
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
+import { InboundRepliesCard } from "@/components/admin/InboundReplies";
+
 import { listBusinessContacts } from "@/lib/crm.functions";
 import { getMyRole } from "@/lib/users.functions";
 
@@ -83,10 +85,12 @@ function DashboardPage() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           {canCrm && (
-            <div className="lg:col-span-2">
+            <div className="grid gap-6 lg:col-span-2">
               <RecentActivityCard />
+              <InboundRepliesCard />
             </div>
           )}
+
 
           <div className="grid gap-4">
             <QuickLink
