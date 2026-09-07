@@ -32,7 +32,7 @@ export type Appointment = {
   assigned_notary_id: string | null;
   referred_by: string | null;
   fee_amount: number | null;
-
+  sms_dismissed_at: string | null;
 };
 
 
