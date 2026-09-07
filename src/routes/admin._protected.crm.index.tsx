@@ -559,7 +559,7 @@ function KanbanView({
               const [id, from] = payload.split("|");
               if (id) void move(id, stage, from ?? "");
             }}
-            className={`rounded-3xl border bg-card p-4 transition-colors ${dragOver === stage ? "border-gold bg-accent/40" : "border-border"}`}
+            className={`w-72 shrink-0 self-start rounded-3xl border bg-card p-4 transition-colors ${dragOver === stage ? "border-gold bg-accent/40" : "border-border"}`}
           >
             <h2 className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               <span className="inline-flex items-center gap-2">
