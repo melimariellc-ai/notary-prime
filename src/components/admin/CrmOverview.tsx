@@ -158,13 +158,19 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
           </div>
           <ul className="mt-6 grid gap-2 text-xs">
             {counts.map(({ stage, count }) => (
-              <li key={stage} className="flex items-center gap-2 text-muted-foreground">
-                <span
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: STAGE_COLORS[stage] }}
-                />
-                <span className="flex-1 truncate text-foreground">{stage}</span>
-                <span>{total > 0 ? Math.round((count / total) * 100) : 0}%</span>
+              <li key={stage}>
+                <Link
+                  to="/admin/crm"
+                  search={{ stage }}
+                  className="-mx-2 flex items-center gap-2 rounded-lg px-2 py-1 text-muted-foreground transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: STAGE_COLORS[stage] }}
+                  />
+                  <span className="flex-1 truncate text-foreground">{stage}</span>
+                  <span>{total > 0 ? Math.round((count / total) * 100) : 0}%</span>
+                </Link>
               </li>
             ))}
           </ul>
