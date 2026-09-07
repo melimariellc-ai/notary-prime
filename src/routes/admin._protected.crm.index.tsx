@@ -19,6 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { CustomFieldInputs, customFieldsFromForm } from "@/components/admin/CustomFields";
 import { STAGE_COLORS } from "@/components/admin/CrmOverview";
 import {
   CONTACT_TYPES,
@@ -983,6 +984,7 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
       first_contacted_date: String(fd.get("first_contacted_date") ?? ""),
       next_follow_up_date: String(fd.get("next_follow_up_date") ?? ""),
       referral_source: String(fd.get("referral_source") ?? ""),
+      customFields: customFieldsFromForm(fd),
     };
   }
 
@@ -1108,6 +1110,8 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             className={`mt-2 ${inputClass}`}
           />
         </div>
+
+        <CustomFieldInputs />
 
         {duplicates.length > 0 && (
           <div className="sm:col-span-2 grid gap-3">
