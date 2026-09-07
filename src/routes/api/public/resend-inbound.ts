@@ -64,8 +64,11 @@ const displayName = (value: string): string | null => {
   return name ? name : null;
 };
 
+const strip = (value: string) => value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+
 const trim = (value: string, max: number) =>
   value.length > max ? `${value.slice(0, max)}…` : value;
+
 
 export const Route = createFileRoute("/api/public/resend-inbound")({
   server: {
