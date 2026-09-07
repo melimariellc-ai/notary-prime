@@ -58,7 +58,54 @@ export type DuplicateMatch = {
   business_name: string;
   phone: string | null;
   reason: "name" | "phone";
+  /** 0-100 similarity of the closest matching field. */
+  score: number;
 };
+
+/** Contacts at or above this similarity are treated as possible duplicates. */
+export const DUPLICATE_THRESHOLD = 0.8;
+
+type SimilarRow = {
+  input_index: number;
+  id: string;
+  business_name: string;
+  phone: string | null;
+  name_score: number;
+  phone_score: number;
+  reason: "name" | "phone";
+};
+
+/** Fuzzy (pg_trgm) duplicate lookup for one or many candidate rows. */
+async function findSimilarContacts(
+  supabase: { rpc: (fn: string, args: Record<string, unknown>) => any },
+  candidates: { name: string; phone: string | null }[],
+): Promise<DuplicateMatch[][]> {
+  const buckets: DuplicateMatch[][] = candidates.map(() => []);
+  if (candidates.length === 0) return buckets;
+
+  const { data, error } = await supabase.rpc("find_similar_contacts", {
+    _names: candidates.map((c) => c.name ?? ""),
+    _phones: candidates.map((c) => c.phone ?? ""),
+    _threshold: DUPLICATE_THRESHOLD,
+  });
+  if (error) {
+    console.error("Fuzzy duplicate lookup failed", error);
+    return buckets;
+  }
+
+  for (const row of (data ?? []) as SimilarRow[]) {
+    const bucket = buckets[row.input_index - 1];
+    if (!bucket) continue;
+    bucket.push({
+      id: row.id,
+      business_name: row.business_name,
+      phone: row.phone,
+      reason: row.reason,
+      score: Math.round(Math.max(row.name_score, row.phone_score) * 100),
+    });
+  }
+  return buckets;
+}
 
 const COLUMNS =
   "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at";
