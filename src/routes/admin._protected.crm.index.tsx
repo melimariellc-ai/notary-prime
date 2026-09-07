@@ -301,6 +301,15 @@ function CrmPage() {
           <EmptyState onAdd={() => setShowAdd(true)} />
         ) : (
           <>
+            <SavedViewsBar
+              views={savedViews}
+              activeId={activeViewId}
+              onApply={applyView}
+              onReset={resetView}
+              onSave={onSaveView}
+              onDelete={onDeleteView}
+            />
+
             <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label htmlFor="contact-search" className="text-sm text-muted-foreground">
