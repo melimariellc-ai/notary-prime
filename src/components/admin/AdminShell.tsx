@@ -98,12 +98,76 @@ export function AdminShell({ email, children }: { email?: string | null; childre
     [contacts, today],
   );
 
+  const fetchReplies = useServerFn(listInboundReplies);
+  const { data: replyData } = useQuery({
+    queryKey: ["inbound-replies"],
+    queryFn: () => fetchReplies(),
+    enabled: canCrm,
+  });
+
+  const notifications = useMemo<NotificationItem[]>(() => {
+    const replies: NotificationItem[] = (replyData?.items ?? []).map((r) => ({
+      id: `reply:${r.id}`,
+      kind: "reply",
+      title: r.business_name ?? r.from_name ?? r.from_email,
+      detail: r.subject ?? "(no subject)",
+      at: r.received_at,
+      contactId: r.contact_id ?? null,
+    }));
+    const follows: NotificationItem[] = overdue.map((c) => ({
+      id: `overdue:${c.id}:${c.next_follow_up_date}`,
+      kind: "overdue",
+      title: c.business_name,
+      detail: `Follow-up due ${c.next_follow_up_date}`,
+      at: c.next_follow_up_date as string,
+      contactId: c.id,
+    }));
+    return [...replies, ...follows].sort((a, b) => (a.at < b.at ? 1 : -1));
+  }, [replyData, overdue]);
+
+  const [readIds, setReadIds] = useState<string[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const unreadCount = notifications.filter((n) => !readIds.includes(n.id)).length;
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(NOTIF_READ_KEY);
+      if (raw) setReadIds(JSON.parse(raw) as string[]);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function openNotifications() {
+    setNotifOpen((open) => {
+      if (open) return false;
+      const ids = Array.from(new Set([...readIds, ...notifications.map((n) => n.id)]));
+      setReadIds(ids);
+      try {
+        window.localStorage.setItem(NOTIF_READ_KEY, JSON.stringify(ids.slice(-500)));
+      } catch {
+        /* ignore */
+      }
+      return true;
+    });
+  }
+
+  useEffect(() => {
+    function onDocNotif(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
+    }
+    document.addEventListener("mousedown", onDocNotif);
+    return () => document.removeEventListener("mousedown", onDocNotif);
+  }, []);
+
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     const stored = window.localStorage.getItem("admin-nav-collapsed");
