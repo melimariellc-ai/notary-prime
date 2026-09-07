@@ -37,7 +37,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Work",
     items: [
-      { to: "/admin", label: "Appointment Requests", icon: CalendarClock, exact: true },
+      { to: "/admin", label: "Appointment Requests", icon: CalendarClock, exact: true, need: "crm" },
       { to: "/admin/crm", label: "Business Development CRM", icon: Users, exact: false, need: "crm" },
     ],
   },
