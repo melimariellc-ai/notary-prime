@@ -1,10 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { AlertTriangle, Lock, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
+import { AlertTriangle, Check, Lock, Mail, MapPin, Phone, RotateCcw, UserCheck, Video } from "lucide-react";
+import { toast } from "sonner";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
-import { assignNotary, getAppointments, type NotaryOption, type ReferralContactOption } from "@/lib/admin.functions";
+import {
+  assignNotary,
+  getAppointments,
+  setSmsDismissed,
+  type Appointment,
+  type NotaryOption,
+  type ReferralContactOption,
+} from "@/lib/admin.functions";
 import { setAppointmentReferral } from "@/lib/crm.functions";
 
 export const Route = createFileRoute("/admin/_protected/")({
