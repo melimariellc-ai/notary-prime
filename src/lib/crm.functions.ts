@@ -582,7 +582,7 @@ export const patchBusinessContact = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("business_contacts")
-      .update({ [data.field]: data.value })
+      .update({ [data.field]: data.value } as never)
       .eq("id", data.id);
     if (error) {
       console.error("Failed to patch contact", error);
