@@ -212,7 +212,7 @@ function CrmPage() {
           <EmptyState onAdd={() => setShowAdd(true)} />
         ) : (
           <>
-            <div className="mt-2 grid gap-4 lg:grid-cols-4">
+            <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label htmlFor="contact-search" className="text-sm text-muted-foreground">
                   Search contacts
@@ -265,7 +265,7 @@ function CrmPage() {
                   ))}
                 </select>
               </div>
-              <div className="flex items-end justify-between gap-3">
+              <div className="flex min-w-0 flex-wrap items-end justify-between gap-3">
                 <label className="inline-flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
@@ -273,7 +273,7 @@ function CrmPage() {
                     onChange={(e) => setDueOnly(e.target.checked)}
                     className="h-4 w-4 accent-[var(--gold)]"
                   />
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                     <CalendarClock className="h-4 w-4 text-accent-foreground" /> Due only ({dueCount})
                   </span>
                 </label>
@@ -541,7 +541,7 @@ function KanbanView({
   }
 
   return (
-    <div className="mt-6 grid gap-4 lg:grid-cols-5">
+    <div className="mt-6 flex gap-4 overflow-x-auto pb-4">
       {PIPELINE_STAGES.map((stage) => {
         const column = rows.filter((c) => c.pipeline_stage === stage);
         return (
@@ -559,7 +559,7 @@ function KanbanView({
               const [id, from] = payload.split("|");
               if (id) void move(id, stage, from ?? "");
             }}
-            className={`rounded-3xl border bg-card p-4 transition-colors ${dragOver === stage ? "border-gold bg-accent/40" : "border-border"}`}
+            className={`w-72 shrink-0 self-start rounded-3xl border bg-card p-4 transition-colors ${dragOver === stage ? "border-gold bg-accent/40" : "border-border"}`}
           >
             <h2 className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               <span className="inline-flex items-center gap-2">
