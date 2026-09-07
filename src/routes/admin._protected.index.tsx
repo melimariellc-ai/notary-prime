@@ -77,18 +77,24 @@ function AdminPage() {
         eyebrow="Work"
         title={<>Appointment <span className="italic font-light text-gradient-gold">requests.</span></>}
         intro={`${appointments.length} request${appointments.length === 1 ? "" : "s"} received, newest first.`}
+        actions={<SmsStatusButton failures={failedSms} open={smsOpen} onToggle={() => setSmsOpen((v) => !v)} />}
       />
       <AdminSection>
         <div>
-          <SmsDeliveryLog failures={failedSms} />
+          {smsOpen && (
+            <div className="mb-8">
+              <SmsDeliveryLog failures={failedSms} />
+            </div>
+          )}
 
           {appointments.length === 0 ? (
-            <p className="mt-8 rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
+            <p className="rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
               No requests yet. New submissions from the Book page will appear here.
             </p>
           ) : (
 
-            <div className="mt-8 grid gap-4">
+            <div className="grid gap-4">
+
               {appointments.map((a) => (
                 <article key={a.id} className="rounded-3xl border border-border bg-card p-6 md:p-8">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
