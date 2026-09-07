@@ -148,6 +148,7 @@ function GroupCard({ group }: { group: DuplicateGroup }) {
         {group.contacts.map((contact) => (
           <ContactCard
             key={contact.id}
+            groupKey={group.key}
             contact={contact}
             selected={contact.id === keepId}
             onSelect={() => {
@@ -201,10 +202,12 @@ function GroupCard({ group }: { group: DuplicateGroup }) {
 }
 
 function ContactCard({
+  groupKey,
   contact,
   selected,
   onSelect,
 }: {
+  groupKey: string;
   contact: DuplicateGroupContact;
   selected: boolean;
   onSelect: () => void;
@@ -218,7 +221,7 @@ function ContactCard({
       <label className="flex cursor-pointer items-start gap-3">
         <input
           type="radio"
-          name={`keep-${contact.id.slice(0, 8)}-${selected}`}
+          name={`keep-${groupKey}`}
           checked={selected}
           onChange={onSelect}
           className="mt-1 h-4 w-4 accent-current"
