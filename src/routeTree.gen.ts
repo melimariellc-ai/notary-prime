@@ -34,6 +34,7 @@ import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/pub
 import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
 import { Route as AdminProtectedReportsRouteImport } from './routes/admin._protected.reports'
 import { Route as AdminProtectedFieldsRouteImport } from './routes/admin._protected.fields'
+import { Route as AdminProtectedDuplicatesRouteImport } from './routes/admin._protected.duplicates'
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as AdminProtectedCrmIndexRouteImport } from './routes/admin._protected.crm.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -165,6 +166,12 @@ const AdminProtectedFieldsRoute = AdminProtectedFieldsRouteImport.update({
   path: '/fields',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
+const AdminProtectedDuplicatesRoute =
+  AdminProtectedDuplicatesRouteImport.update({
+    id: '/duplicates',
+    path: '/duplicates',
+    getParentRoute: () => AdminProtectedRoute,
+  } as any)
 const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -207,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/fields': typeof AdminProtectedFieldsRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/users': typeof AdminProtectedUsersRoute
@@ -237,6 +245,7 @@ export interface FileRoutesByTo {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/fields': typeof AdminProtectedFieldsRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/users': typeof AdminProtectedUsersRoute
@@ -268,6 +277,7 @@ export interface FileRoutesById {
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
+  '/admin/_protected/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/_protected/fields': typeof AdminProtectedFieldsRoute
   '/admin/_protected/reports': typeof AdminProtectedReportsRoute
   '/admin/_protected/users': typeof AdminProtectedUsersRoute
@@ -300,6 +310,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/dashboard'
+    | '/admin/duplicates'
     | '/admin/fields'
     | '/admin/reports'
     | '/admin/users'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas'
     | '/admin/dashboard'
+    | '/admin/duplicates'
     | '/admin/fields'
     | '/admin/reports'
     | '/admin/users'
@@ -360,6 +372,7 @@ export interface FileRouteTypes {
     | '/service-areas/$city'
     | '/service-areas/'
     | '/admin/_protected/dashboard'
+    | '/admin/_protected/duplicates'
     | '/admin/_protected/fields'
     | '/admin/_protected/reports'
     | '/admin/_protected/users'
@@ -571,6 +584,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedFieldsRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
+    '/admin/_protected/duplicates': {
+      id: '/admin/_protected/duplicates'
+      path: '/duplicates'
+      fullPath: '/admin/duplicates'
+      preLoaderRoute: typeof AdminProtectedDuplicatesRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
     '/admin/_protected/dashboard': {
       id: '/admin/_protected/dashboard'
       path: '/dashboard'
@@ -604,6 +624,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
+  AdminProtectedDuplicatesRoute: typeof AdminProtectedDuplicatesRoute
   AdminProtectedFieldsRoute: typeof AdminProtectedFieldsRoute
   AdminProtectedReportsRoute: typeof AdminProtectedReportsRoute
   AdminProtectedUsersRoute: typeof AdminProtectedUsersRoute
@@ -614,6 +635,7 @@ interface AdminProtectedRouteChildren {
 
 const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
+  AdminProtectedDuplicatesRoute: AdminProtectedDuplicatesRoute,
   AdminProtectedFieldsRoute: AdminProtectedFieldsRoute,
   AdminProtectedReportsRoute: AdminProtectedReportsRoute,
   AdminProtectedUsersRoute: AdminProtectedUsersRoute,
