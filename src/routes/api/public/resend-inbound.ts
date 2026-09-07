@@ -10,6 +10,9 @@ type InboundEvent = {
     to?: string[];
     subject?: string;
     created_at?: string;
+    /** Resend delivers the reply body inline on email.received. */
+    text?: string;
+    html?: string;
   };
 };
 
@@ -108,28 +111,33 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           return new Response("Invalid email id", { status: 400 });
         }
 
-        // The webhook payload carries metadata only — fetch the body from Resend.
+        // Resend usually includes the body inline on email.received; only call the
+        // API when it doesn't (send-only API keys can't read receiving anyway).
         let received: ReceivedEmail = {};
-        try {
-          const res = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
-            headers: { Authorization: `Bearer ${apiKey}` },
-          });
-          if (!res.ok) {
-            const detail = await res.text();
-            console.error(`resend-inbound: fetch failed [${res.status}]: ${detail}`);
-          } else {
-            received = (await res.json()) as ReceivedEmail;
+        const inlineText = event.data?.text ?? "";
+        const inlineHtml = event.data?.html ?? "";
+        if (!inlineText && !inlineHtml) {
+          try {
+            const res = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
+              headers: { Authorization: `Bearer ${apiKey}` },
+            });
+            if (!res.ok) {
+              const detail = await res.text();
+              console.error(`resend-inbound: fetch failed [${res.status}]: ${detail}`);
+            } else {
+              received = (await res.json()) as ReceivedEmail;
+            }
+          } catch (error) {
+            console.error("resend-inbound: fetch threw", error);
           }
-        } catch (error) {
-          console.error("resend-inbound: fetch threw", error);
         }
 
         const fromRaw = received.from ?? event.data?.from ?? "";
         if (!fromRaw) return new Response("Missing sender", { status: 400 });
         const fromEmail = bareEmail(fromRaw);
         const subject = (received.subject ?? event.data?.subject ?? "").slice(0, 500);
-        const text = (received.text ?? "").slice(0, 20000);
-        const html = (received.html ?? "").slice(0, 100000);
+        const text = (inlineText || received.text || "").slice(0, 20000);
+        const html = (inlineHtml || received.html || "").slice(0, 100000);
         const to = (received.to ?? event.data?.to ?? []).map(bareEmail);
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
