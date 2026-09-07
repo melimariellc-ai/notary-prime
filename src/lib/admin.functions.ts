@@ -131,3 +131,30 @@ export const assignNotary = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+/** Acknowledge (or restore) an SMS delivery failure without deleting the record. */
+export const setSmsDismissed = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { appointmentId: string; dismissed: boolean }) => {
+    const appointmentId = String(data.appointmentId ?? "");
+    if (!/^[0-9a-f-]{36}$/i.test(appointmentId)) throw new Error("Invalid appointment.");
+    return { appointmentId, dismissed: Boolean(data.dismissed) };
+  })
+  .handler(async ({ data, context }) => {
+    if (!(await canManageAppointments(context.supabase, context.userId)))
+      return { ok: false as const, message: "You do not have permission to update this log." };
+
+    const { error } = await context.supabase
+      .from("appointments")
+      .update({
+        sms_dismissed_at: data.dismissed ? new Date().toISOString() : null,
+        sms_dismissed_by: data.dismissed ? context.userId : null,
+      })
+      .eq("id", data.appointmentId);
+
+    if (error) {
+      console.error("Failed to update SMS dismissal", error);
+      return { ok: false as const, message: "Could not update the delivery log." };
+    }
+    return { ok: true as const };
+  });
