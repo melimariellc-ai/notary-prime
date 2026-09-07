@@ -364,6 +364,38 @@ function CrmPage() {
                   </span>
                 </label>
 
+                 <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowColumns((v) => !v)}
+                    aria-expanded={showColumns}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs hover:bg-secondary"
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5 text-accent-foreground" /> Columns
+                  </button>
+                  {showColumns && (
+                    <div className="absolute right-0 z-40 mt-2 w-52 rounded-2xl border border-border bg-card p-3 shadow-lg">
+                      {COLUMN_KEYS.map((key) => (
+                        <label key={key} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-secondary">
+                          <input
+                            type="checkbox"
+                            checked={columns.includes(key)}
+                            onChange={(e) =>
+                              setColumns((prev) =>
+                                e.target.checked
+                                  ? COLUMN_KEYS.filter((k) => k === key || prev.includes(k))
+                                  : prev.filter((k) => k !== key),
+                              )
+                            }
+                            className="h-4 w-4 accent-[var(--gold)]"
+                          />
+                          {COLUMN_LABELS[key]}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div
                   role="group"
                   aria-label="View mode"
