@@ -399,14 +399,8 @@ export const previewContactImport = createServerFn({ method: "POST" })
     return { rows };
   })
   .handler(async ({ data, context }) => {
-    const { data: all } = await context.supabase
-      .from("business_contacts")
-      .select("id, business_name, phone")
-      .limit(2000);
-    const rowsExisting = (all ?? []) as { id: string; business_name: string; phone: string | null }[];
-
     const seenNames = new Set<string>();
-    const result: ImportRow[] = data.rows.map((raw, i) => {
+    const parsed = data.rows.map((raw, i) => {
       const business_name = String(raw["business_name"] ?? "").trim().slice(0, 200);
       const typeRaw = String(raw["contact_type"] ?? "").trim();
       const matchedType = CONTACT_TYPES.find((t) => t.toLowerCase() === typeRaw.toLowerCase());
@@ -416,20 +410,8 @@ export const previewContactImport = createServerFn({ method: "POST" })
 
       const phone = String(raw["phone"] ?? "").trim().slice(0, 40) || null;
       const key = business_name.toLowerCase();
-      const duplicates: DuplicateMatch[] = [];
-      if (business_name && seenNames.has(key)) {
-        errors.push("Duplicated inside this file.");
-      }
+      if (business_name && seenNames.has(key)) errors.push("Duplicated inside this file.");
       if (business_name) seenNames.add(key);
-
-      const wantPhone = digits(phone);
-      for (const row of rowsExisting) {
-        if (business_name && row.business_name.trim().toLowerCase() === key) {
-          duplicates.push({ ...row, reason: "name" });
-        } else if (wantPhone.length >= 10 && digits(row.phone) === wantPhone) {
-          duplicates.push({ ...row, reason: "phone" });
-        }
-      }
 
       return {
         rowNumber: i + 1,
@@ -440,9 +422,18 @@ export const previewContactImport = createServerFn({ method: "POST" })
         email: String(raw["email"] ?? "").trim().slice(0, 200) || null,
         referral_source: String(raw["referral_source"] ?? "").trim().slice(0, 500) || null,
         errors,
-        duplicates,
       };
     });
+
+    const buckets = await findSimilarContacts(
+      context.supabase as never,
+      parsed.map((r) => ({ name: r.business_name, phone: r.phone })),
+    );
+
+    const result: ImportRow[] = parsed.map((row, i) => ({
+      ...row,
+      duplicates: buckets[i] ?? [],
+    }));
 
     return { rows: result };
   });
