@@ -71,21 +71,8 @@ function AdminPage() {
       />
       <AdminSection>
         <div>
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={async () => {
-                await lock({});
-                await router.invalidate();
-              }}
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <LogOut className="h-4 w-4" /> Lock dashboard
-            </button>
-          </div>
-
           {failedSms.length > 0 && (
-            <div className="mt-8 rounded-3xl border border-destructive/40 bg-destructive/5 p-6 md:p-8">
+            <div className="rounded-3xl border border-destructive/40 bg-destructive/5 p-6 md:p-8">
               <h2 className="inline-flex items-center gap-2 font-display text-xl tracking-tight text-destructive">
                 <AlertTriangle className="h-5 w-5" /> SMS delivery log: {failedSms.length} failure
                 {failedSms.length === 1 ? "" : "s"}
