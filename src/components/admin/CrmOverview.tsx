@@ -29,7 +29,7 @@ function Donut({ counts, total }: { counts: { stage: string; count: number }[]; 
 
   return (
     <div className="relative mx-auto h-52 w-52">
-      <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="img" aria-label="Pipeline stage mix">
+      <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="group" aria-label="Pipeline stage mix">
         <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--color-muted)" strokeWidth="20" />
         {total > 0 &&
           counts.map(({ stage, count }) => {
@@ -37,17 +37,24 @@ function Donut({ counts, total }: { counts: { stage: string; count: number }[]; 
             const length = (count / total) * circumference;
             const dash = `${length} ${circumference - length}`;
             const el = (
-              <circle
+              <Link
                 key={stage}
-                cx="90"
-                cy="90"
-                r={radius}
-                fill="none"
-                stroke={STAGE_COLORS[stage]}
-                strokeWidth="20"
-                strokeDasharray={dash}
-                strokeDashoffset={-offset}
-              />
+                to="/admin/crm"
+                search={{ stage }}
+                aria-label={`${stage}: ${count} contacts. View filtered list.`}
+                className="cursor-pointer outline-none [&>circle]:transition-[stroke-width,opacity] [&>circle]:hover:stroke-[26] focus-visible:[&>circle]:stroke-[26]"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  r={radius}
+                  fill="none"
+                  stroke={STAGE_COLORS[stage]}
+                  strokeWidth="20"
+                  strokeDasharray={dash}
+                  strokeDashoffset={-offset}
+                />
+              </Link>
             );
             offset += length;
             return el;
