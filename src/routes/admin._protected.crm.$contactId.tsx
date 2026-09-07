@@ -720,3 +720,27 @@ function OutreachPanel({
     </div>
   );
 }
+
+/** Splits a logged email into a labelled subject line and its body paragraph. */
+function ActivityBody({ description }: { description: string }) {
+  const text = description ?? "";
+  const match = text.match(/^(Subject:\s*(.+)|Reply received:\s*(.+))\n+([\s\S]+)$/);
+  if (match) {
+    const subject = (match[2] ?? match[3] ?? "").trim();
+    const body = match[4]?.trim() ?? "";
+    const isReply = text.startsWith("Reply received:");
+    return (
+      <div className="mt-2 text-sm leading-relaxed">
+        <p>
+          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+            {isReply ? "Reply · Subject" : "Subject"}
+          </span>
+          <br />
+          <span className="font-medium">{subject}</span>
+        </p>
+        <p className="mt-3 whitespace-pre-line border-t border-border pt-3">{body}</p>
+      </div>
+    );
+  }
+  return <p className="mt-2 whitespace-pre-line text-sm leading-relaxed">{text}</p>;
+}
