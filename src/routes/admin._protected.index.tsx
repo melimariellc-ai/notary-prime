@@ -218,7 +218,7 @@ function AdminPage() {
             </div>
           )}
         </div>
-      </section>
+      </AdminSection>
     </>
   );
 }
