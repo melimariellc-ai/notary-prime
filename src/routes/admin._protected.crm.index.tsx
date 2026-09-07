@@ -212,7 +212,7 @@ function CrmPage() {
           <EmptyState onAdd={() => setShowAdd(true)} />
         ) : (
           <>
-            <div className="mt-2 grid gap-4 lg:grid-cols-4">
+            <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label htmlFor="contact-search" className="text-sm text-muted-foreground">
                   Search contacts
