@@ -22,6 +22,37 @@ import logoAsset from "@/assets/enliven-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyRole } from "@/lib/users.functions";
 import { listBusinessContacts } from "@/lib/crm.functions";
+import { listInboundReplies } from "@/lib/inbound.functions";
+
+type NotificationItem = {
+  id: string;
+  kind: "reply" | "overdue";
+  title: string;
+  detail: string;
+  at: string;
+  contactId: string | null;
+};
+
+const NOTIF_READ_KEY = "admin-notifications-read";
+
+function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean }) {
+  return (
+    <div className="flex gap-2">
+      <span
+        aria-hidden="true"
+        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${unread ? "bg-gold" : "bg-transparent"}`}
+      />
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium">{n.title}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {n.kind === "reply" ? "Reply received · " : ""}
+          {n.detail}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 type NavItem = {
   to: string;
@@ -98,12 +129,76 @@ export function AdminShell({ email, children }: { email?: string | null; childre
     [contacts, today],
   );
 
+  const fetchReplies = useServerFn(listInboundReplies);
+  const { data: replyData } = useQuery({
+    queryKey: ["inbound-replies"],
+    queryFn: () => fetchReplies(),
+    enabled: canCrm,
+  });
+
+  const notifications = useMemo<NotificationItem[]>(() => {
+    const replies: NotificationItem[] = (replyData?.items ?? []).map((r) => ({
+      id: `reply:${r.id}`,
+      kind: "reply",
+      title: r.business_name ?? r.from_name ?? r.from_email,
+      detail: r.subject ?? "(no subject)",
+      at: r.received_at,
+      contactId: r.contact_id ?? null,
+    }));
+    const follows: NotificationItem[] = overdue.map((c) => ({
+      id: `overdue:${c.id}:${c.next_follow_up_date}`,
+      kind: "overdue",
+      title: c.business_name,
+      detail: `Follow-up due ${c.next_follow_up_date}`,
+      at: c.next_follow_up_date as string,
+      contactId: c.id,
+    }));
+    return [...replies, ...follows].sort((a, b) => (a.at < b.at ? 1 : -1));
+  }, [replyData, overdue]);
+
+  const [readIds, setReadIds] = useState<string[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const unreadCount = notifications.filter((n) => !readIds.includes(n.id)).length;
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(NOTIF_READ_KEY);
+      if (raw) setReadIds(JSON.parse(raw) as string[]);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function openNotifications() {
+    setNotifOpen((open) => {
+      if (open) return false;
+      const ids = Array.from(new Set([...readIds, ...notifications.map((n) => n.id)]));
+      setReadIds(ids);
+      try {
+        window.localStorage.setItem(NOTIF_READ_KEY, JSON.stringify(ids.slice(-500)));
+      } catch {
+        /* ignore */
+      }
+      return true;
+    });
+  }
+
+  useEffect(() => {
+    function onDocNotif(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
+    }
+    document.addEventListener("mousedown", onDocNotif);
+    return () => document.removeEventListener("mousedown", onDocNotif);
+  }, []);
+
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     const stored = window.localStorage.getItem("admin-nav-collapsed");
@@ -235,19 +330,65 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 <Search className="h-4 w-4" />
               </button>
 
-              <Link
-                to="/admin/dashboard"
-                hash="needs-attention"
-                aria-label={`Overdue follow-ups: ${overdue.length}`}
-                className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 hover:bg-white/10"
-              >
-                <Bell className="h-4 w-4" />
-                {overdue.length > 0 && (
-                  <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
-                    {overdue.length}
-                  </span>
+              <div className="relative" ref={notifRef}>
+                <button
+                  type="button"
+                  onClick={openNotifications}
+                  aria-expanded={notifOpen}
+                  aria-haspopup="menu"
+                  aria-label={`Notifications: ${unreadCount} unread`}
+                  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 hover:bg-white/10"
+                >
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
+                  >
+                    <p className="border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                      Notifications
+                    </p>
+                    {notifications.length === 0 ? (
+                      <p className="px-4 py-5 text-sm text-muted-foreground">
+                        You're all caught up — no overdue follow-ups or new replies.
+                      </p>
+                    ) : (
+                      <ul className="max-h-96 divide-y divide-border overflow-y-auto">
+                        {notifications.map((n) => (
+                          <li key={n.id}>
+                            {n.contactId ? (
+                              <Link
+                                to="/admin/crm/$contactId"
+                                params={{ contactId: n.contactId }}
+                                onClick={() => setNotifOpen(false)}
+                                className="block px-4 py-3 text-left hover:bg-secondary"
+                              >
+                                <NotificationBody n={n} unread={!readIds.includes(n.id)} />
+                              </Link>
+                            ) : (
+                              <Link
+                                to="/admin/dashboard"
+                                hash="needs-attention"
+                                onClick={() => setNotifOpen(false)}
+                                className="block px-4 py-3 text-left hover:bg-secondary"
+                              >
+                                <NotificationBody n={n} unread={!readIds.includes(n.id)} />
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
-              </Link>
+              </div>
+
             </>
           )}
 
