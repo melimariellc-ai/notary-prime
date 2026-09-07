@@ -12,6 +12,9 @@ import {
   Plus,
   Rows3,
   Search,
+  SlidersHorizontal,
+  Star,
+  Trash2,
   Upload,
   Users,
 } from "lucide-react";
@@ -31,6 +34,16 @@ import {
   type DuplicateMatch,
   type ImportRow,
 } from "@/lib/crm.functions";
+import {
+  COLUMN_KEYS,
+  COLUMN_LABELS,
+  deleteSavedView,
+  listSavedViews,
+  saveView,
+  type ColumnKey,
+  type SavedView,
+  type ViewConfig,
+} from "@/lib/views.functions";
 
 export const Route = createFileRoute("/admin/_protected/crm/")({
   head: () => ({
@@ -44,7 +57,10 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: () => listBusinessContacts(),
+  loader: async () => {
+    const [data, views] = await Promise.all([listBusinessContacts(), listSavedViews()]);
+    return { ...data, savedViews: views.views };
+  },
   component: CrmPage,
   pendingComponent: CrmSkeleton,
   errorComponent: () => (
@@ -82,9 +98,11 @@ function CrmSkeleton() {
 }
 
 function CrmPage() {
-  const { contacts, referrals } = Route.useLoaderData();
+  const { contacts, referrals, savedViews } = Route.useLoaderData();
   const router = useRouter();
   const bulkStage = useServerFn(bulkSetPipelineStage);
+  const persistView = useServerFn(saveView);
+  const removeView = useServerFn(deleteSavedView);
 
   const [view, setView] = useState<"list" | "kanban">("list");
   const [typeFilter, setTypeFilter] = useState("");
@@ -93,10 +111,81 @@ function CrmPage() {
   const [dueOnly, setDueOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("business_name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [columns, setColumns] = useState<ColumnKey[]>(["type", "stage", "follow_up", "referrals"]);
+  const [activeViewId, setActiveViewId] = useState<string | null>(null);
+  const [showColumns, setShowColumns] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [bulkTarget, setBulkTarget] = useState<string>(PIPELINE_STAGES[0]);
   const [showAdd, setShowAdd] = useState(false);
   const [showImport, setShowImport] = useState(false);
+
+  const currentConfig: ViewConfig = {
+    query,
+    typeFilter,
+    stageFilter,
+    dueOnly,
+    sortKey,
+    sortDir,
+    columns,
+    view,
+  };
+
+  function applyView(v: SavedView) {
+    setActiveViewId(v.id);
+    setQuery(v.config.query);
+    setTypeFilter(v.config.typeFilter);
+    setStageFilter(v.config.stageFilter);
+    setDueOnly(v.config.dueOnly);
+    setSortKey(v.config.sortKey as SortKey);
+    setSortDir(v.config.sortDir);
+    setColumns(v.config.columns);
+    setView(v.config.view);
+    setSelected([]);
+  }
+
+  function resetView() {
+    setActiveViewId(null);
+    setQuery("");
+    setTypeFilter("");
+    setStageFilter("");
+    setDueOnly(false);
+    setSortKey("business_name");
+    setSortDir("asc");
+    setColumns(["type", "stage", "follow_up", "referrals"]);
+    setView("list");
+    setSelected([]);
+  }
+
+  async function onSaveView(name: string) {
+    try {
+      const res = await persistView({ data: { name, config: currentConfig } });
+      if (res.ok) {
+        setActiveViewId(res.view.id);
+        toast.success(`Saved “${res.view.name}”.`);
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save that view.");
+    }
+  }
+
+  async function onDeleteView(v: SavedView) {
+    try {
+      const res = await removeView({ data: { id: v.id } });
+      if (res.ok) {
+        if (activeViewId === v.id) resetView();
+        toast.success(`Deleted “${v.name}”.`);
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete that view.");
+    }
+  }
+
 
   const today = todayISO();
   const dueCount = contacts.filter((c) => c.next_follow_up_date && c.next_follow_up_date <= today).length;
@@ -212,6 +301,15 @@ function CrmPage() {
           <EmptyState onAdd={() => setShowAdd(true)} />
         ) : (
           <>
+            <SavedViewsBar
+              views={savedViews}
+              activeId={activeViewId}
+              onApply={applyView}
+              onReset={resetView}
+              onSave={onSaveView}
+              onDelete={onDeleteView}
+            />
+
             <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label htmlFor="contact-search" className="text-sm text-muted-foreground">
@@ -277,6 +375,38 @@ function CrmPage() {
                     <CalendarClock className="h-4 w-4 text-accent-foreground" /> Due only ({dueCount})
                   </span>
                 </label>
+
+                 <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowColumns((v) => !v)}
+                    aria-expanded={showColumns}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs hover:bg-secondary"
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5 text-accent-foreground" /> Columns
+                  </button>
+                  {showColumns && (
+                    <div className="absolute right-0 z-40 mt-2 w-52 rounded-2xl border border-border bg-card p-3 shadow-lg">
+                      {COLUMN_KEYS.map((key) => (
+                        <label key={key} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-secondary">
+                          <input
+                            type="checkbox"
+                            checked={columns.includes(key)}
+                            onChange={(e) =>
+                              setColumns((prev) =>
+                                e.target.checked
+                                  ? COLUMN_KEYS.filter((k) => k === key || prev.includes(k))
+                                  : prev.filter((k) => k !== key),
+                              )
+                            }
+                            className="h-4 w-4 accent-[var(--gold)]"
+                          />
+                          {COLUMN_LABELS[key]}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 <div
                   role="group"
@@ -359,6 +489,7 @@ function CrmPage() {
                 sortKey={sortKey}
                 sortDir={sortDir}
                 onSort={toggleSort}
+                columns={columns}
               />
             ) : (
               <KanbanView rows={visible} referrals={referrals} today={today} />
@@ -367,6 +498,123 @@ function CrmPage() {
         )}
       </AdminSection>
     </>
+  );
+}
+
+function SavedViewsBar({
+  views,
+  activeId,
+  onApply,
+  onReset,
+  onSave,
+  onDelete,
+}: {
+  views: SavedView[];
+  activeId: string | null;
+  onApply: (v: SavedView) => void;
+  onReset: () => void;
+  onSave: (name: string) => Promise<void>;
+  onDelete: (v: SavedView) => Promise<void>;
+}) {
+  const [naming, setNaming] = useState(false);
+  const [name, setName] = useState("");
+
+  const active = views.find((v) => v.id === activeId) ?? null;
+
+  return (
+    <div className="mb-6 rounded-3xl border border-border bg-card p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          <Star className="h-3.5 w-3.5 text-accent-foreground" /> Saved views
+        </span>
+        <button
+          type="button"
+          onClick={onReset}
+          aria-pressed={activeId === null}
+          className={`rounded-full px-4 py-2 text-xs transition-colors ${activeId === null ? "bg-accent text-accent-foreground" : "border border-border text-muted-foreground hover:text-foreground"}`}
+        >
+          All contacts
+        </button>
+        {views.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            onClick={() => onApply(v)}
+            aria-pressed={activeId === v.id}
+            className={`rounded-full px-4 py-2 text-xs transition-colors ${activeId === v.id ? "bg-accent text-accent-foreground" : "border border-border text-muted-foreground hover:text-foreground"}`}
+          >
+            {v.name}
+          </button>
+        ))}
+        <div className="ml-auto flex items-center gap-2">
+          {active && (
+            <button
+              type="button"
+              onClick={() => void onDelete(active)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Delete view
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setName(active?.name ?? "");
+              setNaming((v) => !v);
+            }}
+            aria-expanded={naming}
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 px-4 py-2 text-xs font-medium hover:bg-secondary"
+          >
+            <Plus className="h-3.5 w-3.5 text-accent-foreground" /> Save current view
+          </button>
+        </div>
+      </div>
+
+      {naming && (
+        <form
+          className="mt-4 flex flex-wrap items-end gap-3 border-t border-border pt-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const trimmed = name.trim();
+            if (!trimmed) {
+              toast.error("Give the view a name.");
+              return;
+            }
+            void onSave(trimmed).then(() => {
+              setNaming(false);
+              setName("");
+            });
+          }}
+        >
+          <div className="min-w-56 flex-1">
+            <label htmlFor="view-name" className="text-sm text-muted-foreground">
+              View name
+            </label>
+            <input
+              id="view-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={60}
+              placeholder="Hot Leads This Week"
+              className={`mt-2 ${inputClass}`}
+            />
+          </div>
+          <button type="submit" className="btn-gold rounded-full px-5 py-2.5 text-sm font-medium">
+            Save view
+          </button>
+          <button
+            type="button"
+            onClick={() => setNaming(false)}
+            className="rounded-full border border-border px-5 py-2.5 text-sm"
+          >
+            Cancel
+          </button>
+        </form>
+      )}
+      <p className="mt-3 text-xs text-muted-foreground">
+        Views save your search, filters, sort order, columns, and list or kanban mode. They are private to your account.
+      </p>
+    </div>
   );
 }
 
@@ -411,6 +659,7 @@ function ListView({
   sortKey,
   sortDir,
   onSort,
+  columns,
 }: {
   rows: BusinessContact[];
   referrals: Referrals;
@@ -421,7 +670,9 @@ function ListView({
   sortKey: SortKey;
   sortDir: "asc" | "desc";
   onSort: (key: SortKey) => void;
+  columns: ColumnKey[];
 }) {
+  const show = (key: ColumnKey) => columns.includes(key);
   const allChecked = rows.length > 0 && rows.every((r) => selected.includes(r.id));
 
   const Header = ({ label, keyName }: { label: string; keyName: SortKey }) => (
@@ -454,10 +705,20 @@ function ListView({
               />
             </th>
             <Header label="Business" keyName="business_name" />
-            <Header label="Type" keyName="contact_type" />
-            <Header label="Stage" keyName="pipeline_stage" />
-            <Header label="Follow-up" keyName="next_follow_up_date" />
-            <Header label="Referred value" keyName="referrals" />
+            {show("type") && <Header label="Type" keyName="contact_type" />}
+            {show("stage") && <Header label="Stage" keyName="pipeline_stage" />}
+            {show("follow_up") && <Header label="Follow-up" keyName="next_follow_up_date" />}
+            {show("referrals") && <Header label="Referred value" keyName="referrals" />}
+            {show("phone") && (
+              <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Phone
+              </th>
+            )}
+            {show("email") && (
+              <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Email
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -487,22 +748,34 @@ function ListView({
                     <span className="mt-0.5 block text-xs text-muted-foreground">{c.contact_person}</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">{c.contact_type}</td>
-                <td className="px-4 py-3">
-                  <StageChip stage={c.pipeline_stage} />
-                </td>
-                <td className="px-4 py-3">
-                  {c.next_follow_up_date ? (
-                    <span className={overdue ? "text-destructive" : "text-muted-foreground"}>
-                      {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {stats.count} job{stats.count === 1 ? "" : "s"} · {money(stats.value)}
-                </td>
+                {show("type") && <td className="px-4 py-3 text-muted-foreground">{c.contact_type}</td>}
+                {show("stage") && (
+                  <td className="px-4 py-3">
+                    <StageChip stage={c.pipeline_stage} />
+                  </td>
+                )}
+                {show("follow_up") && (
+                  <td className="px-4 py-3">
+                    {c.next_follow_up_date ? (
+                      <span className={overdue ? "text-destructive" : "text-muted-foreground"}>
+                        {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                )}
+                {show("referrals") && (
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {stats.count} job{stats.count === 1 ? "" : "s"} · {money(stats.value)}
+                  </td>
+                )}
+                {show("phone") && (
+                  <td className="px-4 py-3 text-muted-foreground">{c.phone || "—"}</td>
+                )}
+                {show("email") && (
+                  <td className="px-4 py-3 text-muted-foreground">{c.email || "—"}</td>
+                )}
               </tr>
             );
           })}
