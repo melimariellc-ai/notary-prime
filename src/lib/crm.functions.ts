@@ -475,3 +475,118 @@ export const setAppointmentReferral = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+/* --------------------------- Recent activity + bulk edits --------------------------- */
+
+export type RecentActivityItem = {
+  id: string;
+  contact_id: string;
+  business_name: string;
+  activity_type: string;
+  description: string;
+  created_at: string;
+};
+
+export const listRecentActivity = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("contact_activities")
+      .select("id, contact_id, activity_type, description, created_at")
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (error) {
+      console.error("Failed to load recent activity", error);
+      return { items: [] as RecentActivityItem[] };
+    }
+
+    const rows = data ?? [];
+    const ids = [...new Set(rows.map((r) => r.contact_id as string))];
+    const names: Record<string, string> = {};
+    if (ids.length > 0) {
+      const { data: contacts } = await context.supabase
+        .from("business_contacts")
+        .select("id, business_name")
+        .in("id", ids);
+      for (const c of contacts ?? []) names[c.id as string] = c.business_name as string;
+    }
+
+    const items: RecentActivityItem[] = rows.map((r) => ({
+      id: r.id as string,
+      contact_id: r.contact_id as string,
+      business_name: names[r.contact_id as string] ?? "Contact",
+      activity_type: String(r.activity_type),
+      description: String(r.description ?? ""),
+      created_at: String(r.created_at),
+    }));
+
+    return { items };
+  });
+
+export const bulkSetPipelineStage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { ids: string[]; stage: string }) => {
+    const stage = String(data.stage ?? "");
+    if (!PIPELINE_STAGES.includes(stage as PipelineStage)) throw new Error("Invalid pipeline stage.");
+    const ids = (Array.isArray(data.ids) ? data.ids : []).slice(0, 500).map((id) => uuid(id));
+    if (ids.length === 0) throw new Error("Select at least one contact.");
+    return { ids, stage: stage as PipelineStage };
+  })
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("business_contacts")
+      .update({ pipeline_stage: data.stage })
+      .in("id", data.ids);
+    if (error) {
+      console.error("Failed bulk stage update", error);
+      return { ok: false as const, updated: 0, message: "Could not update those contacts." };
+    }
+    return { ok: true as const, updated: data.ids.length, message: "" };
+  });
+
+const PATCHABLE = {
+  business_name: (v: unknown) => {
+    const s = text(v, 200);
+    if (!s) throw new Error("Business name is required.");
+    return s;
+  },
+  contact_person: (v: unknown) => text(v, 200),
+  phone: (v: unknown) => text(v, 40),
+  email: (v: unknown) => text(v, 200),
+  referral_source: (v: unknown) => text(v, 500),
+  first_contacted_date: (v: unknown) => dateOrNull(v),
+  next_follow_up_date: (v: unknown) => dateOrNull(v),
+  contact_type: (v: unknown) => {
+    const s = String(v ?? "");
+    if (!CONTACT_TYPES.includes(s as ContactType)) throw new Error("Invalid contact type.");
+    return s;
+  },
+  pipeline_stage: (v: unknown) => {
+    const s = String(v ?? "");
+    if (!PIPELINE_STAGES.includes(s as PipelineStage)) throw new Error("Invalid pipeline stage.");
+    return s;
+  },
+} as const;
+
+export type PatchableField = keyof typeof PATCHABLE;
+
+export const patchBusinessContact = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; field: string; value: string | null }) => {
+    const field = String(data.field ?? "") as PatchableField;
+    const parse = PATCHABLE[field];
+    if (!parse) throw new Error("That field cannot be edited here.");
+    return { id: uuid(data.id), field, value: parse(data.value) as string | null };
+  })
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("business_contacts")
+      .update({ [data.field]: data.value })
+      .eq("id", data.id);
+    if (error) {
+      console.error("Failed to patch contact", error);
+      return { ok: false as const, message: "Could not save that change." };
+    }
+    return { ok: true as const, message: "" };
+  });
