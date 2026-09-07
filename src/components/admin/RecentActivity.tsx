@@ -83,27 +83,26 @@ export function RecentActivityCard() {
           {items.map((item) => {
             const Icon = ICONS[item.activity_type] ?? MessageSquare;
             return (
-              <li key={item.id} className="flex gap-3 py-4 first:pt-0 last:pb-0">
-
-                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                  <Icon className="h-3.5 w-3.5 text-accent-foreground" />
-                </span>
-                <div className="min-w-0">
-                  <p className="flex flex-wrap items-baseline gap-2 text-sm">
-                    <Link
-                      to="/admin/crm/$contactId"
-                      params={{ contactId: item.contact_id }}
-                      className="font-medium underline-offset-4 hover:underline"
-                    >
-                      {item.business_name}
-                    </Link>
-                    <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {item.activity_type}
-                    </span>
-                    <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
-                  </p>
-                  <ActivityDescription description={item.description} />
-                </div>
+              <li key={item.id} className="first:-mt-2 last:-mb-2">
+                <Link
+                  to="/admin/crm/$contactId"
+                  params={{ contactId: item.contact_id }}
+                  className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
+                    <Icon className="h-3.5 w-3.5 text-accent-foreground" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="flex flex-wrap items-baseline gap-2 text-sm">
+                      <span className="font-medium underline-offset-4 group-hover:underline">{item.business_name}</span>
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                        {item.activity_type}
+                      </span>
+                      <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
+                    </p>
+                    <ActivityDescription description={item.description} />
+                  </div>
+                </Link>
               </li>
             );
           })}
