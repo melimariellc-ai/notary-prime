@@ -72,6 +72,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { to: "/admin", label: "Appointment Requests", icon: CalendarClock, exact: true, need: "crm" },
       { to: "/admin/crm", label: "Business Development CRM", icon: Users, exact: false, need: "crm" },
+      { to: "/admin/duplicates", label: "Duplicate Contacts", icon: Copy, exact: true, need: "crm" },
       { to: "/admin/reports", label: "Reports", icon: FileSpreadsheet, exact: true, need: "crm" },
     ],
   },
@@ -88,6 +89,7 @@ const ROUTE_LABELS: { match: (p: string) => boolean; label: string }[] = [
   { match: (p) => p === "/admin/dashboard", label: "Dashboard" },
   { match: (p) => p === "/admin" || p === "/admin/", label: "Appointment Requests" },
   { match: (p) => p.startsWith("/admin/crm"), label: "CRM" },
+  { match: (p) => p.startsWith("/admin/duplicates"), label: "Duplicate Contacts" },
   { match: (p) => p.startsWith("/admin/reports"), label: "Reports" },
   { match: (p) => p.startsWith("/admin/users"), label: "Add User" },
   { match: (p) => p.startsWith("/admin/fields"), label: "Manage Fields" },
