@@ -190,6 +190,15 @@ function ContactDetailPage() {
             )}
           </div>
 
+          <OutreachPanel
+            contactId={contact.id}
+            businessName={contact.business_name}
+            email={contact.email}
+            stage={contact.pipeline_stage}
+          />
+
+
+
           <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
             <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
               <MessageSquare className="h-5 w-5 text-gold" /> Log an activity
