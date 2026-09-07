@@ -178,7 +178,44 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           }
         }
 
+        // Notify the owner that a reply landed.
+        const bodyText = text || strip(html);
+        const notifyTo = process.env["INBOUND_NOTIFY_EMAIL"] ?? "info@enlivennotary.com";
+        const esc = (v: string) =>
+          v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        try {
+          const notifyRes = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+            body: JSON.stringify({
+              from: "Enliven Notary <replies@send.enlivennotary.com>",
+              reply_to: fromEmail,
+              to: [notifyTo],
+              subject: `New reply from ${displayName(fromRaw) ?? fromEmail}${subject ? `: ${subject}` : ""}`,
+              text: [
+                `From: ${fromRaw}`,
+                `Subject: ${subject || "(none)"}`,
+                contact?.business_name
+                  ? `CRM contact: ${contact.business_name}`
+                  : "No matching CRM contact — this reply is saved under Replies received.",
+                "",
+                trim(bodyText, 4000),
+              ].join("\n"),
+              html: `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c">
+<p><strong>From:</strong> ${esc(fromRaw)}<br/><strong>Subject:</strong> ${esc(subject || "(none)")}<br/>
+${contact?.business_name ? `<strong>CRM contact:</strong> ${esc(contact.business_name)}` : "<em>No matching CRM contact — saved under Replies received.</em>"}</p>
+<hr/><div style="white-space:pre-wrap">${esc(trim(bodyText, 4000))}</div></div>`,
+            }),
+          });
+          if (!notifyRes.ok) {
+            console.error("resend-inbound: notification failed", notifyRes.status, await notifyRes.text());
+          }
+        } catch (error) {
+          console.error("resend-inbound: notification threw", error);
+        }
+
         return Response.json({ ok: true, matched: Boolean(contact?.id) });
+
       },
     },
   },
