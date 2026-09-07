@@ -90,21 +90,20 @@ function AdminPage() {
               </button>
             </form>
           </div>
-        </section>
+        </AdminSection>
       </>
     );
   }
 
   return (
     <>
-      <PageHero
-        eyebrow="Private"
+      <AdminPageHeader
+        eyebrow="Work"
         title={<>Appointment <span className="italic font-light text-gradient-gold">requests.</span></>}
         intro={`${appointments.length} request${appointments.length === 1 ? "" : "s"} received, newest first.`}
-        cta={false}
       />
-      <section className="pb-24">
-        <div className="container-luxe">
+      <AdminSection>
+        <div>
           <div className="flex justify-end">
             <button
               type="button"
