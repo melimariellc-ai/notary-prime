@@ -124,11 +124,17 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
           <h2 className="font-display text-2xl tracking-tight">Pipeline breakdown</h2>
-          <div className="mt-6 grid gap-5">
+          <div className="mt-6 grid gap-2">
             {counts.map(({ stage, count }) => (
-              <div key={stage}>
+              <Link
+                key={stage}
+                to="/admin/crm"
+                search={{ stage }}
+                aria-label={`View ${count} contacts in ${stage}`}
+                className="group -mx-3 rounded-2xl px-3 py-2 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
                 <div className="flex items-baseline justify-between text-sm">
-                  <span>{stage}</span>
+                  <span className="transition-colors group-hover:text-accent-foreground">{stage}</span>
                   <span className="text-muted-foreground">{count}</span>
                 </div>
                 <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -140,7 +146,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
                     }}
                   />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
