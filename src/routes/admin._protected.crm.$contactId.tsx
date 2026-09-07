@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ArrowLeft, CalendarClock, Mail, MessageSquare, Phone } from "lucide-react";
+import { ArrowLeft, CalendarClock, Mail, MessageSquare, Phone, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import {
   ACTIVITY_TYPES,
@@ -10,6 +10,8 @@ import {
   getBusinessContact,
   setPipelineStage,
 } from "@/lib/crm.functions";
+import { generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
+
 
 export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
   head: () => ({
