@@ -9,18 +9,51 @@ export const STAGE_COLORS: Record<string, string> = {
   Inactive: "var(--chart-4)",
 };
 
-function StatCard({ value, label, accent }: { value: number; label: string; accent?: boolean }) {
-  return (
-    <div className="rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)]">
+function StatCard({
+  value,
+  label,
+  accent,
+  stage,
+  href,
+}: {
+  value: number;
+  label: string;
+  accent?: boolean;
+  stage?: string;
+  href?: string;
+}) {
+  const inner = (
+    <>
       <p
         className={`font-display text-4xl tracking-tight md:text-5xl ${accent && value > 0 ? "text-destructive" : "text-foreground"}`}
       >
         {value}
       </p>
       <p className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-    </div>
+    </>
+  );
+  const className =
+    "block rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)] transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
+  if (href) {
+    return (
+      <Link to={href} aria-label={`${label}: ${value}. View details.`} className={className}>
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to="/admin/crm"
+      search={stage ? { stage } : {}}
+      aria-label={`${label}: ${value}. View contacts.`}
+      className={className}
+    >
+      {inner}
+    </Link>
   );
 }
+
 
 function Donut({ counts, total }: { counts: { stage: string; count: number }[]; total: number }) {
   const radius = 70;
