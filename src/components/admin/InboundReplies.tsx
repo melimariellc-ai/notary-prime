@@ -45,37 +45,51 @@ export function InboundRepliesCard() {
         </p>
       ) : (
         <ul className="mt-6 divide-y divide-border">
-          {items.map((item) => (
-            <li key={item.id} className="flex gap-3 py-4 first:pt-0 last:pb-0">
-
-              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                <MailOpen className="h-3.5 w-3.5 text-accent-foreground" />
-              </span>
-              <div className="min-w-0">
-                <p className="flex flex-wrap items-baseline gap-2 text-sm">
-                  {item.contact_id ? (
-                    <Link
-                      to="/admin/crm/$contactId"
-                      params={{ contactId: item.contact_id }}
-                      className="font-medium underline-offset-4 hover:underline"
-                    >
+          {items.map((item) => {
+            const body = (
+              <>
+                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
+                  <MailOpen className="h-3.5 w-3.5 text-accent-foreground" />
+                </span>
+                <div className="min-w-0">
+                  <p className="flex flex-wrap items-baseline gap-2 text-sm">
+                    <span className="font-medium">
                       {item.business_name ?? item.from_name ?? item.from_email}
-                    </Link>
-                  ) : (
-                    <span className="font-medium">{item.from_name ?? item.from_email}</span>
-                  )}
-                  <span className="text-xs text-muted-foreground">· {when(item.received_at)}</span>
-                  {!item.contact_id && (
-                    <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      no matching contact
                     </span>
-                  )}
-                </p>
-                <p className="mt-1 text-sm">{item.subject ?? "(no subject)"}</p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.snippet}</p>
-              </div>
-            </li>
-          ))}
+                    <span className="text-xs text-muted-foreground">· {when(item.received_at)}</span>
+                    {!item.contact_id && (
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                        no matching contact
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-1 text-sm">{item.subject ?? "(no subject)"}</p>
+                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.snippet}</p>
+                </div>
+              </>
+            );
+
+            return (
+              <li key={item.id} className="first:-mt-2 last:-mb-2">
+                {item.contact_id ? (
+                  <Link
+                    to="/admin/crm/$contactId"
+                    params={{ contactId: item.contact_id }}
+                    className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  >
+                    {body}
+                  </Link>
+                ) : (
+                  <a
+                    href={`mailto:${item.from_email}`}
+                    className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  >
+                    {body}
+                  </a>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
