@@ -144,7 +144,7 @@ function UsersPage() {
             </div>
           )}
         </div>
-      </section>
+      </AdminSection>
     </>
   );
 }
