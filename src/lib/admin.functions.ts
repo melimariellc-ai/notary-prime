@@ -52,7 +52,7 @@ export const getAppointments = createServerFn({ method: "GET" })
     // appointments they may see (admins/employees: all, notaries: their own).
     const { data, error } = await context.supabase
       .from("appointments")
-      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, assigned_notary_id, referred_by, fee_amount")
+      .select("id, service, meeting_type, address, preferred_date, preferred_time, name, email, phone, notes, submitted_at, sms_status, sms_error, sms_sent_at, sms_dismissed_at, assigned_notary_id, referred_by, fee_amount")
       .order("submitted_at", { ascending: false })
       .limit(500);
 
