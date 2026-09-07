@@ -95,7 +95,9 @@ function CrmPage() {
       />
       <section className="pb-24">
         <div className="container-luxe">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <Overview contacts={contacts} today={today} />
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-4">
+
             <div className="inline-flex rounded-full border border-border p-1">
               <button
                 type="button"
