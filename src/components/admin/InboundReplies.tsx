@@ -45,9 +45,9 @@ export function InboundRepliesCard() {
         </p>
       ) : (
         <ul className="mt-6 divide-y divide-border">
-
           {items.map((item) => (
-            <li key={item.id} className="flex gap-3">
+            <li key={item.id} className="flex gap-3 py-4 first:pt-0 last:pb-0">
+
               <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
                 <MailOpen className="h-3.5 w-3.5 text-accent-foreground" />
               </span>
