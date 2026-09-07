@@ -273,7 +273,7 @@ function CrmPage() {
                     onChange={(e) => setDueOnly(e.target.checked)}
                     className="h-4 w-4 accent-[var(--gold)]"
                   />
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                     <CalendarClock className="h-4 w-4 text-accent-foreground" /> Due only ({dueCount})
                   </span>
                 </label>
