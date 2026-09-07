@@ -70,7 +70,10 @@ function DashboardPage() {
           crmLoading ? (
             <CrmOverviewSkeleton />
           ) : (
-            <CrmOverview contacts={crm?.contacts ?? []} today={todayISO()} />
+            <>
+              <CrmOverview contacts={crm?.contacts ?? []} today={todayISO()} />
+              <FollowUpCalendar contacts={crm?.contacts ?? []} today={todayISO()} />
+            </>
           )
         ) : roleLoading ? (
           <CrmOverviewSkeleton />
@@ -82,6 +85,7 @@ function DashboardPage() {
             </p>
           </div>
         )}
+
 
         <div className="grid gap-6 lg:grid-cols-3">
           {canCrm && (
