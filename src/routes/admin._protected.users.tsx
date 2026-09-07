@@ -64,14 +64,13 @@ function UsersPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Team"
+      <AdminPageHeader
+        eyebrow="Admin"
         title={<>Add <span className="italic font-light text-gradient-gold">user.</span></>}
         intro="Create an account for a team member. They'll receive a welcome email with a secure link to set their own password."
-        cta={false}
       />
-      <section className="pb-24">
-        <div className="container-luxe max-w-2xl">
+      <AdminSection>
+        <div className="max-w-2xl">
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Checking your permissions…</p>
           ) : !isAdmin ? (
