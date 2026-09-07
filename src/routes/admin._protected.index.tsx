@@ -208,6 +208,113 @@ function AssignRow({
   );
 }
 
+function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
+  const dismiss = useServerFn(setSmsDismissed);
+  const router = useRouter();
+  const [showDismissed, setShowDismissed] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const active = failures.filter((a) => !a.sms_dismissed_at);
+  const dismissed = failures.filter((a) => a.sms_dismissed_at);
+
+  async function toggle(id: string, next: boolean) {
+    setBusy(id);
+    try {
+      const res = await dismiss({ data: { appointmentId: id, dismissed: next } });
+      if (res.ok) {
+        toast.success(next ? "Entry dismissed." : "Entry restored.");
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch {
+      toast.error("Could not update the delivery log.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  if (active.length === 0 && dismissed.length === 0) return null;
+
+  const Entry = ({ a, isDismissed }: { a: Appointment; isDismissed: boolean }) => (
+    <li className="rounded-xl border border-border bg-card p-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className="font-medium">
+          {a.name} · {a.phone}
+        </span>
+        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          {new Date(a.submitted_at).toLocaleString()}
+        </span>
+      </div>
+      <p className={`mt-2 font-mono text-xs break-all ${isDismissed ? "text-muted-foreground" : "text-destructive"}`}>
+        {a.sms_error || "Unknown error from OpenPhone"}
+      </p>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => toggle(a.id, !isDismissed)}
+          disabled={busy === a.id}
+          className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+        >
+          {isDismissed ? <RotateCcw className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
+          {isDismissed ? "Restore" : "Dismiss"}
+        </button>
+        {isDismissed && a.sms_dismissed_at && (
+          <span className="text-xs text-muted-foreground">
+            Dismissed {new Date(a.sms_dismissed_at).toLocaleDateString()}
+          </span>
+        )}
+      </div>
+    </li>
+  );
+
+  return (
+    <div
+      className={`rounded-3xl border p-6 md:p-8 ${
+        active.length > 0 ? "border-destructive/40 bg-destructive/5" : "border-border bg-card/40"
+      }`}
+    >
+      <h2
+        className={`inline-flex items-center gap-2 font-display text-xl tracking-tight ${
+          active.length > 0 ? "text-destructive" : "text-foreground"
+        }`}
+      >
+        <AlertTriangle className="h-5 w-5" /> SMS delivery log:{" "}
+        {active.length > 0
+          ? `${active.length} open failure${active.length === 1 ? "" : "s"}`
+          : "all clear"}
+      </h2>
+
+      {active.length > 0 && (
+        <ul className="mt-4 grid gap-3 text-sm">
+          {active.map((a) => (
+            <Entry key={a.id} a={a} isDismissed={false} />
+          ))}
+        </ul>
+      )}
+
+      {dismissed.length > 0 && (
+        <div className="mt-5">
+          <button
+            type="button"
+            onClick={() => setShowDismissed((v) => !v)}
+            className="text-xs uppercase tracking-[0.18em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            {showDismissed ? "Hide" : "Show"} dismissed history ({dismissed.length})
+          </button>
+          {showDismissed && (
+            <ul className="mt-4 grid gap-3 text-sm">
+              {dismissed.map((a) => (
+                <Entry key={a.id} a={a} isDismissed />
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SmsBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; className: string }> = {
     sent: { label: "SMS sent", className: "border-gold/50 bg-gold/10 text-foreground" },
