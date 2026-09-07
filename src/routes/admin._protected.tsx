@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/_protected")({
@@ -8,5 +9,14 @@ export const Route = createFileRoute("/admin/_protected")({
     if (error || !data.user) throw redirect({ to: "/admin/login" });
     return { user: data.user };
   },
-  component: () => <Outlet />,
+  component: AdminLayout,
 });
+
+function AdminLayout() {
+  const user = Route.useRouteContext().user;
+  return (
+    <AdminShell email={user?.email}>
+      <Outlet />
+    </AdminShell>
+  );
+}
