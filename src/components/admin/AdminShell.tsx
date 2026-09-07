@@ -13,6 +13,7 @@ import {
   Menu,
   PanelLeftOpen,
   Search,
+  SlidersHorizontal,
   UserPlus,
   Users,
   X,
@@ -45,7 +46,10 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Admin",
-    items: [{ to: "/admin/users", label: "Add User", icon: UserPlus, exact: true, need: "admin" }],
+    items: [
+      { to: "/admin/users", label: "Add User", icon: UserPlus, exact: true, need: "admin" },
+      { to: "/admin/fields", label: "Manage Fields", icon: SlidersHorizontal, exact: true, need: "admin" },
+    ],
   },
 ];
 
@@ -55,6 +59,7 @@ const ROUTE_LABELS: { match: (p: string) => boolean; label: string }[] = [
   { match: (p) => p.startsWith("/admin/crm"), label: "CRM" },
   { match: (p) => p.startsWith("/admin/reports"), label: "Reports" },
   { match: (p) => p.startsWith("/admin/users"), label: "Add User" },
+  { match: (p) => p.startsWith("/admin/fields"), label: "Manage Fields" },
 ];
 
 function todayISO() {
