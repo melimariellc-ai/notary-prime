@@ -73,7 +73,7 @@ export function normalizeFieldValue(def: FieldDef, value: unknown): string | num
   return s.slice(0, 1000);
 }
 
-async function loadDefs(supabase: {
+export async function loadFieldDefs(supabase: {
   from: (t: string) => { select: (c: string) => { order: (c: string, o: object) => any } };
 }): Promise<FieldDef[]> {
   const { data, error } = await supabase
@@ -90,7 +90,7 @@ async function loadDefs(supabase: {
 
 export const listFieldDefs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => ({ defs: await loadDefs(context.supabase as never) }));
+  .handler(async ({ context }) => ({ defs: await loadFieldDefs(context.supabase as never) }));
 
 export const createFieldDef = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -101,7 +101,7 @@ export const createFieldDef = createServerFn({ method: "POST" })
     const base = slugify(data.label);
     if (!base) return { ok: false as const, message: "Give the field a name using letters or numbers." };
 
-    const existing = await loadDefs(context.supabase as never);
+    const existing = await loadFieldDefs(context.supabase as never);
     let field_key = base;
     let n = 2;
     while (existing.some((d) => d.field_key === field_key)) field_key = `${base}_${n++}`;
@@ -186,7 +186,7 @@ export const setCustomFieldValue = createServerFn({ method: "POST" })
     value: data.value === null ? null : String(data.value),
   }))
   .handler(async ({ data, context }) => {
-    const defs = await loadDefs(context.supabase as never);
+    const defs = await loadFieldDefs(context.supabase as never);
     const def = defs.find((d) => d.field_key === data.fieldKey);
     if (!def) return { ok: false as const, message: "That field no longer exists." };
 

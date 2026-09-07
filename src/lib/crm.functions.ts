@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { loadFieldDefs, normalizeFieldValue, type CustomFieldValues } from "@/lib/fields.functions";
 
 export const CONTACT_TYPES = [
   "Title Company",
@@ -34,6 +35,7 @@ export type BusinessContact = {
   next_follow_up_date: string | null;
   referral_source: string | null;
   created_at: string;
+  custom_fields: CustomFieldValues;
 };
 
 export type ContactActivity = {
@@ -108,7 +110,7 @@ async function findSimilarContacts(
 }
 
 const COLUMNS =
-  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at";
+  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at, custom_fields";
 
 function text(value: unknown, max = 300): string | null {
   const s = String(value ?? "").trim();
@@ -275,12 +277,33 @@ export const checkContactDuplicates = createServerFn({ method: "POST" })
 
 export const createBusinessContact = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: ContactInput & { force?: boolean }) => ({
+  .inputValidator((data: ContactInput & { force?: boolean; customFields?: Record<string, string> }) => ({
     ...validateContact(data),
     force: Boolean(data.force),
+    customFields: (data.customFields ?? {}) as Record<string, string>,
   }))
   .handler(async ({ data, context }) => {
-    const { force, ...fields } = data;
+    const { force, customFields, ...fields } = data;
+
+    const custom_fields: CustomFieldValues = {};
+    const entries = Object.entries(customFields);
+    if (entries.length > 0) {
+      const defs = await loadFieldDefs(context.supabase as never);
+      for (const [key, raw] of entries) {
+        const def = defs.find((d) => d.field_key === key && d.is_active);
+        if (!def) continue;
+        try {
+          const value = normalizeFieldValue(def, raw);
+          if (value !== null) custom_fields[key] = value;
+        } catch (err) {
+          return {
+            ok: false as const,
+            duplicates: [] as DuplicateMatch[],
+            message: err instanceof Error ? err.message : "Invalid custom field value.",
+          };
+        }
+      }
+    }
 
     if (!force) {
       const matches = await findDuplicates(context.supabase as never, fields.business_name, fields.phone);
@@ -291,7 +314,7 @@ export const createBusinessContact = createServerFn({ method: "POST" })
 
     const { data: row, error } = await context.supabase
       .from("business_contacts")
-      .insert(fields)
+      .insert({ ...fields, custom_fields } as never)
       .select("id")
       .maybeSingle();
 
