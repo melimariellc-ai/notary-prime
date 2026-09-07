@@ -579,10 +579,20 @@ function ListView({
               />
             </th>
             <Header label="Business" keyName="business_name" />
-            <Header label="Type" keyName="contact_type" />
-            <Header label="Stage" keyName="pipeline_stage" />
-            <Header label="Follow-up" keyName="next_follow_up_date" />
-            <Header label="Referred value" keyName="referrals" />
+            {show("type") && <Header label="Type" keyName="contact_type" />}
+            {show("stage") && <Header label="Stage" keyName="pipeline_stage" />}
+            {show("follow_up") && <Header label="Follow-up" keyName="next_follow_up_date" />}
+            {show("referrals") && <Header label="Referred value" keyName="referrals" />}
+            {show("phone") && (
+              <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Phone
+              </th>
+            )}
+            {show("email") && (
+              <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Email
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
