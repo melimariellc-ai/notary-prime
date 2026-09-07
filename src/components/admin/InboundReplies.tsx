@@ -44,7 +44,8 @@ export function InboundRepliesCard() {
           timeline.
         </p>
       ) : (
-        <ul className="mt-6 grid gap-5">
+        <ul className="mt-6 divide-y divide-border">
+
           {items.map((item) => (
             <li key={item.id} className="flex gap-3">
               <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
