@@ -30,6 +30,8 @@ export type Database = {
           preferred_time: string
           referred_by: string | null
           service: string
+          sms_dismissed_at: string | null
+          sms_dismissed_by: string | null
           sms_error: string | null
           sms_sent_at: string | null
           sms_status: string
@@ -50,6 +52,8 @@ export type Database = {
           preferred_time: string
           referred_by?: string | null
           service: string
+          sms_dismissed_at?: string | null
+          sms_dismissed_by?: string | null
           sms_error?: string | null
           sms_sent_at?: string | null
           sms_status?: string
@@ -70,6 +74,8 @@ export type Database = {
           preferred_time?: string
           referred_by?: string | null
           service?: string
+          sms_dismissed_at?: string | null
+          sms_dismissed_by?: string | null
           sms_error?: string | null
           sms_sent_at?: string | null
           sms_status?: string
