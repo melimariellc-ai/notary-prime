@@ -445,6 +445,7 @@ function CrmPage() {
                 sortKey={sortKey}
                 sortDir={sortDir}
                 onSort={toggleSort}
+                columns={columns}
               />
             ) : (
               <KanbanView rows={visible} referrals={referrals} today={today} />
