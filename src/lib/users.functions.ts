@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const SITE_URL = "https://enlivennotary.com";
-const FROM = "Enliven Notary <bookings@send.enlivennotary.com>";
+const FROM = "Enliven Notary <team@send.enlivennotary.com>";
 
 const escapeHtml = (value: string) =>
   value
