@@ -381,6 +381,59 @@ export type Database = {
         }
         Relationships: []
       }
+      inbound_emails: {
+        Row: {
+          contact_id: string | null
+          created_at: string
+          from_email: string
+          from_name: string | null
+          html_body: string | null
+          id: string
+          message_id: string | null
+          received_at: string
+          resend_email_id: string
+          subject: string | null
+          text_body: string | null
+          to_emails: string[]
+        }
+        Insert: {
+          contact_id?: string | null
+          created_at?: string
+          from_email: string
+          from_name?: string | null
+          html_body?: string | null
+          id?: string
+          message_id?: string | null
+          received_at?: string
+          resend_email_id: string
+          subject?: string | null
+          text_body?: string | null
+          to_emails?: string[]
+        }
+        Update: {
+          contact_id?: string | null
+          created_at?: string
+          from_email?: string
+          from_name?: string | null
+          html_body?: string | null
+          id?: string
+          message_id?: string | null
+          received_at?: string
+          resend_email_id?: string
+          subject?: string | null
+          text_body?: string | null
+          to_emails?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inbound_emails_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "business_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string

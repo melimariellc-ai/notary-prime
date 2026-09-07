@@ -28,6 +28,7 @@ import { Route as AdminSetPasswordRouteImport } from './routes/admin.set-passwor
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
+import { Route as ApiPublicResendInboundRouteImport } from './routes/api/public/resend-inbound'
 import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
@@ -132,6 +133,11 @@ const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
+const ApiPublicResendInboundRoute = ApiPublicResendInboundRouteImport.update({
+  id: '/api/public/resend-inbound',
+  path: '/api/public/resend-inbound',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCrmFollowupDigestRoute =
   ApiPublicCrmFollowupDigestRouteImport.update({
     id: '/api/public/crm-followup-digest',
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
+  '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
   '/admin/': typeof AdminProtectedIndexRoute
   '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -235,6 +242,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
+  '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
   '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/crm': typeof AdminProtectedCrmIndexRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/admin/_protected/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
+  '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
   '/admin/_protected/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
+    | '/api/public/resend-inbound'
     | '/admin/'
     | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
+    | '/api/public/resend-inbound'
     | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
     | '/admin/crm'
@@ -354,6 +365,7 @@ export interface FileRouteTypes {
     | '/admin/_protected/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
+    | '/api/public/resend-inbound'
     | '/admin/_protected/'
     | '/admin/_protected/crm/$contactId'
     | '/lovable/email/queue/process'
@@ -378,6 +390,7 @@ export interface RootRouteChildren {
   ServiceAreasIndexRoute: typeof ServiceAreasIndexRoute
   ApiPublicAppointmentNotifyRoute: typeof ApiPublicAppointmentNotifyRoute
   ApiPublicCrmFollowupDigestRoute: typeof ApiPublicCrmFollowupDigestRoute
+  ApiPublicResendInboundRoute: typeof ApiPublicResendInboundRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -516,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedIndexRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
+    '/api/public/resend-inbound': {
+      id: '/api/public/resend-inbound'
+      path: '/api/public/resend-inbound'
+      fullPath: '/api/public/resend-inbound'
+      preLoaderRoute: typeof ApiPublicResendInboundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/crm-followup-digest': {
       id: '/api/public/crm-followup-digest'
       path: '/api/public/crm-followup-digest'
@@ -638,6 +658,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServiceAreasIndexRoute: ServiceAreasIndexRoute,
   ApiPublicAppointmentNotifyRoute: ApiPublicAppointmentNotifyRoute,
   ApiPublicCrmFollowupDigestRoute: ApiPublicCrmFollowupDigestRoute,
+  ApiPublicResendInboundRoute: ApiPublicResendInboundRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
