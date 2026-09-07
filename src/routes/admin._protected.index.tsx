@@ -224,7 +224,41 @@ function AssignRow({
   );
 }
 
+function SmsStatusButton({
+  failures,
+  open,
+  onToggle,
+}: {
+  failures: Appointment[];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const active = failures.filter((a) => !a.sms_dismissed_at).length;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      title="Text message delivery log"
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs uppercase tracking-[0.16em] transition-colors ${
+        active > 0
+          ? "border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/20"
+          : "border-border text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {active > 0 ? <AlertTriangle className="h-4 w-4" /> : <Check className="h-4 w-4 text-gold" />}
+      SMS log
+      {active > 0 && (
+        <span className="rounded-full bg-destructive px-2 py-0.5 text-[0.65rem] text-destructive-foreground">
+          {active}
+        </span>
+      )}
+    </button>
+  );
+}
+
 function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
+
   const dismiss = useServerFn(setSmsDismissed);
   const router = useRouter();
   const [showDismissed, setShowDismissed] = useState(false);
