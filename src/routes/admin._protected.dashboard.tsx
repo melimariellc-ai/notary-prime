@@ -83,10 +83,12 @@ function DashboardPage() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           {canCrm && (
-            <div className="lg:col-span-2">
+            <div className="grid gap-6 lg:col-span-2">
               <RecentActivityCard />
+              <InboundRepliesCard />
             </div>
           )}
+
 
           <div className="grid gap-4">
             <QuickLink
