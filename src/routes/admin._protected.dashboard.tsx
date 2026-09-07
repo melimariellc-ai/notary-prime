@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { CalendarClock, UserPlus, Users } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CrmOverview, CrmOverviewSkeleton } from "@/components/admin/CrmOverview";
+import { FollowUpCalendar } from "@/components/admin/FollowUpCalendar";
+
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
 import { InboundRepliesCard } from "@/components/admin/InboundReplies";
 
