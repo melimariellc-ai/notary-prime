@@ -6,6 +6,7 @@ import {
   Bell,
   CalendarClock,
   FileSpreadsheet,
+  Copy,
   ChevronDown,
   ChevronLeft,
   LayoutDashboard,
