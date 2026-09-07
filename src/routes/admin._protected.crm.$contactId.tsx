@@ -738,7 +738,9 @@ function ActivityBody({ description }: { description: string }) {
           <br />
           <span className="font-medium">{subject}</span>
         </p>
-        <p className="mt-3 whitespace-pre-line border-t border-border pt-3">{body}</p>
+        {isReply && body && (
+          <p className="mt-3 whitespace-pre-line border-t border-border pt-3">{body}</p>
+        )}
       </div>
     );
   }
