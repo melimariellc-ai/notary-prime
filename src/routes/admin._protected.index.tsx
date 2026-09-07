@@ -60,14 +60,13 @@ function AdminPage() {
   if (locked) {
     return (
       <>
-        <PageHero
-          eyebrow="Private"
+        <AdminPageHeader
+          eyebrow="Work"
           title={<>Appointments <span className="italic font-light text-gradient-gold">dashboard.</span></>}
           intro="Enter your passcode to view booking requests."
-          cta={false}
         />
-        <section className="pb-24">
-          <div className="container-luxe max-w-md">
+        <AdminSection>
+          <div className="max-w-md">
             <form onSubmit={onSubmit} className="rounded-3xl border border-border bg-card p-8">
               <label htmlFor="passcode" className="text-sm font-medium">Passcode</label>
               <div className="mt-2 relative">
