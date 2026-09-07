@@ -74,7 +74,7 @@ export const getAppointments = createServerFn({ method: "GET" })
       .limit(1000);
 
     return {
-      locked: false as const,
+      forbidden: false as const,
       appointments: (data ?? []).map((a) => ({
         ...a,
         fee_amount: a.fee_amount === null ? null : Number(a.fee_amount),
