@@ -117,8 +117,8 @@ export const assignNotary = createServerFn({ method: "POST" })
     return { appointmentId, notaryId };
   })
   .handler(async ({ data, context }) => {
-    const session = await useSession<AdminSession>(sessionConfig);
-    if (!session.data.unlocked) return { ok: false as const, message: "Dashboard is locked." };
+    if (!(await canManageAppointments(context.supabase, context.userId)))
+      return { ok: false as const, message: "You do not have permission to assign appointments." };
 
     const { error } = await context.supabase
       .from("appointments")
