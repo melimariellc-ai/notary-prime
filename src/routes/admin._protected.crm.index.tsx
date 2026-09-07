@@ -265,7 +265,7 @@ function CrmPage() {
                   ))}
                 </select>
               </div>
-              <div className="flex items-end justify-between gap-3">
+              <div className="flex min-w-0 flex-wrap items-end justify-between gap-3">
                 <label className="inline-flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
