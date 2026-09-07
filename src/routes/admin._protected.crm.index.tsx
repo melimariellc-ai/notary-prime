@@ -12,6 +12,9 @@ import {
   Plus,
   Rows3,
   Search,
+  SlidersHorizontal,
+  Star,
+  Trash2,
   Upload,
   Users,
 } from "lucide-react";
