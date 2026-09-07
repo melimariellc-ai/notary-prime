@@ -42,6 +42,8 @@ export const Route = createFileRoute("/admin/_protected/")({
 function AdminPage() {
   const { forbidden, appointments, notaries, referralContacts } = Route.useLoaderData();
   const failedSms = appointments.filter((a) => a.sms_status === "failed");
+  const [smsOpen, setSmsOpen] = useState(false);
+
 
   if (forbidden) {
     return (
