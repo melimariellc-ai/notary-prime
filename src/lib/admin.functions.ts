@@ -1,23 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { useSession } from "@tanstack/react-start/server";
-import { createHash, timingSafeEqual } from "node:crypto";
-
-const sessionConfig = {
-  password: process.env["SESSION_SECRET"] ?? "development-only-session-secret-please-set-me",
-  name: "enliven-admin",
-  maxAge: 60 * 60 * 12,
-  cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
-};
-
-type AdminSession = { unlocked?: boolean };
-
-function matches(input: string, expected: string): boolean {
-  const a = createHash("sha256").update(input, "utf8").digest();
-  const b = createHash("sha256").update(expected, "utf8").digest();
-  return timingSafeEqual(a, b);
+/** Appointment records are managed by Admin and Employee accounts only. */
+async function canManageAppointments(supabase: SupabaseClient, userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  if (error) {
+    console.error("Failed to read roles", error);
+    return false;
+  }
+  const roles = (data ?? []).map((r) => r.role as string);
+  return roles.includes("admin") || roles.includes("employee");
 }
+
 
 export type Appointment = {
   id: string;
