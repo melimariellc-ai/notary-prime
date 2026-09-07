@@ -5,6 +5,8 @@ import { CalendarClock, UserPlus, Users } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CrmOverview, CrmOverviewSkeleton } from "@/components/admin/CrmOverview";
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
+import { InboundRepliesCard } from "@/components/admin/InboundReplies";
+
 import { listBusinessContacts } from "@/lib/crm.functions";
 import { getMyRole } from "@/lib/users.functions";
 
