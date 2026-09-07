@@ -10,6 +10,9 @@ type InboundEvent = {
     to?: string[];
     subject?: string;
     created_at?: string;
+    /** Resend delivers the reply body inline on email.received. */
+    text?: string;
+    html?: string;
   };
 };
 
