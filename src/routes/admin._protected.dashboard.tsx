@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { CalendarClock, UserPlus, Users } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CrmOverview, CrmOverviewSkeleton } from "@/components/admin/CrmOverview";
+import { FollowUpCalendar } from "@/components/admin/FollowUpCalendar";
+
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
 import { InboundRepliesCard } from "@/components/admin/InboundReplies";
 
@@ -70,7 +72,10 @@ function DashboardPage() {
           crmLoading ? (
             <CrmOverviewSkeleton />
           ) : (
-            <CrmOverview contacts={crm?.contacts ?? []} today={todayISO()} />
+            <>
+              <CrmOverview contacts={crm?.contacts ?? []} today={todayISO()} />
+              <FollowUpCalendar contacts={crm?.contacts ?? []} today={todayISO()} />
+            </>
           )
         ) : roleLoading ? (
           <CrmOverviewSkeleton />
@@ -82,6 +87,7 @@ function DashboardPage() {
             </p>
           </div>
         )}
+
 
         <div className="grid gap-6 lg:grid-cols-3">
           {canCrm && (

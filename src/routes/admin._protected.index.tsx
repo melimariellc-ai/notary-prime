@@ -42,6 +42,8 @@ export const Route = createFileRoute("/admin/_protected/")({
 function AdminPage() {
   const { forbidden, appointments, notaries, referralContacts } = Route.useLoaderData();
   const failedSms = appointments.filter((a) => a.sms_status === "failed");
+  const [smsOpen, setSmsOpen] = useState(false);
+
 
   if (forbidden) {
     return (
@@ -77,18 +79,24 @@ function AdminPage() {
         eyebrow="Work"
         title={<>Appointment <span className="italic font-light text-gradient-gold">requests.</span></>}
         intro={`${appointments.length} request${appointments.length === 1 ? "" : "s"} received, newest first.`}
+        actions={<SmsStatusButton failures={failedSms} open={smsOpen} onToggle={() => setSmsOpen((v) => !v)} />}
       />
       <AdminSection>
         <div>
-          <SmsDeliveryLog failures={failedSms} />
+          {smsOpen && (
+            <div className="mb-8">
+              <SmsDeliveryLog failures={failedSms} />
+            </div>
+          )}
 
           {appointments.length === 0 ? (
-            <p className="mt-8 rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
+            <p className="rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
               No requests yet. New submissions from the Book page will appear here.
             </p>
           ) : (
 
-            <div className="mt-8 grid gap-4">
+            <div className="grid gap-4">
+
               {appointments.map((a) => (
                 <article key={a.id} className="rounded-3xl border border-border bg-card p-6 md:p-8">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -216,7 +224,41 @@ function AssignRow({
   );
 }
 
+function SmsStatusButton({
+  failures,
+  open,
+  onToggle,
+}: {
+  failures: Appointment[];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const active = failures.filter((a) => !a.sms_dismissed_at).length;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      title="Text message delivery log"
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs uppercase tracking-[0.16em] transition-colors ${
+        active > 0
+          ? "border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/20"
+          : "border-border text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {active > 0 ? <AlertTriangle className="h-4 w-4" /> : <Check className="h-4 w-4 text-gold" />}
+      SMS log
+      {active > 0 && (
+        <span className="rounded-full bg-destructive px-2 py-0.5 text-[0.65rem] text-destructive-foreground">
+          {active}
+        </span>
+      )}
+    </button>
+  );
+}
+
 function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
+
   const dismiss = useServerFn(setSmsDismissed);
   const router = useRouter();
   const [showDismissed, setShowDismissed] = useState(false);
@@ -242,7 +284,13 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
     }
   }
 
-  if (active.length === 0 && dismissed.length === 0) return null;
+  if (active.length === 0 && dismissed.length === 0)
+    return (
+      <div className="rounded-3xl border border-border bg-card/40 p-6 text-sm text-muted-foreground">
+        No text message delivery failures recorded — all clear.
+      </div>
+    );
+
 
   const Entry = ({ a, isDismissed }: { a: Appointment; isDismissed: boolean }) => (
     <li className="rounded-xl border border-border bg-card p-4">
