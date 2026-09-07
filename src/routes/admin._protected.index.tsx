@@ -31,69 +31,36 @@ export const Route = createFileRoute("/admin/_protected/")({
 });
 
 function AdminPage() {
-  const { locked, appointments, notaries, referralContacts } = Route.useLoaderData();
-  const router = useRouter();
-  const unlock = useServerFn(unlockAdmin);
-  const lock = useServerFn(lockAdmin);
-  const [passcode, setPasscode] = useState("");
-  const [error, setError] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const { forbidden, appointments, notaries, referralContacts } = Route.useLoaderData();
   const failedSms = appointments.filter((a) => a.sms_status === "failed");
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setBusy(true);
-    setError(false);
-    try {
-      const res = await unlock({ data: { passcode } });
-      if (res.ok) {
-        setPasscode("");
-        await router.invalidate();
-      } else {
-        setError(true);
-      }
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (locked) {
+  if (forbidden) {
     return (
       <>
         <AdminPageHeader
           eyebrow="Work"
-          title={<>Appointments <span className="italic font-light text-gradient-gold">dashboard.</span></>}
-          intro="Enter your passcode to view booking requests."
+          title={<>Access <span className="italic font-light text-gradient-gold">restricted.</span></>}
+          intro="Appointment requests are available to Admin and Employee accounts."
         />
         <AdminSection>
-          <div className="max-w-md">
-            <form onSubmit={onSubmit} className="rounded-3xl border border-border bg-card p-8">
-              <label htmlFor="passcode" className="text-sm font-medium">Passcode</label>
-              <div className="mt-2 relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  id="passcode"
-                  type="password"
-                  autoComplete="current-password"
-                  value={passcode}
-                  onChange={(e) => setPasscode(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
-                />
-              </div>
-              {error && <p className="mt-3 text-sm text-destructive">Incorrect passcode.</p>}
-              <button
-                type="submit"
-                disabled={busy || !passcode}
-                className="btn-gold mt-6 w-full rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-              >
-                {busy ? "Checking…" : "Unlock"}
-              </button>
-            </form>
+          <div className="max-w-md rounded-3xl border border-border bg-card p-8">
+            <Lock className="h-5 w-5 text-muted-foreground" />
+            <p className="mt-4 text-sm text-muted-foreground">
+              Your account does not have permission to view this page. Notary accounts see their assigned work on the
+              dashboard.
+            </p>
+            <Link
+              to="/admin/dashboard"
+              className="btn-gold mt-6 inline-flex rounded-full px-6 py-3 text-sm font-medium"
+            >
+              Go to dashboard
+            </Link>
           </div>
         </AdminSection>
       </>
     );
   }
+
 
   return (
     <>
