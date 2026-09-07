@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
-import { PageHero } from "@/components/site/PageHero";
+import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { assignNotary, getAppointments, lockAdmin, unlockAdmin, type NotaryOption, type ReferralContactOption } from "@/lib/admin.functions";
 import { setAppointmentReferral } from "@/lib/crm.functions";
 
