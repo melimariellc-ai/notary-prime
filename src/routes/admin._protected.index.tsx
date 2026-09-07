@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { AlertTriangle, Lock, LogOut, Mail, MapPin, Phone, UserCheck, Video } from "lucide-react";
-import { PageHero } from "@/components/site/PageHero";
+import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { assignNotary, getAppointments, lockAdmin, unlockAdmin, type NotaryOption, type ReferralContactOption } from "@/lib/admin.functions";
 import { setAppointmentReferral } from "@/lib/crm.functions";
 
@@ -60,14 +60,13 @@ function AdminPage() {
   if (locked) {
     return (
       <>
-        <PageHero
-          eyebrow="Private"
+        <AdminPageHeader
+          eyebrow="Work"
           title={<>Appointments <span className="italic font-light text-gradient-gold">dashboard.</span></>}
           intro="Enter your passcode to view booking requests."
-          cta={false}
         />
-        <section className="pb-24">
-          <div className="container-luxe max-w-md">
+        <AdminSection>
+          <div className="max-w-md">
             <form onSubmit={onSubmit} className="rounded-3xl border border-border bg-card p-8">
               <label htmlFor="passcode" className="text-sm font-medium">Passcode</label>
               <div className="mt-2 relative">
@@ -91,21 +90,20 @@ function AdminPage() {
               </button>
             </form>
           </div>
-        </section>
+        </AdminSection>
       </>
     );
   }
 
   return (
     <>
-      <PageHero
-        eyebrow="Private"
+      <AdminPageHeader
+        eyebrow="Work"
         title={<>Appointment <span className="italic font-light text-gradient-gold">requests.</span></>}
         intro={`${appointments.length} request${appointments.length === 1 ? "" : "s"} received, newest first.`}
-        cta={false}
       />
-      <section className="pb-24">
-        <div className="container-luxe">
+      <AdminSection>
+        <div>
           <div className="flex justify-end">
             <button
               type="button"
@@ -220,7 +218,7 @@ function AdminPage() {
             </div>
           )}
         </div>
-      </section>
+      </AdminSection>
     </>
   );
 }
