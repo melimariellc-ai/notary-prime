@@ -65,10 +65,8 @@ export function RecentActivityCard() {
   const items = data?.items ?? [];
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Activity className="h-5 w-5 text-accent-foreground" /> Recent activity
-      </h2>
+    <Card>
+      <CardHeader title="Recent activity" icon={Activity} />
 
       {isLoading ? (
         <ul className="mt-6 grid gap-4" aria-busy="true">
@@ -83,7 +81,7 @@ export function RecentActivityCard() {
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
           Nothing logged yet. Calls, emails, meetings, and notes appear here as your team records them.
         </p>
       ) : (
@@ -95,19 +93,24 @@ export function RecentActivityCard() {
                 <Link
                   to="/admin/crm/$contactId"
                   params={{ contactId: item.contact_id }}
-                  className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  className="group -mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
                   <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                    <Icon className="h-3.5 w-3.5 text-accent-foreground" />
+                    <Icon className="h-4 w-4 text-accent-foreground" />
                   </span>
                   <div className="min-w-0">
-                    <p className="flex flex-wrap items-baseline gap-2 text-sm">
+                    <p className="flex flex-wrap items-center gap-2 text-sm">
                       <span className="font-medium underline-offset-4 group-hover:underline">{item.business_name}</span>
-                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                        {item.activity_type}
-                      </span>
+                      <Badge>{item.activity_type}</Badge>
                       <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
                     </p>
+                    <ActivityDescription description={item.description} />
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+
                     <ActivityDescription description={item.description} />
                   </div>
                 </Link>
