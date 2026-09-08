@@ -17,7 +17,7 @@ disabled = 50% opacity. No small-caps chip buttons anywhere.
 
 | Variant | Background | Text | Border |
 |---|---|---|---|
-| primary | gold gradient `oklch(0.80 0.125 86) → oklch(0.70 0.12 82)` (`btn-gold`) | `oklch(0.20 0.04 260)` navy | none |
+| primary | gold gradient `oklch(0.84 0.105 86) → oklch(0.78 0.115 82)` (`btn-gold`) | `oklch(0.16 0.035 260)` navy | none | contrast 5.24:1 (AA) |
 | secondary | transparent (hover `--secondary`) | `--foreground` `oklch(0.22 0.035 258)` | 1px `--border` |
 | tertiary | none (hover `secondary/60`) | `--accent-foreground` `oklch(0.28 0.05 80)`, underline on hover | none |
 | destructive | `--destructive` `oklch(0.51 0.2 27)` | `--destructive-foreground` near-white | none |
