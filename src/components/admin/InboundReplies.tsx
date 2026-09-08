@@ -24,10 +24,9 @@ export function InboundRepliesCard() {
   const items = data?.items ?? [];
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Inbox className="h-5 w-5 text-accent-foreground" /> Replies received
-      </h2>
+    <Card>
+      <CardHeader title="Replies received" icon={Inbox} />
+
 
       {isLoading ? (
         <ul className="mt-6 grid gap-4" aria-busy="true">
@@ -42,7 +41,7 @@ export function InboundRepliesCard() {
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
           No replies yet. When someone answers an outreach or booking email, it appears here and on their contact
           timeline.
         </p>
