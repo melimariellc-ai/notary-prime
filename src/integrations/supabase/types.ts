@@ -623,6 +623,71 @@ export type Database = {
         }
         Relationships: []
       }
+      quotes: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          created_by: string | null
+          hosted_invoice_url: string | null
+          id: string
+          line_items: Json
+          notes: string | null
+          paid_at: string | null
+          sent_at: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_invoice_id: string | null
+          subtotal: number
+          total: number
+          updated_at: string
+          viewed_at: string | null
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          created_by?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          line_items?: Json
+          notes?: string | null
+          paid_at?: string | null
+          sent_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          viewed_at?: string | null
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          created_by?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          line_items?: Json
+          notes?: string | null
+          paid_at?: string | null
+          sent_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_views: {
         Row: {
           config: Json
