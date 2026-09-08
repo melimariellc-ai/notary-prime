@@ -234,6 +234,50 @@ function ContactDetailPage() {
           </div>
 
           <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
+            <h2 className="font-display text-2xl tracking-tight">Referral commission</h2>
+            <p className="mt-2 text-sm text-muted-foreground">An estimate only — nothing is paid out from here.</p>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Referred value</p>
+                <p className="mt-1.5 font-display text-2xl tracking-tight">{usd(referralValue)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {referralCount} job{referralCount === 1 ? "" : "s"}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Estimated commission owed</p>
+                <p className="mt-1.5 font-display text-2xl tracking-tight text-accent-foreground">
+                  {usd(commission.amount)}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {rateLabel(commission.rate, commission.rateType)}
+                  {commission.usesOverride ? " (custom rate)" : " (business default)"}
+                </p>
+              </div>
+            </div>
+
+            <dl className="mt-6 grid gap-4 border-t border-border pt-6 sm:grid-cols-2">
+              <div>
+                <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Custom rate format</dt>
+                <dd className="mt-1.5">
+                  <RateTypeSelect
+                    id={contact.id}
+                    value={contact.referral_rate_type}
+                    defaultType={commission.defaultRateType}
+                  />
+                </dd>
+              </div>
+              <InlineField
+                id={contact.id}
+                field="referral_rate"
+                label="Custom rate (blank uses default)"
+                value={contact.referral_rate === null ? null : String(contact.referral_rate)}
+              />
+            </dl>
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
             <h2 className="font-display text-2xl tracking-tight">
               Referred appointments <span className="text-sm text-muted-foreground">({referralCount})</span>
             </h2>
