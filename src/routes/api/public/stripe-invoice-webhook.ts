@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/public/stripe-invoice-webhook")({
           return new Response("ignored", { status: 200 });
 
         const now = new Date().toISOString();
-        const update: Record<string, unknown> = {};
+        const update: Record<string, string> = {};
 
         switch (event.type) {
           case "invoice.finalized":
@@ -106,7 +106,7 @@ export const Route = createFileRoute("/api/public/stripe-invoice-webhook")({
 
         if (Object.keys(update).length === 0) return new Response("ok", { status: 200 });
 
-        const { error } = await supabaseAdmin.from("quotes").update(update).eq("id", quote.id);
+        const { error } = await supabaseAdmin.from("quotes").update(update as never).eq("id", quote.id);
         if (error) {
           console.error("Failed to update quote from Stripe webhook", error);
           return new Response("update failed", { status: 500 });

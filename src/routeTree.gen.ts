@@ -28,6 +28,7 @@ import { Route as AdminSetPasswordRouteImport } from './routes/admin.set-passwor
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
+import { Route as ApiPublicStripeInvoiceWebhookRouteImport } from './routes/api/public/stripe-invoice-webhook'
 import { Route as ApiPublicResendInboundRouteImport } from './routes/api/public/resend-inbound'
 import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
@@ -135,6 +136,12 @@ const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
+const ApiPublicStripeInvoiceWebhookRoute =
+  ApiPublicStripeInvoiceWebhookRouteImport.update({
+    id: '/api/public/stripe-invoice-webhook',
+    path: '/api/public/stripe-invoice-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicResendInboundRoute = ApiPublicResendInboundRouteImport.update({
   id: '/api/public/resend-inbound',
   path: '/api/public/resend-inbound',
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
+  '/api/public/stripe-invoice-webhook': typeof ApiPublicStripeInvoiceWebhookRoute
   '/admin/': typeof AdminProtectedIndexRoute
   '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -261,6 +269,7 @@ export interface FileRoutesByTo {
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
+  '/api/public/stripe-invoice-webhook': typeof ApiPublicStripeInvoiceWebhookRoute
   '/admin/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/crm': typeof AdminProtectedCrmIndexRoute
@@ -294,6 +303,7 @@ export interface FileRoutesById {
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
+  '/api/public/stripe-invoice-webhook': typeof ApiPublicStripeInvoiceWebhookRoute
   '/admin/_protected/': typeof AdminProtectedIndexRoute
   '/admin/_protected/crm/$contactId': typeof AdminProtectedCrmContactIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
+    | '/api/public/stripe-invoice-webhook'
     | '/admin/'
     | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
+    | '/api/public/stripe-invoice-webhook'
     | '/admin/crm/$contactId'
     | '/lovable/email/queue/process'
     | '/admin/crm'
@@ -392,6 +404,7 @@ export interface FileRouteTypes {
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
+    | '/api/public/stripe-invoice-webhook'
     | '/admin/_protected/'
     | '/admin/_protected/crm/$contactId'
     | '/lovable/email/queue/process'
@@ -417,6 +430,7 @@ export interface RootRouteChildren {
   ApiPublicAppointmentNotifyRoute: typeof ApiPublicAppointmentNotifyRoute
   ApiPublicCrmFollowupDigestRoute: typeof ApiPublicCrmFollowupDigestRoute
   ApiPublicResendInboundRoute: typeof ApiPublicResendInboundRoute
+  ApiPublicStripeInvoiceWebhookRoute: typeof ApiPublicStripeInvoiceWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -554,6 +568,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminProtectedIndexRouteImport
       parentRoute: typeof AdminProtectedRoute
+    }
+    '/api/public/stripe-invoice-webhook': {
+      id: '/api/public/stripe-invoice-webhook'
+      path: '/api/public/stripe-invoice-webhook'
+      fullPath: '/api/public/stripe-invoice-webhook'
+      preLoaderRoute: typeof ApiPublicStripeInvoiceWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/resend-inbound': {
       id: '/api/public/resend-inbound'
@@ -703,6 +724,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAppointmentNotifyRoute: ApiPublicAppointmentNotifyRoute,
   ApiPublicCrmFollowupDigestRoute: ApiPublicCrmFollowupDigestRoute,
   ApiPublicResendInboundRoute: ApiPublicResendInboundRoute,
+  ApiPublicStripeInvoiceWebhookRoute: ApiPublicStripeInvoiceWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
