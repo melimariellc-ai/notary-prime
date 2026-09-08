@@ -415,6 +415,53 @@ function ContactDetailPage() {
   );
 }
 
+function RateTypeSelect({
+  id,
+  value,
+  defaultType,
+}: {
+  id: string;
+  value: ReferralRateType | null;
+  defaultType: ReferralRateType;
+}) {
+  const patch = useServerFn(patchBusinessContact);
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+
+  async function save(next: string) {
+    setSaving(true);
+    try {
+      const res = await patch({ data: { id, field: "referral_rate_type", value: next || null } });
+      if (res.ok) {
+        toast.success("Rate format updated.");
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save that change.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <select
+      aria-label="Custom rate format"
+      value={value ?? ""}
+      disabled={saving}
+      onChange={(e) => void save(e.target.value)}
+      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+    >
+      <option value="">
+        Use business default ({defaultType === "percent" ? "percentage" : "flat amount"})
+      </option>
+      <option value="percent">Percentage of referred value</option>
+      <option value="flat">Flat amount per job</option>
+    </select>
+  );
+}
+
 function ConfirmDialog({
   title,
   body,
