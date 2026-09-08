@@ -38,13 +38,18 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
       .map((a) => `- ${a.activity_date} (${a.activity_type}): ${a.description}`)
       .join("\n");
 
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const { credentialsLine } = await import("./business-profile");
+    const profile = await loadBusinessProfile();
+    const business = profile.business_name;
+
     const prompt = [
-      "Write a warm, professional outreach email introducing Enliven Notary to this business contact.",
+      `Write a warm, professional outreach email introducing ${business} to this business contact.`,
       "",
-      "About Enliven Notary:",
-      "- Mobile notary and remote online notary (RON) services across the Dallas-Fort Worth Metroplex",
-      `- Credentials: ${CREDENTIALS}`,
-      "- Phone: (469) 991-2777 · Email: info@enlivennotary.com",
+      `About ${business}:`,
+      `- Mobile notary and remote online notary (RON) services across ${profile.service_area}`,
+      `- Credentials: ${credentialsLine(profile)}`,
+      `- Phone: ${profile.phone} · Email: ${profile.email}`,
       "",
       "Contact details:",
       `- Business: ${contact.business_name}`,
