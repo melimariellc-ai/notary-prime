@@ -19,6 +19,22 @@ import {
 } from "@/lib/admin.functions";
 import { setAppointmentReferral } from "@/lib/crm.functions";
 
+/**
+ * Never surface raw provider/API error payloads in the UI. Log the technical
+ * detail and show staff a short, actionable sentence instead.
+ */
+function friendlySmsError(raw: string | null): string {
+  if (raw) console.warn("SMS delivery error (raw):", raw);
+  const text = (raw ?? "").toLowerCase();
+  if (text.includes("a2p") || text.includes("not approved") || text.includes("registration"))
+    return "SMS delivery failed — check your carrier registration status.";
+  if (text.includes("invalid") && text.includes("number"))
+    return "SMS delivery failed — the phone number looks invalid.";
+  if (text.includes("401") || text.includes("unauthorized") || text.includes("api key"))
+    return "SMS delivery failed — the texting account needs to be reconnected.";
+  return "SMS delivery failed — please follow up by phone.";
+}
+
 export const Route = createFileRoute("/admin/_protected/")({
   head: () => ({
     meta: [
@@ -143,7 +159,7 @@ function AdminPage() {
                       </span>
                     )}
                     {a.sms_error && (
-                      <span className="text-muted-foreground break-all">{a.sms_error}</span>
+                      <span className="text-muted-foreground">{friendlySmsError(a.sms_error)}</span>
                     )}
                   </div>
 
@@ -300,8 +316,8 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
           {new Date(a.submitted_at).toLocaleString()}
         </span>
       </div>
-      <p className={`mt-2 font-mono text-xs break-all ${isDismissed ? "text-muted-foreground" : "text-destructive"}`}>
-        {a.sms_error || "Unknown error from OpenPhone"}
+      <p className={`mt-2 text-xs ${isDismissed ? "text-muted-foreground" : "text-destructive"}`}>
+        {friendlySmsError(a.sms_error)}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Button
