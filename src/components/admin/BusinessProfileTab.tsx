@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getBusinessProfile, updateBusinessProfile } from "@/lib/business-profile.functions";
-import { credentialsLine, DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "@/lib/business-profile";
+import { credentialsLine, DEFAULT_BUSINESS_PROFILE, rateLabel, type BusinessProfile } from "@/lib/business-profile";
 
 const field =
   "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
@@ -91,6 +91,40 @@ export function BusinessProfileTab() {
             />
           </label>
         </div>
+
+        <fieldset className="rounded-2xl border border-border p-6">
+          <legend className="px-2 text-sm font-medium text-foreground">Referral commission</legend>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="mb-2 block font-medium text-foreground">Rate format</span>
+              <select
+                className={field}
+                value={form.default_referral_rate_type}
+                onChange={(e) => set("default_referral_rate_type", e.target.value === "flat" ? "flat" : "percent")}
+              >
+                <option value="percent">Percentage of referred value</option>
+                <option value="flat">Flat dollar amount per job</option>
+              </select>
+            </label>
+            <label className="block text-sm">
+              <span className="mb-2 block font-medium text-foreground">
+                Default referral rate {form.default_referral_rate_type === "percent" ? "(%)" : "($)"}
+              </span>
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                className={field}
+                value={String(form.default_referral_rate)}
+                onChange={(e) => set("default_referral_rate", Number(e.target.value))}
+              />
+            </label>
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">
+            Applies to every referral contact unless that contact has its own rate.{" "}
+            {rateLabel(form.default_referral_rate, form.default_referral_rate_type)}.
+          </p>
+        </fieldset>
 
         <fieldset className="rounded-2xl border border-border p-6">
           <legend className="px-2 text-sm font-medium text-foreground">Credentials</legend>

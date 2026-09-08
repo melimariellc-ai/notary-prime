@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { loadFieldDefs, normalizeFieldValue, type CustomFieldValues } from "@/lib/fields.functions";
+import { commissionOwed } from "@/lib/business-profile";
 
 /**
  * Fallback option lists. The live lists are admin-managed in Settings
@@ -58,6 +59,9 @@ export type BusinessContact = {
   referral_source: string | null;
   created_at: string;
   custom_fields: CustomFieldValues;
+  /** Optional per-contact override; null falls back to the business default. */
+  referral_rate: number | null;
+  referral_rate_type: "percent" | "flat" | null;
 };
 
 export type ContactActivity = {
@@ -132,7 +136,7 @@ async function findSimilarContacts(
 }
 
 const COLUMNS =
-  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at, custom_fields";
+  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at, custom_fields, referral_rate, referral_rate_type";
 
 function text(value: unknown, max = 300): string | null {
   const s = String(value ?? "").trim();
@@ -233,12 +237,42 @@ export const getBusinessContact = createServerFn({ method: "GET" })
       fee_amount: a.fee_amount === null ? null : Number(a.fee_amount),
     })) as ReferredAppointment[];
 
+    const { data: profileRow } = await context.supabase
+      .from("business_profile")
+      .select("default_referral_rate, default_referral_rate_type")
+      .eq("id", 1)
+      .maybeSingle();
+
+    const row = (profileRow ?? null) as { default_referral_rate: number | null; default_referral_rate_type: string | null } | null;
+    const defaultRate = Number(row?.default_referral_rate ?? 0);
+    const defaultRateType: "percent" | "flat" = row?.default_referral_rate_type === "flat" ? "flat" : "percent";
+
+    const c = (contact ?? null) as unknown as BusinessContact | null;
+    const usesOverride = c?.referral_rate !== null && c?.referral_rate !== undefined;
+    const rate = usesOverride ? Number(c!.referral_rate) : defaultRate;
+    const rateType: "percent" | "flat" =
+      usesOverride && c!.referral_rate_type === "flat"
+        ? "flat"
+        : usesOverride && c!.referral_rate_type === "percent"
+          ? "percent"
+          : defaultRateType;
+
+    const referralValue = appointments.reduce((sum, a) => sum + (a.fee_amount ?? 0), 0);
+
     return {
-      contact: (contact ?? null) as unknown as BusinessContact | null,
+      contact: c,
       activities: (activities ?? []) as unknown as ContactActivity[],
       appointments,
       referralCount: appointments.length,
-      referralValue: appointments.reduce((sum, a) => sum + (a.fee_amount ?? 0), 0),
+      referralValue,
+      commission: {
+        rate,
+        rateType,
+        usesOverride,
+        defaultRate,
+        defaultRateType,
+        amount: commissionOwed(rate, rateType, referralValue, appointments.length),
+      },
     };
   });
 
@@ -619,6 +653,19 @@ const PATCHABLE = {
   referral_source: (v: unknown) => text(v, 500),
   first_contacted_date: (v: unknown) => dateOrNull(v),
   next_follow_up_date: (v: unknown) => dateOrNull(v),
+  referral_rate: (v: unknown) => {
+    const s = String(v ?? "").trim();
+    if (!s) return null;
+    const n = Number(s);
+    if (!Number.isFinite(n) || n < 0) throw new Error("Enter a referral rate of zero or more, or leave it blank.");
+    return Math.round(n * 100) / 100;
+  },
+  referral_rate_type: (v: unknown) => {
+    const s = String(v ?? "").trim();
+    if (!s) return null;
+    if (s !== "percent" && s !== "flat") throw new Error("Invalid rate format.");
+    return s;
+  },
   contact_type: (v: unknown) => {
     const s = optionLabel(v, "", "contact type");
     if (!s) throw new Error("Invalid contact type.");

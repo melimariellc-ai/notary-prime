@@ -1,3 +1,5 @@
+export type ReferralRateType = "percent" | "flat";
+
 export type BusinessProfile = {
   business_name: string;
   phone: string;
@@ -7,6 +9,8 @@ export type BusinessProfile = {
   is_bonded: boolean;
   eo_insured_amount: string;
   is_nna_certified: boolean;
+  default_referral_rate: number;
+  default_referral_rate_type: ReferralRateType;
 };
 
 export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
@@ -18,6 +22,8 @@ export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   is_bonded: true,
   eo_insured_amount: "$100,000",
   is_nna_certified: true,
+  default_referral_rate: 0,
+  default_referral_rate_type: "percent",
 };
 
 /** Human-readable credentials sentence built from the saved profile. */
@@ -30,4 +36,24 @@ export function credentialsLine(profile: BusinessProfile): string {
   else if (profile.is_bonded) parts.push("Errors & Omissions (E&O) Insured");
   if (profile.is_nna_certified) parts.push("NNA Certified Signing Agent");
   return parts.join(", ");
+}
+
+export const usd = (value: number) =>
+  value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+
+/** "10% of referred value" / "$25 per referred job" */
+export function rateLabel(rate: number, type: ReferralRateType): string {
+  if (!rate) return "No rate set";
+  return type === "percent" ? `${rate}% of referred value` : `${usd(rate)} per referred job`;
+}
+
+/** Estimated commission owed for a contact's referrals. Display only — no payments. */
+export function commissionOwed(
+  rate: number,
+  type: ReferralRateType,
+  referralValue: number,
+  referralCount: number,
+): number {
+  if (!rate) return 0;
+  return type === "percent" ? (referralValue * rate) / 100 : rate * referralCount;
 }
