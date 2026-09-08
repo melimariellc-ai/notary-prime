@@ -146,6 +146,7 @@ export function FollowUpCalendar({ contacts, today }: { contacts: BusinessContac
           );
         })}
       </div>
-    </div>
+    </Card>
+
   );
 }
