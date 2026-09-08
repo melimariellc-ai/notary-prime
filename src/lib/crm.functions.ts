@@ -258,11 +258,8 @@ function validateContact(data: ContactInput) {
   const business_name = text(data.business_name, 200);
   if (!business_name) throw new Error("Business name is required.");
 
-  const contact_type = String(data.contact_type ?? "Other Referral Source");
-  if (!CONTACT_TYPES.includes(contact_type as ContactType)) throw new Error("Invalid contact type.");
-
-  const pipeline_stage = String(data.pipeline_stage ?? "New Lead");
-  if (!PIPELINE_STAGES.includes(pipeline_stage as PipelineStage)) throw new Error("Invalid pipeline stage.");
+  const contact_type = optionLabel(data.contact_type, "Other Referral Source", "contact type");
+  const pipeline_stage = optionLabel(data.pipeline_stage, "New Lead", "pipeline stage");
 
   return {
     business_name,
