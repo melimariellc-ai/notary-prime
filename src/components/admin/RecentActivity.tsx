@@ -29,7 +29,11 @@ function timeAgo(iso: string) {
 function ActivityDescription({ description }: { description: string }) {
   const match = description.match(/^(Subject:\s*([^\n]+)|Reply received:\s*([^\n]+))(?:\n+([\s\S]+))?$/);
   if (!match) {
-    return <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm text-muted-foreground">{description}</p>;
+    return (
+      <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+        {description}
+      </p>
+    );
   }
 
   const subject = (match[2] ?? match[3] ?? "").trim();
@@ -39,7 +43,7 @@ function ActivityDescription({ description }: { description: string }) {
   return (
     <div className="mt-2 text-sm leading-relaxed">
       <p>
-        <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {isReply ? "Reply · Subject" : "Subject"}
         </span>
         <br />
@@ -53,6 +57,7 @@ function ActivityDescription({ description }: { description: string }) {
     </div>
   );
 }
+
 
 export function RecentActivityCard() {
   const fetchRecent = useServerFn(listRecentActivity);

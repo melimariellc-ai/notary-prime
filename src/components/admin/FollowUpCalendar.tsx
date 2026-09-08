@@ -118,7 +118,7 @@ export function FollowUpCalendar({ contacts, today }: { contacts: BusinessContac
               }`}
             >
               <span
-                className={`text-[0.7rem] ${isToday ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+                className={`text-xs ${isToday ? "font-semibold text-foreground" : "text-muted-foreground"}`}
               >
                 {day}
               </span>
@@ -129,9 +129,9 @@ export function FollowUpCalendar({ contacts, today }: { contacts: BusinessContac
                     to="/admin/crm/$contactId"
                     params={{ contactId: c.id }}
                     title={`${c.business_name} · ${c.pipeline_stage}`}
-                    className={`block truncate rounded-md px-1.5 py-0.5 text-[0.65rem] transition-colors ${
+                    className={`block truncate rounded-md px-1.5 py-0.5 text-xs transition-colors ${
                       date <= today
-                        ? "bg-destructive/15 text-destructive hover:bg-destructive/25"
+                        ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
                         : "bg-secondary text-foreground hover:bg-secondary/70"
                     }`}
                   >
@@ -139,8 +139,9 @@ export function FollowUpCalendar({ contacts, today }: { contacts: BusinessContac
                   </Link>
                 ))}
                 {items.length > 2 && (
-                  <span className="px-1.5 text-[0.6rem] text-muted-foreground">+{items.length - 2} more</span>
+                  <span className="px-1.5 text-xs text-muted-foreground">+{items.length - 2} more</span>
                 )}
+
               </div>
             </div>
           );
