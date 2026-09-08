@@ -30,6 +30,8 @@ export const updateBusinessProfile = createServerFn({ method: "POST" })
       is_bonded: Boolean(data.is_bonded),
       eo_insured_amount: text(data.eo_insured_amount, 40),
       is_nna_certified: Boolean(data.is_nna_certified),
+      default_referral_rate: rate(data.default_referral_rate),
+      default_referral_rate_type: data.default_referral_rate_type === "flat" ? "flat" : "percent",
     } satisfies BusinessProfile;
   })
   .handler(async ({ data, context }) => {
