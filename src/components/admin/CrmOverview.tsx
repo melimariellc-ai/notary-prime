@@ -14,13 +14,13 @@ function StatCard({
   label,
   accent,
   stage,
-  href,
+  hash,
 }: {
   value: number;
   label: string;
   accent?: boolean;
   stage?: string;
-  href?: string;
+  hash?: string;
 }) {
   const inner = (
     <>
