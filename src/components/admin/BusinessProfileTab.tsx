@@ -93,6 +93,40 @@ export function BusinessProfileTab() {
         </div>
 
         <fieldset className="rounded-2xl border border-border p-6">
+          <legend className="px-2 text-sm font-medium text-foreground">Referral commission</legend>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="mb-2 block font-medium text-foreground">Rate format</span>
+              <select
+                className={field}
+                value={form.default_referral_rate_type}
+                onChange={(e) => set("default_referral_rate_type", e.target.value === "flat" ? "flat" : "percent")}
+              >
+                <option value="percent">Percentage of referred value</option>
+                <option value="flat">Flat dollar amount per job</option>
+              </select>
+            </label>
+            <label className="block text-sm">
+              <span className="mb-2 block font-medium text-foreground">
+                Default referral rate {form.default_referral_rate_type === "percent" ? "(%)" : "($)"}
+              </span>
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                className={field}
+                value={String(form.default_referral_rate)}
+                onChange={(e) => set("default_referral_rate", Number(e.target.value))}
+              />
+            </label>
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">
+            Applies to every referral contact unless that contact has its own rate.{" "}
+            {rateLabel(form.default_referral_rate, form.default_referral_rate_type)}.
+          </p>
+        </fieldset>
+
+        <fieldset className="rounded-2xl border border-border p-6">
           <legend className="px-2 text-sm font-medium text-foreground">Credentials</legend>
           <div className="space-y-4">
             <label className="flex items-center gap-3 text-sm text-foreground">
