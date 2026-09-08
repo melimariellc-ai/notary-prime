@@ -236,12 +236,42 @@ export const getBusinessContact = createServerFn({ method: "GET" })
       fee_amount: a.fee_amount === null ? null : Number(a.fee_amount),
     })) as ReferredAppointment[];
 
+    const { data: profileRow } = await context.supabase
+      .from("business_profile")
+      .select("default_referral_rate, default_referral_rate_type")
+      .eq("id", 1)
+      .maybeSingle();
+
+    const row = (profileRow ?? null) as { default_referral_rate: number | null; default_referral_rate_type: string | null } | null;
+    const defaultRate = Number(row?.default_referral_rate ?? 0);
+    const defaultRateType: "percent" | "flat" = row?.default_referral_rate_type === "flat" ? "flat" : "percent";
+
+    const c = (contact ?? null) as unknown as BusinessContact | null;
+    const usesOverride = c?.referral_rate !== null && c?.referral_rate !== undefined;
+    const rate = usesOverride ? Number(c!.referral_rate) : defaultRate;
+    const rateType: "percent" | "flat" =
+      usesOverride && c!.referral_rate_type === "flat"
+        ? "flat"
+        : usesOverride && c!.referral_rate_type === "percent"
+          ? "percent"
+          : defaultRateType;
+
+    const referralValue = appointments.reduce((sum, a) => sum + (a.fee_amount ?? 0), 0);
+
     return {
-      contact: (contact ?? null) as unknown as BusinessContact | null,
+      contact: c,
       activities: (activities ?? []) as unknown as ContactActivity[],
       appointments,
       referralCount: appointments.length,
-      referralValue: appointments.reduce((sum, a) => sum + (a.fee_amount ?? 0), 0),
+      referralValue,
+      commission: {
+        rate,
+        rateType,
+        usesOverride,
+        defaultRate,
+        defaultRateType,
+        amount: commissionOwed(rate, rateType, referralValue, appointments.length),
+      },
     };
   });
 
