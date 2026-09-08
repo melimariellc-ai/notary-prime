@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { QuoteRow } from "@/components/admin/QuoteRow";
-import { Card, CardHeader, SectionLabel, CARD_CLASS } from "@/components/admin/ui/Card";
+import { Card, SectionLabel, CARD_CLASS } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button, ButtonLink } from "@/components/admin/ui/Button";
 import {
