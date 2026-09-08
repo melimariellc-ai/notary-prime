@@ -2,6 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { loadFieldDefs, normalizeFieldValue, type CustomFieldValues } from "@/lib/fields.functions";
 
+/**
+ * Fallback option lists. The live lists are admin-managed in Settings
+ * (crm_options table); these are only used before that data loads.
+ */
 export const CONTACT_TYPES = [
   "Title Company",
   "Real Estate Agent",
