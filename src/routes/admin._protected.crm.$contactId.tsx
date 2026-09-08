@@ -79,6 +79,9 @@ function ContactDetailPage() {
   const removeContact = useServerFn(deleteBusinessContact);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
+  const [showAudit, setShowAudit] = useState(false);
+
 
   if (!contact) {
     return (
