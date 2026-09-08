@@ -40,6 +40,7 @@ const TABS = [
   { id: "types", label: "Contact Types" },
   { id: "stages", label: "Pipeline Stages" },
   { id: "users", label: "User Management" },
+  { id: "business", label: "Business Profile" },
 ] as const;
 
 
