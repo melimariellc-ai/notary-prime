@@ -110,14 +110,14 @@ export function CrmOverviewSkeleton() {
     <div className="grid gap-6" aria-busy="true" aria-label="Loading pipeline overview">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="rounded-3xl border border-border bg-card p-6">
+          <Card key={i} className="md:p-6">
             <div className="h-10 w-16 animate-pulse rounded-lg bg-muted" />
             <div className="mt-3 h-3 w-28 animate-pulse rounded bg-muted" />
-          </div>
+          </Card>
         ))}
       </div>
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
+        <Card className="lg:col-span-2">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="mt-6 grid gap-5">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -127,15 +127,16 @@ export function CrmOverviewSkeleton() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
+        </Card>
+        <Card>
           <div className="h-6 w-32 animate-pulse rounded bg-muted" />
           <div className="mx-auto mt-6 h-52 w-52 animate-pulse rounded-full bg-muted" />
-        </div>
+        </Card>
       </div>
     </div>
   );
 }
+
 
 export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; today: string }) {
   const { pipelineStages } = useCrmOptions();
