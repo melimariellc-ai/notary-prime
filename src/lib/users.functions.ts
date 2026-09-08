@@ -105,8 +105,12 @@ export const createAdminUser = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const profile = await loadBusinessProfile();
-    const template =
-      data.role === "notary" ? notaryEmail(data.name, link, profile) : adminEmail(data.name, link, profile);
+    const template = await inviteEmail(
+      data.role === "notary" ? "notary_invite" : "admin_invite",
+      data.name,
+      link,
+      profile,
+    );
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
