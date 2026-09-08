@@ -7,8 +7,6 @@ function uuid(value: unknown): string {
   return s;
 }
 
-const CREDENTIALS =
-  "Texas Commissioned Notary Public, Bonded, Errors & Omissions (E&O) Insured, and NNA Certified Signing Agent";
 
 export const generateOutreachEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
