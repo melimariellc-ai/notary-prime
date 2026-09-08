@@ -23,10 +23,10 @@ export const escapeHtml = (value: string) =>
 
 /** Replaces {{placeholder}} tokens. Unknown tokens are left untouched. */
 export function fillPlaceholders(source: string, values: Record<string, string>): string {
-  return source.replace(/\{\{\s*([a-z0-9_]+)\s*\}\}/gi, (match, key: string) => {
-    const value = values[key.toLowerCase()];
-    return value === undefined ? match : value;
-  });
+  const lookup = (raw: string) => values[raw.trim().toLowerCase().replace(/\s+/g, "_")];
+  return source
+    .replace(/\{\{\s*([a-z0-9_ ]+)\s*\}\}/gi, (match, key: string) => lookup(key) ?? match)
+    .replace(/\[([a-z0-9_ ]+)\]/gi, (match, key: string) => lookup(key) ?? match);
 }
 
 /** Turns the plain-text body into simple HTML paragraphs, linking bare URLs. */
