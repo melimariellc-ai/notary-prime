@@ -104,8 +104,8 @@ function QuickAddActivity({ contactId, onLogged }: { contactId: string; onLogged
         setNote("");
         toast.success("Activity logged");
         flash({ tone: "ok", message: "Activity logged" });
-        await router.invalidate();
         onLogged?.();
+        await router.invalidate();
       } else {
         toast.error(res.message);
         flash({ tone: "error", message: res.message });
