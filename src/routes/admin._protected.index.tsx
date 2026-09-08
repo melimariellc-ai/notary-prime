@@ -5,6 +5,7 @@ import { AlertTriangle, Check, Lock, Mail, MapPin, Phone, RotateCcw, UserCheck, 
 import { toast } from "sonner";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
+import { QuoteRow } from "@/components/admin/QuoteRow";
 import {
   assignNotary,
   getAppointments,
