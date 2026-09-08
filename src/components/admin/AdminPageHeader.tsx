@@ -17,7 +17,7 @@ export function AdminPageHeader({
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div className="min-w-0">
             {eyebrow && (
-              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-accent-foreground">{eyebrow}</p>
+              <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.26em] text-accent-foreground">{eyebrow}</p>
             )}
             <h1 className="mt-2 font-display text-3xl tracking-tight md:text-4xl">{title}</h1>
             {intro && <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{intro}</p>}

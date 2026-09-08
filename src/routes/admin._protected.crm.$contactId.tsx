@@ -17,6 +17,9 @@ import {
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { CustomFieldsPanel } from "@/components/admin/CustomFields";
+import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { Button, ButtonLink, buttonClass } from "@/components/admin/ui/Button";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
   ACTIVITY_TYPES,

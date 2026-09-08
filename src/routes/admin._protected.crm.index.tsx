@@ -19,6 +19,9 @@ import {
   Users,
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { Button, buttonClass } from "@/components/admin/ui/Button";
 import { CustomFieldInputs, customFieldsFromForm } from "@/components/admin/CustomFields";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
@@ -75,7 +78,7 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
 });
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 const money = (value: number) =>
   value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
