@@ -561,7 +561,7 @@ function ContactDetailPage() {
             </button>
             {showAudit && (
               <div className="mt-4">
-                <AuditTrail table="business_contacts" recordId={contact.id} />
+                <AuditTrail table="business_contacts" recordId={contact.id} emphasis="subordinate" />
               </div>
             )}
           </div>
