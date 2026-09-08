@@ -94,13 +94,15 @@ export const createAdminUser = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     // Only Admins may create accounts or set roles. Checked server-side against
     // the database role table, so a direct API call cannot bypass it.
-    const { data: isAdmin, error: roleCheckError } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleCheckError || !isAdmin) {
+    const { data: roleRows, error: roleCheckError } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .eq("role", "admin");
+    if (roleCheckError || !roleRows || roleRows.length === 0) {
       return { ok: false as const, message: "Only Admin accounts can add users or change roles." };
     }
+
 
     const resendKey = process.env["RESEND_API_KEY"];
     if (!resendKey) return { ok: false as const, message: "Email sending is not configured." };
