@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getMyRole } from "@/lib/users.functions";
 import { useState } from "react";
+
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CustomFieldsTab } from "@/components/admin/CustomFieldsTab";
 import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
@@ -64,6 +68,20 @@ type TabId = (typeof TAB_GROUPS)[number]["items"][number]["id"];
 function SettingsPage() {
   const { defs, contactTypes, pipelineStages } = Route.useLoaderData();
   const [tab, setTab] = useState<TabId>("fields");
+  const fetchRole = useServerFn(getMyRole);
+  const { data: me, isLoading } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole({}) });
+
+  if (isLoading) return <div className="px-8 py-24 text-center text-muted-foreground">Loading…</div>;
+  if (!me?.isAdmin)
+    return (
+      <div className="px-8 py-24 text-center">
+        <p className="text-muted-foreground">
+          These settings are only available to Admin accounts. Your own notification preferences are in the account
+          menu at the top right.
+        </p>
+      </div>
+    );
+
 
   return (
     <>
