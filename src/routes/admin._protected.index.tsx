@@ -326,7 +326,7 @@ function AssignRow({
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4 text-sm">
+    <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
       <label htmlFor={`assign-${appointmentId}`} className="inline-flex items-center gap-2 text-muted-foreground">
         <UserCheck className="h-4 w-4 text-gold" /> Assigned notary
       </label>
