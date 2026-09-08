@@ -65,10 +65,10 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
       "- Genuine and specific to what is known above; never generic filler.",
       "- Reference the credentials only where they read naturally, not as a list.",
       "- Speak to how mobile and online notary work matters to this kind of business.",
-      "- Invite them to reach out or keep Enliven Notary in mind for future notary needs.",
+      `- Invite them to reach out or keep ${business} in mind for future notary needs.`,
       "- 120-200 words, plain text, no markdown.",
       "- Start with a 'Subject: ...' line, then a blank line, then the email body.",
-      "- Sign off as the Enliven Notary team with the phone and email above.",
+      `- Sign off as the ${business} team with the phone and email above.`,
       "- Output only the email. No commentary.",
     ].join("\n");
 
