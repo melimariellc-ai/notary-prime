@@ -161,20 +161,37 @@ export function digits(value: string | null | undefined): string {
   return String(value ?? "").replace(/\D/g, "");
 }
 
+// Small clock skew between the browser session token and the database can make a
+// freshly issued token look like it comes from the future (PGRST303). Retry once.
+async function withClockSkewRetry<T extends { error: { code?: string } | null }>(
+  run: () => PromiseLike<T>,
+): Promise<T> {
+  let result = await run();
+  if (result.error?.code === "PGRST303") {
+    await new Promise((r) => setTimeout(r, 1200));
+    result = await run();
+  }
+  return result;
+}
+
+
 export const listBusinessContacts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
-      .from("business_contacts")
-      .select(COLUMNS)
-      .order("next_follow_up_date", { ascending: true, nullsFirst: false })
-      .order("business_name", { ascending: true })
-      .limit(1000);
+    const { data, error } = await withClockSkewRetry(() =>
+      context.supabase
+        .from("business_contacts")
+        .select(COLUMNS)
+        .order("next_follow_up_date", { ascending: true, nullsFirst: false })
+        .order("business_name", { ascending: true })
+        .limit(1000),
+    );
 
     if (error) {
       console.error("Failed to load business contacts", error);
       throw new Error("Could not load contacts.");
     }
+
 
     const contacts = (data ?? []) as unknown as BusinessContact[];
 
