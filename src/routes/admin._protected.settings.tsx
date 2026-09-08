@@ -4,6 +4,7 @@ import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeade
 import { CustomFieldsTab } from "@/components/admin/CustomFieldsTab";
 import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
+import { BusinessProfileTab } from "@/components/admin/BusinessProfileTab";
 
 import { listFieldDefs } from "@/lib/fields.functions";
 import { listCrmOptionUsage } from "@/lib/options.functions";
