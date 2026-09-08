@@ -6,6 +6,12 @@ export const CONTACT_TYPES = [
   "Title Company",
   "Real Estate Agent",
   "Attorney",
+  "Mortgage Lender/Loan Officer",
+  "Signing Service",
+  "Senior Living/Care Facility",
+  "Financial Advisor",
+  "Property Management Company",
+  "HR/Employer",
   "Other Referral Source",
 ] as const;
 
