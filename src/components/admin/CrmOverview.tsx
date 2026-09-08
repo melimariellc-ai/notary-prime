@@ -1,13 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { PIPELINE_STAGES, type BusinessContact } from "@/lib/crm.functions";
+import { type BusinessContact } from "@/lib/crm.functions";
+import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 
-export const STAGE_COLORS: Record<string, string> = {
-  "New Lead": "var(--chart-1)",
-  Contacted: "var(--chart-5)",
-  "Meeting Scheduled": "var(--chart-2)",
-  "Active Referral Source": "var(--chart-3)",
-  Inactive: "var(--chart-4)",
-};
 
 function StatCard({
   value,
