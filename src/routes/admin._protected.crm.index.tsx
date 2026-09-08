@@ -383,14 +383,9 @@ function CrmPage() {
                 </label>
 
                  <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowColumns((v) => !v)}
-                    aria-expanded={showColumns}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs hover:bg-secondary"
-                  >
-                    <SlidersHorizontal className="h-3.5 w-3.5 text-accent-foreground" /> Columns
-                  </button>
+                  <Button type="button" variant="secondary" size="sm" onClick={() => setShowColumns((v) => !v)} aria-expanded={showColumns}>
+                    <SlidersHorizontal className="h-4 w-4" /> Columns
+                  </Button>
                   {showColumns && (
                     <div className="absolute right-0 z-40 mt-2 w-52 rounded-2xl border border-border bg-card p-3 shadow-lg">
                       {COLUMN_KEYS.map((key) => (
@@ -455,7 +450,7 @@ function CrmPage() {
                   id="bulk-stage"
                   value={bulkTarget}
                   onChange={(e) => setBulkTarget(e.target.value)}
-                  className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                  className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
                   {pipelineStages.map((s) => (
                     <option key={s} value={s}>
@@ -463,27 +458,19 @@ function CrmPage() {
                     </option>
                   ))}
                 </select>
-                <button
-                  type="button"
-                  onClick={() => void applyBulkStage()}
-                  className="btn-gold rounded-full px-5 py-2 text-sm font-medium"
-                >
+                <Button type="button" size="sm" onClick={() => void applyBulkStage()}>
                   Apply
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelected([])}
-                  className="rounded-full border border-border px-5 py-2 text-sm"
-                >
+                </Button>
+                <Button type="button" variant="secondary" size="sm" onClick={() => setSelected([])}>
                   Clear
-                </button>
+                </Button>
               </div>
             )}
 
             {visible.length === 0 ? (
-              <p className="mt-6 rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
+              <Card className="mt-6 text-center text-muted-foreground">
                 No contacts match those filters. Try clearing the search or stage filter.
-              </p>
+              </Card>
             ) : view === "list" ? (
               <ListView
                 rows={visible}
@@ -528,11 +515,11 @@ function SavedViewsBar({
   const active = views.find((v) => v.id === activeId) ?? null;
 
   return (
-    <div className="mb-6 rounded-3xl border border-border bg-card p-4">
+    <Card className="mb-6 p-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <SectionLabel className="mr-1 inline-flex items-center gap-1.5">
           <Star className="h-3.5 w-3.5 text-accent-foreground" /> Saved views
-        </span>
+        </SectionLabel>
         <button
           type="button"
           onClick={onReset}
@@ -554,25 +541,29 @@ function SavedViewsBar({
         ))}
         <div className="ml-auto flex items-center gap-2">
           {active && (
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => void onDelete(active)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs text-muted-foreground hover:text-destructive"
+              className="text-muted-foreground hover:text-destructive"
             >
-              <Trash2 className="h-3.5 w-3.5" /> Delete view
-            </button>
+              <Trash2 className="h-4 w-4" /> Delete view
+            </Button>
           )}
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={() => {
               setName(active?.name ?? "");
               setNaming((v) => !v);
             }}
             aria-expanded={naming}
-            className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 px-4 py-2 text-xs font-medium hover:bg-secondary"
+            className="border-gold/60"
           >
-            <Plus className="h-3.5 w-3.5 text-accent-foreground" /> Save current view
-          </button>
+            <Plus className="h-4 w-4" /> Save current view
+          </Button>
         </div>
       </div>
 
@@ -605,28 +596,22 @@ function SavedViewsBar({
               className={`mt-2 ${inputClass}`}
             />
           </div>
-          <button type="submit" className="btn-gold rounded-full px-5 py-2.5 text-sm font-medium">
-            Save view
-          </button>
-          <button
-            type="button"
-            onClick={() => setNaming(false)}
-            className="rounded-full border border-border px-5 py-2.5 text-sm"
-          >
+          <Button type="submit">Save view</Button>
+          <Button type="button" variant="secondary" onClick={() => setNaming(false)}>
             Cancel
-          </button>
+          </Button>
         </form>
       )}
       <p className="mt-3 text-xs text-muted-foreground">
         Views save your search, filters, sort order, columns, and list or kanban mode. They are private to your account.
       </p>
-    </div>
+    </Card>
   );
 }
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
-    <div className="rounded-3xl border border-dashed border-gold/50 bg-card p-12 text-center">
+    <Card className="border-dashed border-gold/50 text-center">
       <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full border border-border bg-secondary">
         <Users className="h-6 w-6 text-accent-foreground" />
       </span>
@@ -635,25 +620,16 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         Title companies, real estate agents, and attorneys you add here move through your pipeline, keep their own
         activity history, and show the real dollar value of the work they send you.
       </p>
-      <button
-        type="button"
-        onClick={onAdd}
-        className="btn-gold mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
-      >
+      <Button type="button" onClick={onAdd} className="mt-7">
         <Plus className="h-4 w-4" /> Add your first contact
-      </button>
-    </div>
+      </Button>
+    </Card>
   );
 }
 
 function StageChip({ stage }: { stage: string }) {
   const { pipelineStages } = useCrmOptions();
-  return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-[11px] font-medium">
-      <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: stageColor(stage, pipelineStages) }} />
-      {stage}
-    </span>
-  );
+  return <Badge dotColor={stageColor(stage, pipelineStages)}>{stage}</Badge>;
 }
 
 function ListView({
@@ -904,7 +880,7 @@ function KanbanCard({
       >
         {contact.business_name}
       </Link>
-      <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{contact.contact_type}</p>
+      <SectionLabel className="mt-1">{contact.contact_type}</SectionLabel>
       {contact.contact_person && <p className="mt-2 text-sm">{contact.contact_person}</p>}
       <div className="mt-2 grid gap-1 text-xs text-muted-foreground">
         {contact.phone && (
@@ -929,14 +905,14 @@ function KanbanCard({
           Follow up {new Date(`${contact.next_follow_up_date}T00:00:00`).toLocaleDateString()}
         </p>
       )}
-      <label htmlFor={`stage-${contact.id}`} className="mt-3 block text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-        Move to stage
+      <label htmlFor={`stage-${contact.id}`} className="mt-3 block">
+        <SectionLabel>Move to stage</SectionLabel>
       </label>
       <select
         id={`stage-${contact.id}`}
         value={contact.pipeline_stage}
         onChange={(e) => onMove(e.target.value)}
-        className="mt-1 w-full rounded-xl border border-border bg-card px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gold/60"
+        className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
       >
         {pipelineStages.map((s) => (
           <option key={s} value={s}>
@@ -1019,10 +995,8 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
   }
 
   return (
-    <div className="mb-8 rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Plus className="h-5 w-5 text-accent-foreground" /> Add contact
-      </h2>
+    <Card className="mb-8">
+      <CardHeader title="Add contact" icon={Plus} />
 
       <form
         onSubmit={(e) => {
@@ -1126,32 +1100,28 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
           <div className="sm:col-span-2 grid gap-3">
             <DuplicateWarning matches={duplicates} />
             <div className="flex flex-wrap gap-3">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 disabled={busy}
                 onClick={(e) => {
                   const form = e.currentTarget.closest("form");
                   if (form) void submit(form as HTMLFormElement, true);
                 }}
-                className="rounded-full border border-border px-6 py-3 text-sm font-medium disabled:opacity-60"
               >
                 Save anyway
-              </button>
+              </Button>
             </div>
           </div>
         )}
 
         <div className="sm:col-span-2">
-          <button
-            type="submit"
-            disabled={busy}
-            className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-          >
+          <Button type="submit" disabled={busy}>
             {busy ? "Saving…" : "Save contact"}
-          </button>
+          </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }
 
@@ -1280,10 +1250,8 @@ function BulkImport({ onImported }: { onImported: () => void }) {
   }
 
   return (
-    <div className="mb-8 rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Upload className="h-5 w-5 text-accent-foreground" /> Bulk import
-      </h2>
+    <Card className="mb-8">
+      <CardHeader title="Bulk import" icon={Upload} />
 
       <div className="mt-6 grid gap-5">
         <p className="text-sm text-muted-foreground">
@@ -1373,25 +1341,16 @@ function BulkImport({ onImported }: { onImported: () => void }) {
             </label>
 
             <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                disabled={busy || importable.length === 0}
-                onClick={() => void onCommit()}
-                className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-              >
+              <Button type="button" disabled={busy || importable.length === 0} onClick={() => void onCommit()}>
                 {busy ? "Importing…" : `Import ${importable.length} contact${importable.length === 1 ? "" : "s"}`}
-              </button>
-              <button
-                type="button"
-                onClick={() => setRows(null)}
-                className="rounded-full border border-border px-6 py-3 text-sm font-medium"
-              >
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => setRows(null)}>
                 Cancel
-              </button>
+              </Button>
             </div>
           </>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

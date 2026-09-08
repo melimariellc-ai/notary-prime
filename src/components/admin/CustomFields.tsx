@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { listFieldDefs, setCustomFieldValue, type CustomFieldValues, type FieldDef } from "@/lib/fields.functions";
+import { SectionLabel } from "@/components/admin/ui/Card";
 
 const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
@@ -72,7 +73,7 @@ export function CustomFieldsPanel({ contactId, values }: { contactId: string; va
   if (defs.length === 0) return null;
   return (
     <div className="mt-8 border-t border-border pt-6">
-      <h3 className="font-display text-xl tracking-tight">Custom fields</h3>
+      <h3 className="font-display text-xl tracking-tight text-foreground">Custom fields</h3>
       <dl className="mt-4 grid gap-4 sm:grid-cols-2">
         {defs.map((def) => (
           <CustomFieldRow key={def.id} contactId={contactId} def={def} value={values?.[def.field_key] ?? null} />
@@ -123,7 +124,7 @@ function CustomFieldRow({
 
   return (
     <div>
-      <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{def.label}</dt>
+      <dt><SectionLabel>{def.label}</SectionLabel></dt>
       <dd className="mt-1.5">
         {def.field_type === "dropdown" ? (
           <select

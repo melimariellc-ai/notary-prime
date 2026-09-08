@@ -4,6 +4,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Copy, Merge } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { Button, ButtonLink } from "@/components/admin/ui/Button";
 import {
   listDuplicateGroups,
   mergeBusinessContacts,
@@ -55,20 +58,17 @@ function DuplicatesPage() {
       />
       <AdminSection>
         {groups.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-card p-10 text-center">
+          <Card className="text-center">
             <CheckCircle2 className="mx-auto h-8 w-8 text-accent-foreground" aria-hidden="true" />
             <h2 className="mt-4 font-display text-2xl">No duplicates found</h2>
             <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
               Every contact looks distinct right now. New contacts are checked as they are added, and this page
               re-scans each time you open it.
             </p>
-            <Link
-              to="/admin/crm"
-              className="mt-6 inline-flex rounded-xl border border-border px-5 py-2.5 text-sm font-medium hover:bg-secondary/60"
-            >
+            <ButtonLink to="/admin/crm" variant="secondary" className="mx-auto mt-6">
               Back to contacts
-            </Link>
-          </div>
+            </ButtonLink>
+          </Card>
         ) : (
           <div className="grid gap-6">
             <p className="text-sm text-muted-foreground">
@@ -113,25 +113,23 @@ function GroupCard({ group }: { group: DuplicateGroup }) {
   }
 
   return (
-    <article className="rounded-2xl border border-border bg-card p-5 md:p-6">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
-        <div className="flex items-center gap-3">
-          <Copy className="h-4 w-4 text-accent-foreground" aria-hidden="true" />
-          <h2 className="font-display text-xl">
-            {group.contacts.length} similar records
-          </h2>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="rounded-full bg-secondary px-3 py-1 font-semibold uppercase tracking-[0.14em] text-accent-foreground">
-            {group.score}% match
-          </span>
-          {group.matchedFields.map((field) => (
-            <span key={field} className="rounded-full border border-border px-3 py-1 text-muted-foreground">
-              {field} matches
-            </span>
-          ))}
-        </div>
-      </header>
+    <Card>
+      <div className="border-b border-border pb-4">
+        <CardHeader
+          title={`${group.contacts.length} similar records`}
+          icon={Copy}
+          meta={
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="accent">{group.score}% match</Badge>
+              {group.matchedFields.map((field) => (
+                <Badge key={field} tone="neutral">
+                  {field} matches
+                </Badge>
+              ))}
+            </div>
+          }
+        />
+      </div>
 
       <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-xs text-muted-foreground">
         <div className="flex gap-2">
@@ -169,35 +167,21 @@ function GroupCard({ group }: { group: DuplicateGroup }) {
             <span className="text-xs text-destructive">
               Merge {mergeIds.length} record{mergeIds.length === 1 ? "" : "s"} into {keep?.business_name}?
             </span>
-            <button
-              type="button"
-              onClick={() => setConfirming(false)}
-              className="rounded-xl border border-border px-4 py-2 text-sm hover:bg-secondary/60"
-            >
+            <Button type="button" variant="secondary" size="sm" onClick={() => setConfirming(false)}>
               Cancel
-            </button>
-            <button
-              type="button"
-              onClick={onMerge}
-              disabled={busy}
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
-            >
+            </Button>
+            <Button type="button" variant="primary" size="sm" onClick={onMerge} disabled={busy}>
               {busy ? "Merging…" : "Yes, merge"}
-            </button>
+            </Button>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => setConfirming(true)}
-            disabled={mergeIds.length === 0}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
-          >
+          <Button type="button" variant="primary" size="sm" onClick={() => setConfirming(true)} disabled={mergeIds.length === 0}>
             <Merge className="h-4 w-4" aria-hidden="true" />
             Merge into selected
-          </button>
+          </Button>
         )}
       </div>
-    </article>
+    </Card>
   );
 }
 
@@ -248,7 +232,7 @@ function ContactCard({
       <Link
         to="/admin/crm/$contactId"
         params={{ contactId: contact.id }}
-        className="mt-3 inline-flex text-xs font-medium text-accent-foreground underline-offset-4 hover:underline"
+        className="mt-3 inline-flex text-sm font-medium text-accent-foreground underline-offset-4 hover:underline"
       >
         Open full record
       </Link>

@@ -10,6 +10,7 @@ import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { BusinessProfileTab } from "@/components/admin/BusinessProfileTab";
 import { EmailTemplatesTab } from "@/components/admin/EmailTemplatesTab";
+import { SectionLabel } from "@/components/admin/ui/Card";
 
 
 import { listFieldDefs } from "@/lib/fields.functions";
@@ -105,9 +106,7 @@ function SettingsPage() {
           >
             {TAB_GROUPS.map((group) => (
               <div key={group.label}>
-                <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  {group.label}
-                </p>
+                <SectionLabel className="px-3 pb-2">{group.label}</SectionLabel>
                 <div className="space-y-1">
                   {group.items.map((t) => (
                     <button
@@ -165,4 +164,3 @@ function SettingsPage() {
     </>
   );
 }
-
