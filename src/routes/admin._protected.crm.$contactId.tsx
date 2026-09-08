@@ -104,8 +104,8 @@ function QuickAddActivity({ contactId, onLogged }: { contactId: string; onLogged
         setNote("");
         toast.success("Activity logged");
         flash({ tone: "ok", message: "Activity logged" });
-        await router.invalidate();
         onLogged?.();
+        await router.invalidate();
       } else {
         toast.error(res.message);
         flash({ tone: "error", message: res.message });
@@ -182,12 +182,25 @@ function ContactDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
   const [showAudit, setShowAudit] = useState(false);
-  const [highlightLatest, setHighlightLatest] = useState(false);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const pendingHighlight = useRef(false);
+  const knownActivityIds = useRef<Set<string>>(new Set());
 
   function flagLatestActivity() {
-    setHighlightLatest(true);
-    window.setTimeout(() => setHighlightLatest(false), 3000);
+    knownActivityIds.current = new Set(activities.map((a) => a.id));
+    pendingHighlight.current = true;
   }
+
+  useEffect(() => {
+    if (!pendingHighlight.current) return;
+    const added = activities.find((a) => !knownActivityIds.current.has(a.id));
+    if (!added) return;
+    pendingHighlight.current = false;
+    knownActivityIds.current = new Set(activities.map((a) => a.id));
+    setHighlightId(added.id);
+    const timer = window.setTimeout(() => setHighlightId(null), 3500);
+    return () => window.clearTimeout(timer);
+  }, [activities]);
 
 
 
@@ -510,11 +523,11 @@ function ContactDetailPage() {
             </p>
           ) : (
             <ol className="mt-6 relative border-l border-border pl-6">
-              {activities.map((a, index) => (
+              {activities.map((a) => (
                 <li
                   key={a.id}
                   className={`relative pb-8 last:pb-0 ${
-                    highlightLatest && index === 0
+                    highlightId === a.id
                       ? "-mx-3 rounded-2xl bg-[var(--gold)]/12 px-3 pt-3 ring-1 ring-gold/40 transition-colors"
                       : "transition-colors"
                   }`}
