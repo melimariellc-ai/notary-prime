@@ -33,8 +33,16 @@ export const PIPELINE_STAGES = [
 
 export const ACTIVITY_TYPES = ["Call", "Email", "Meeting", "Note"] as const;
 
-export type ContactType = (typeof CONTACT_TYPES)[number];
-export type PipelineStage = (typeof PIPELINE_STAGES)[number];
+export type ContactType = string;
+export type PipelineStage = string;
+
+/** Accept any admin-configured option label; empty falls back to a default. */
+function optionLabel(value: unknown, fallback: string, what: string): string {
+  const s = String(value ?? "").trim().slice(0, 80);
+  if (!s) return fallback;
+  if (s.length > 80) throw new Error(`Invalid ${what}.`);
+  return s;
+}
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
 export type BusinessContact = {
