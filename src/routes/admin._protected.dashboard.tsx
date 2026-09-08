@@ -145,11 +145,12 @@ function QuickLink({
   return (
     <Link
       to={to}
-      className="rounded-3xl border border-border bg-card p-6 transition-colors hover:border-gold/60 hover:bg-secondary/50"
+      className={`${CARD_CLASS} md:p-6 block transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60`}
     >
       <Icon className="h-5 w-5 text-accent-foreground" />
-      <h2 className="mt-3 font-display text-xl tracking-tight">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+      <h2 className="mt-3 font-display text-xl leading-tight tracking-tight">{title}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
     </Link>
   );
 }
+
