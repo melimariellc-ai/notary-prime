@@ -300,8 +300,8 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
           {new Date(a.submitted_at).toLocaleString()}
         </span>
       </div>
-      <p className={`mt-2 font-mono text-xs break-all ${isDismissed ? "text-muted-foreground" : "text-destructive"}`}>
-        {a.sms_error || "Unknown error from OpenPhone"}
+      <p className={`mt-2 text-xs ${isDismissed ? "text-muted-foreground" : "text-destructive"}`}>
+        {friendlySmsError(a.sms_error)}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Button
