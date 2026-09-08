@@ -152,38 +152,20 @@ export const Route = createFileRoute("/api/public/appointment-notify")({
         const customerEmail = (row.email ?? "").toString().trim();
         if (customerEmail) {
           const dateTime = [row.preferred_date, row.preferred_time].filter(Boolean).join(" at ") || "—";
-          const detailRows: [string, string][] = [
-            ["Service", row.service ?? "—"],
-            ["Preferred Date", dateTime],
-            ["Location", location],
-          ];
 
-          const customerHtml = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#0F1A2B">
-<p>Thank you for choosing Enliven Notary. We&rsquo;ve received your request with the following details:</p>
-<table cellpadding="6" style="border-collapse:collapse;font-size:14px">${detailRows
-            .map(
-              ([k, v]) =>
-                `<tr><td style="color:#666">${escapeHtml(k)}</td><td><strong>${escapeHtml(String(v))}</strong></td></tr>`,
-            )
-            .join("")}</table>
-<p>We&rsquo;ll review your request and reach out shortly to confirm availability, timing, and final pricing. During business hours, we typically respond within a few hours. Requests submitted after hours or on Sunday will be followed up on as soon as possible the next business day.</p>
-<p>Need assistance in the meantime? Call or text us at (469) 991-2777.</p>
-<p>We look forward to assisting you!</p>
-<p style="color:#666;margin-bottom:0"><strong>Enliven Notary</strong><br/>Mobile &middot; Online &middot; Trusted</p>
-</div>`;
-          const customerText = `Thank you for choosing Enliven Notary. We've received your request with the following details:
-
-${detailRows.map(([k, v]) => `${k}: ${v}`).join("\n")}
-
-We'll review your request and reach out shortly to confirm availability, timing, and final pricing. During business hours, we typically respond within a few hours. Requests submitted after hours or on Sunday will be followed up on as soon as possible the next business day.
-
-Need assistance in the meantime? Call or text us at (469) 991-2777.
-
-We look forward to assisting you!
-
-Enliven Notary
-Mobile · Online · Trusted`;
-
+          const { loadBusinessProfile } = await import("@/lib/business-profile.server");
+          const { loadEmailTemplate } = await import("@/lib/email-templates.server");
+          const { renderEmailTemplate } = await import("@/lib/email-templates");
+          const profile = await loadBusinessProfile();
+          const template = await loadEmailTemplate("quote_confirmation");
+          const rendered = renderEmailTemplate(template, {
+            business_name: profile.business_name,
+            service: row.service ?? "—",
+            preferred_date: dateTime,
+            location,
+            phone: profile.phone,
+            contact_email: profile.email,
+          });
 
           const customerResponse = await fetch("https://api.resend.com/emails", {
             method: "POST",
@@ -195,9 +177,9 @@ Mobile · Online · Trusted`;
               from: FROM,
               to: [customerEmail],
               reply_to: "info@enlivennotary.com",
-              subject: "Your Appointment Request — Enliven Notary",
-              html: customerHtml,
-              text: customerText,
+              subject: rendered.subject,
+              html: rendered.html,
+              text: rendered.text,
             }),
           });
 
