@@ -3,6 +3,8 @@ import { useState } from "react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CustomFieldsTab } from "@/components/admin/CustomFieldsTab";
 import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
+import { UserManagementTab } from "@/components/admin/UserManagementTab";
+
 import { listFieldDefs } from "@/lib/fields.functions";
 import { listCrmOptionUsage } from "@/lib/options.functions";
 
@@ -36,7 +38,9 @@ const TABS = [
   { id: "fields", label: "Custom Fields" },
   { id: "types", label: "Contact Types" },
   { id: "stages", label: "Pipeline Stages" },
+  { id: "users", label: "User Management" },
 ] as const;
+
 
 type TabId = (typeof TABS)[number]["id"];
 
