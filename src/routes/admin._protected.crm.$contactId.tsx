@@ -171,6 +171,153 @@ function QuickAddActivity({ contactId, onLogged }: { contactId: string; onLogged
 }
 
 
+type HistoryActivity = {
+  id: string;
+  activity_date: string;
+  activity_type: string;
+  description: string;
+};
+
+/** One entry in the interaction log. Admins additionally get edit/delete controls. */
+function HistoryEntry({
+  activity,
+  canManage,
+  highlighted,
+}: {
+  activity: HistoryActivity;
+  canManage: boolean;
+  highlighted: boolean;
+}) {
+  const router = useRouter();
+  const saveEntry = useServerFn(updateContactActivity);
+  const removeEntry = useServerFn(deleteContactActivity);
+  const [editing, setEditing] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [type, setType] = useState(activity.activity_type);
+  const [date, setDate] = useState(activity.activity_date);
+  const [description, setDescription] = useState(activity.description);
+
+  async function save(event: React.FormEvent) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await saveEntry({ data: { id: activity.id, type, date, description } });
+      if (!res.ok) {
+        setError(res.message);
+        return;
+      }
+      await router.invalidate();
+      setEditing(false);
+      toast.success("History entry updated");
+    } catch {
+      setError("Could not save that change.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove() {
+    if (busy) return;
+    if (!window.confirm("Delete this history entry? This is recorded in the change history.")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await removeEntry({ data: { id: activity.id } });
+      if (!res.ok) {
+        setError(res.message);
+        return;
+      }
+      await router.invalidate();
+      toast.success("History entry deleted");
+    } catch {
+      setError("Could not delete that entry.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <li
+      className={`group relative pb-8 last:pb-0 ${
+        highlighted
+          ? "-mx-3 rounded-2xl bg-[var(--gold)]/12 px-3 pt-3 ring-1 ring-gold/40 transition-colors"
+          : "transition-colors"
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute -left-[1.9rem] top-1.5 h-3 w-3 rounded-full border-2 border-card bg-[var(--gold)]"
+      />
+      {editing ? (
+        <form onSubmit={save} className="grid gap-3 sm:grid-cols-3">
+          <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
+            {ACTIVITY_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputClass} />
+          <div className="flex gap-2 sm:justify-end">
+            <Button type="submit" disabled={busy}>
+              {busy ? "Saving…" : "Save"}
+            </Button>
+            <Button type="button" variant="secondary" onClick={() => setEditing(false)} disabled={busy}>
+              Cancel
+            </Button>
+          </div>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            required
+            className={`sm:col-span-3 ${inputClass}`}
+          />
+        </form>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <Badge tone="accent">{activity.activity_type}</Badge>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">
+                {new Date(`${activity.activity_date}T00:00:00`).toLocaleDateString()}
+              </span>
+              {canManage && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(true)}
+                    aria-label="Edit history entry"
+                    title="Edit history entry"
+                    className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={remove}
+                    disabled={busy}
+                    aria-label="Delete history entry"
+                    title="Delete history entry"
+                    className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+          <ActivityBody description={activity.description} />
+        </>
+      )}
+      {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+    </li>
+  );
+}
+
 function ContactDetailPage() {
 
   const { contactTypes, pipelineStages } = useCrmOptions();
@@ -178,6 +325,9 @@ function ContactDetailPage() {
   const router = useRouter();
   const logActivity = useServerFn(addContactActivity);
   const removeContact = useServerFn(deleteBusinessContact);
+  const fetchRole = useServerFn(getMyRole);
+  const { data: me } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole({}) });
+  const isAdmin = me?.isAdmin ?? false;
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
