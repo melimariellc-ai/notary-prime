@@ -85,7 +85,7 @@ export function NotificationPreferencesTab() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h2 className="font-serif text-2xl text-foreground">Notification preferences</h2>
+        <h2 className="font-display text-2xl tracking-tight">Notification preferences</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           These settings are yours alone — changing them only affects the emails sent to you.
         </p>

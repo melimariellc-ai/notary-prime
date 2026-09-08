@@ -3,9 +3,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getBusinessProfile, updateBusinessProfile } from "@/lib/business-profile.functions";
 import { credentialsLine, DEFAULT_BUSINESS_PROFILE, rateLabel, type BusinessProfile } from "@/lib/business-profile";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 
 const field =
-  "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 export function BusinessProfileTab() {
   const fetchProfile = useServerFn(getBusinessProfile);
@@ -40,8 +42,8 @@ export function BusinessProfileTab() {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-8">
-      <h2 className="text-xl font-medium text-foreground">Business profile</h2>
+    <Card>
+      <CardHeader title="Business profile" />
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         These details are the single source of truth for the admin system — outreach emails, team invitations, and
         anywhere else the business is named will use whatever you save here.
@@ -171,14 +173,10 @@ export function BusinessProfileTab() {
           </p>
         </fieldset>
 
-        <button
-          type="submit"
-          disabled={mutation.isPending}
-          className="rounded-full bg-secondary px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary/70 disabled:opacity-60"
-        >
+        <Button type="submit" variant="secondary" disabled={mutation.isPending}>
           {mutation.isPending ? "Saving…" : "Save business profile"}
-        </button>
+        </Button>
       </form>
-    </div>
+    </Card>
   );
 }

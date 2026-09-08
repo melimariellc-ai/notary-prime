@@ -4,6 +4,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Download, FileSpreadsheet } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { Card, CardHeader, CARD_CLASS, SectionLabel } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 import { useCrmOptions } from "@/hooks/useCrmOptions";
 import { runReport, type ReportDataset, type ReportResult } from "@/lib/reports.functions";
 
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/admin/_protected/reports")({
 });
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -101,12 +103,10 @@ function ReportsPage() {
       />
 
       <AdminSection>
-        <div className="rounded-3xl border border-border bg-card p-6">
+        <Card>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div>
-              <label htmlFor="dataset" className="text-sm text-muted-foreground">
-                Report
-              </label>
+              <SectionLabel className="mb-0"><label htmlFor="dataset">Report</label></SectionLabel>
               <select
                 id="dataset"
                 value={dataset}
@@ -121,21 +121,15 @@ function ReportsPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="from" className="text-sm text-muted-foreground">
-                From
-              </label>
+              <SectionLabel className="mb-0"><label htmlFor="from">From</label></SectionLabel>
               <input id="from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={`mt-2 ${inputClass}`} />
             </div>
             <div>
-              <label htmlFor="to" className="text-sm text-muted-foreground">
-                To
-              </label>
+              <SectionLabel className="mb-0"><label htmlFor="to">To</label></SectionLabel>
               <input id="to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`mt-2 ${inputClass}`} />
             </div>
             <div>
-              <label htmlFor="stage" className="text-sm text-muted-foreground">
-                Pipeline stage
-              </label>
+              <SectionLabel className="mb-0"><label htmlFor="stage">Pipeline stage</label></SectionLabel>
               <select id="stage" value={stage} onChange={(e) => setStage(e.target.value)} className={`mt-2 ${inputClass}`}>
                 <option value="">All stages</option>
                 {pipelineStages.map((s) => (
@@ -146,9 +140,7 @@ function ReportsPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="type" className="text-sm text-muted-foreground">
-                Contact type
-              </label>
+              <SectionLabel className="mb-0"><label htmlFor="type">Contact type</label></SectionLabel>
               <select id="type" value={type} onChange={(e) => setType(e.target.value)} className={`mt-2 ${inputClass}`}>
                 <option value="">All types</option>
                 {contactTypes.map((t) => (
@@ -161,43 +153,35 @@ function ReportsPage() {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => void preview()}
-              disabled={busy}
-              className="btn-gold inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium disabled:opacity-60"
-            >
+            <Button type="button" variant="primary" onClick={() => void preview()} disabled={busy}>
               <FileSpreadsheet className="h-4 w-4" /> {busy ? "Building…" : "Preview report"}
-            </button>
-            <button
-              type="button"
-              onClick={exportCsv}
-              disabled={!result || result.total === 0}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium hover:bg-secondary disabled:opacity-50"
-            >
+            </Button>
+            <Button type="button" variant="secondary" onClick={exportCsv} disabled={!result || result.total === 0}>
               <Download className="h-4 w-4 text-accent-foreground" /> Export CSV
-            </button>
+            </Button>
             <span className="text-xs text-muted-foreground">
               {dataset === "contacts"
                 ? "Contacts are filtered by the date they were added."
                 : "Activities are filtered by the date they happened."}
             </span>
           </div>
-        </div>
+        </Card>
 
         {result && (
           <div className="mt-8">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-display text-2xl tracking-tight">Preview</h2>
-              <p className="text-xs text-muted-foreground" aria-live="polite">
-                {result.total} record{result.total === 1 ? "" : "s"} match
-                {result.total === 1 ? "es" : ""} · showing first {Math.min(25, result.total)}
-                {result.truncated ? " · capped at 5,000 rows" : ""}
-              </p>
-            </div>
+            <CardHeader
+              title="Preview"
+              meta={
+                <p className="text-xs text-muted-foreground" aria-live="polite">
+                  {result.total} record{result.total === 1 ? "" : "s"} match
+                  {result.total === 1 ? "es" : ""} · showing first {Math.min(25, result.total)}
+                  {result.truncated ? " · capped at 5,000 rows" : ""}
+                </p>
+              }
+            />
 
             {result.total === 0 ? (
-              <p className="mt-4 rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
+              <p className={`mt-4 ${CARD_CLASS} p-10 text-center text-muted-foreground`}>
                 Nothing to export for that date range. Try widening the dates or clearing a filter.
               </p>
             ) : (
