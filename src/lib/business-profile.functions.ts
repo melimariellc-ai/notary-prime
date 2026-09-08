@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "./business-profile";
 
 const FIELDS =
-  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified";
+  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, default_referral_rate, default_referral_rate_type";
 
 const text = (value: unknown, max = 200) => String(value ?? "").trim().slice(0, max);
 
