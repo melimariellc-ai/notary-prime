@@ -14,13 +14,13 @@ function StatCard({
   label,
   accent,
   stage,
-  href,
+  hash,
 }: {
   value: number;
   label: string;
   accent?: boolean;
   stage?: string;
-  href?: string;
+  hash?: string;
 }) {
   const inner = (
     <>
@@ -35,9 +35,14 @@ function StatCard({
   const className =
     "block rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)] transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
-  if (href) {
+  if (hash) {
     return (
-      <Link to={href} aria-label={`${label}: ${value}. View details.`} className={className}>
+      <Link
+        to="/admin/dashboard"
+        hash={hash}
+        aria-label={`${label}: ${value}. View details.`}
+        className={className}
+      >
         {inner}
       </Link>
     );
@@ -150,7 +155,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard value={total} label="Total contacts" />
         <StatCard value={find("New Lead")} label="New leads" stage="New Lead" />
-        <StatCard value={due.length} label="Overdue follow-ups" accent href="/admin/dashboard#needs-attention" />
+        <StatCard value={due.length} label="Overdue follow-ups" accent hash="needs-attention" />
         <StatCard
           value={find("Active Referral Source")}
           label="Active referral sources"
