@@ -163,7 +163,9 @@ export function digits(value: string | null | undefined): string {
 
 // Small clock skew between the browser session token and the database can make a
 // freshly issued token look like it comes from the future (PGRST303). Retry once.
-async function withClockSkewRetry<T>(run: () => Promise<{ data: T; error: { code?: string } | null }>) {
+async function withClockSkewRetry<T extends { error: { code?: string } | null }>(
+  run: () => PromiseLike<T>,
+): Promise<T> {
   let result = await run();
   if (result.error?.code === "PGRST303") {
     await new Promise((r) => setTimeout(r, 1200));
@@ -171,6 +173,7 @@ async function withClockSkewRetry<T>(run: () => Promise<{ data: T; error: { code
   }
   return result;
 }
+
 
 export const listBusinessContacts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
