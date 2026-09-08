@@ -182,12 +182,25 @@ function ContactDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
   const [showAudit, setShowAudit] = useState(false);
-  const [highlightLatest, setHighlightLatest] = useState(false);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const pendingHighlight = useRef(false);
+  const knownActivityIds = useRef<Set<string>>(new Set());
 
   function flagLatestActivity() {
-    setHighlightLatest(true);
-    window.setTimeout(() => setHighlightLatest(false), 3000);
+    knownActivityIds.current = new Set(activities.map((a) => a.id));
+    pendingHighlight.current = true;
   }
+
+  useEffect(() => {
+    if (!pendingHighlight.current) return;
+    const added = activities.find((a) => !knownActivityIds.current.has(a.id));
+    if (!added) return;
+    pendingHighlight.current = false;
+    knownActivityIds.current = new Set(activities.map((a) => a.id));
+    setHighlightId(added.id);
+    const timer = window.setTimeout(() => setHighlightId(null), 3500);
+    return () => window.clearTimeout(timer);
+  }, [activities]);
 
 
 
