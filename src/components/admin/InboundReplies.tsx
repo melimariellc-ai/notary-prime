@@ -51,20 +51,17 @@ export function InboundRepliesCard() {
             const body = (
               <>
                 <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                  <MailOpen className="h-3.5 w-3.5 text-accent-foreground" />
+                  <MailOpen className="h-4 w-4 text-accent-foreground" />
                 </span>
                 <div className="min-w-0">
-                  <p className="flex flex-wrap items-baseline gap-2 text-sm">
+                  <p className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-medium">
                       {item.business_name ?? item.from_name ?? item.from_email}
                     </span>
                     <span className="text-xs text-muted-foreground">· {when(item.received_at)}</span>
-                    {!item.contact_id && (
-                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                        no matching contact
-                      </span>
-                    )}
+                    {!item.contact_id && <Badge tone="warning">No matching contact</Badge>}
                   </p>
+
                   <p className="mt-1 text-sm">{item.subject ?? "(no subject)"}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.snippet}</p>
                 </div>
