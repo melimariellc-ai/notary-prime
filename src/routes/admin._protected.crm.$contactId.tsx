@@ -524,28 +524,9 @@ function ContactDetailPage() {
           ) : (
             <ol className="mt-6 relative border-l border-border pl-6">
               {activities.map((a) => (
-                <li
-                  key={a.id}
-                  className={`relative pb-8 last:pb-0 ${
-                    highlightId === a.id
-                      ? "-mx-3 rounded-2xl bg-[var(--gold)]/12 px-3 pt-3 ring-1 ring-gold/40 transition-colors"
-                      : "transition-colors"
-                  }`}
-                >
-
-                  <span
-                    aria-hidden="true"
-                    className="absolute -left-[1.9rem] top-1.5 h-3 w-3 rounded-full border-2 border-card bg-[var(--gold)]"
-                  />
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <Badge tone="accent">{a.activity_type}</Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(`${a.activity_date}T00:00:00`).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <ActivityBody description={a.description} />
-                </li>
+                <HistoryEntry key={a.id} activity={a} canManage={isAdmin} highlighted={highlightId === a.id} />
               ))}
+
             </ol>
           )}
 
