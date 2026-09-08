@@ -188,6 +188,8 @@ export type Database = {
           next_follow_up_date: string | null
           phone: string | null
           pipeline_stage: string
+          referral_rate: number | null
+          referral_rate_type: string | null
           referral_source: string | null
           updated_at: string
         }
@@ -203,6 +205,8 @@ export type Database = {
           next_follow_up_date?: string | null
           phone?: string | null
           pipeline_stage?: string
+          referral_rate?: number | null
+          referral_rate_type?: string | null
           referral_source?: string | null
           updated_at?: string
         }
@@ -218,6 +222,8 @@ export type Database = {
           next_follow_up_date?: string | null
           phone?: string | null
           pipeline_stage?: string
+          referral_rate?: number | null
+          referral_rate_type?: string | null
           referral_source?: string | null
           updated_at?: string
         }
@@ -227,6 +233,8 @@ export type Database = {
         Row: {
           business_name: string
           created_at: string
+          default_referral_rate: number
+          default_referral_rate_type: string
           email: string
           eo_insured_amount: string
           id: number
@@ -240,6 +248,8 @@ export type Database = {
         Insert: {
           business_name?: string
           created_at?: string
+          default_referral_rate?: number
+          default_referral_rate_type?: string
           email?: string
           eo_insured_amount?: string
           id?: number
@@ -253,6 +263,8 @@ export type Database = {
         Update: {
           business_name?: string
           created_at?: string
+          default_referral_rate?: number
+          default_referral_rate_type?: string
           email?: string
           eo_insured_amount?: string
           id?: number
