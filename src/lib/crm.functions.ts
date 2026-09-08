@@ -12,6 +12,10 @@ export const CONTACT_TYPES = [
   "Financial Advisor",
   "Property Management Company",
   "HR/Employer",
+  "Hospital",
+  "Hospice/Home Health Care Agency",
+  "Funeral Home",
+  "Immigration Services",
   "Other Referral Source",
 ] as const;
 
