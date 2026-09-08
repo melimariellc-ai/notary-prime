@@ -155,7 +155,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard value={total} label="Total contacts" />
         <StatCard value={find("New Lead")} label="New leads" stage="New Lead" />
-        <StatCard value={due.length} label="Overdue follow-ups" accent href="/admin/dashboard#needs-attention" />
+        <StatCard value={due.length} label="Overdue follow-ups" accent hash="needs-attention" />
         <StatCard
           value={find("Active Referral Source")}
           label="Active referral sources"
