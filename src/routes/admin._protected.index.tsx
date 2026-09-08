@@ -59,11 +59,41 @@ export const Route = createFileRoute("/admin/_protected/")({
   ),
 });
 
+const STATUS_FILTERS = [
+  { value: "all", label: "All statuses" },
+  { value: "sent", label: "SMS sent" },
+  { value: "pending", label: "SMS pending" },
+  { value: "failed", label: "SMS failed" },
+  { value: "skipped", label: "SMS skipped" },
+] as const;
+
 function AdminPage() {
   const { forbidden, appointments, notaries, referralContacts } = Route.useLoaderData();
   const failedSms = appointments.filter((a) => a.sms_status === "failed");
   const [smsOpen, setSmsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sort, setSort] = useState<"newest" | "oldest">("newest");
 
+  const q = query.trim().toLowerCase();
+  const visible = appointments
+    .filter((a) => {
+      if (statusFilter !== "all") {
+        const status = a.sms_status || "pending";
+        if (status !== statusFilter) return false;
+      }
+      if (!q) return true;
+      return (
+        a.name.toLowerCase().includes(q) ||
+        (a.phone ?? "").toLowerCase().includes(q) ||
+        (a.email ?? "").toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      const da = new Date(a.submitted_at).getTime();
+      const db = new Date(b.submitted_at).getTime();
+      return sort === "newest" ? db - da : da - db;
+    });
 
   if (forbidden) {
     return (
@@ -111,87 +141,165 @@ function AdminPage() {
               No requests yet. New submissions from the Book page will appear here.
             </p>
           ) : (
-
-            <div className="grid gap-6">
-
-              {appointments.map((a) => (
-                <Card key={a.id}>
-                  <CardHeader
-                    title={a.name}
-                    meta={
-                      <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                        {new Date(a.submitted_at).toLocaleString()}
-                      </span>
-                    }
-                  />
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
-                    <p className="text-muted-foreground">
-                      <span className="text-foreground font-medium">{a.service}</span>
-                    </p>
-                    <p className="inline-flex items-center gap-2 text-muted-foreground">
-                      {a.meeting_type === "online" ? <Video className="h-4 w-4 text-gold" /> : <MapPin className="h-4 w-4 text-gold" />}
-                      {a.meeting_type === "online" ? "Online: secure video" : a.address || "Mobile: address TBC"}
-                    </p>
-                    <p className="text-muted-foreground">
-                      {new Date(`${a.preferred_date}T00:00:00`).toLocaleDateString(undefined, {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      · {a.preferred_time}
-                    </p>
-                    <p className="flex flex-wrap items-center gap-4">
-                      <a href={`tel:${a.phone}`} aria-label={`Call ${a.name} at ${a.phone}`} className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
-                        <Phone className="h-4 w-4 text-gold" /> {a.phone}
-                      </a>
-                      <a href={`mailto:${a.email}`} aria-label={`Email ${a.name} at ${a.email}`} className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
-                        <Mail className="h-4 w-4 text-gold" /> {a.email}
-                      </a>
-                    </p>
+            <>
+              <Card className="mb-6">
+                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end">
+                  <div>
+                    <SectionLabel className="mb-2">Search requests</SectionLabel>
+                    <div className="relative">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gold" />
+                      <input
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Name, phone or email"
+                        aria-label="Search requests by name, phone or email"
+                        className="w-full rounded-xl border border-border bg-background py-2 pl-9 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                      />
+                    </div>
                   </div>
-
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-                    <SmsBadge status={a.sms_status} />
-                    {a.sms_status === "sent" && a.sms_sent_at && (
-                      <span className="text-muted-foreground">
-                        Sent {new Date(a.sms_sent_at).toLocaleString()}
-                      </span>
-                    )}
-                    {a.sms_error && (
-                      <span className="text-muted-foreground">{friendlySmsError(a.sms_error)}</span>
-                    )}
+                  <div>
+                    <SectionLabel className="mb-2">Status</SectionLabel>
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      aria-label="Filter by status"
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                    >
+                      {STATUS_FILTERS.map((s) => (
+                        <option key={s.value} value={s.value}>
+                          {s.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+                  <div>
+                    <SectionLabel className="mb-2">Sort</SectionLabel>
+                    <select
+                      value={sort}
+                      onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
+                      aria-label="Sort requests"
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                    >
+                      <option value="newest">Newest first</option>
+                      <option value="oldest">Oldest first</option>
+                    </select>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Showing {visible.length} of {appointments.length} request{appointments.length === 1 ? "" : "s"}.
+                </p>
+              </Card>
 
-                  <AssignRow appointmentId={a.id} assigned={a.assigned_notary_id} notaries={notaries} />
+              {visible.length === 0 ? (
+                <p className={`${CARD_CLASS} p-10 text-center text-muted-foreground`}>
+                  No requests match your search or filter.
+                </p>
+              ) : (
+                <div className="grid gap-6">
+                  {visible.map((a) => (
+                    <Card key={a.id}>
+                      {/* Identity row: name largest at top-left, status badge top-right */}
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <h2 className="font-display text-2xl leading-tight tracking-tight">{a.name}</h2>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Requested {new Date(a.submitted_at).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-end gap-2">
+                          <SmsBadge status={a.sms_status} />
+                        </div>
+                      </div>
 
-                  <ReferralRow
-                    appointmentId={a.id}
-                    referredBy={a.referred_by}
-                    feeAmount={a.fee_amount}
-                    contacts={referralContacts}
-                  />
+                      {/* Secondary contact line */}
+                      <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <a
+                          href={`tel:${a.phone}`}
+                          aria-label={`Call ${a.name} at ${a.phone}`}
+                          className="inline-flex items-center gap-1.5 hover:text-gold transition-colors"
+                        >
+                          <Phone className="h-4 w-4 text-gold" /> {a.phone}
+                        </a>
+                        <a
+                          href={`mailto:${a.email}`}
+                          aria-label={`Email ${a.name} at ${a.email}`}
+                          className="inline-flex items-center gap-1.5 hover:text-gold transition-colors"
+                        >
+                          <Mail className="h-4 w-4 text-gold" /> {a.email}
+                        </a>
+                      </p>
 
-                  <QuoteRow appointmentId={a.id} />
+                      {(a.sms_status === "sent" && a.sms_sent_at) || a.sms_error ? (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          {a.sms_status === "sent" && a.sms_sent_at
+                            ? `Text sent ${new Date(a.sms_sent_at).toLocaleString()}`
+                            : friendlySmsError(a.sms_error)}
+                        </p>
+                      ) : null}
 
+                      {/* Appointment details — visually separate block */}
+                      <div className="mt-5 rounded-2xl border-t border-border bg-secondary/40 p-4">
+                        <SectionLabel>Appointment details</SectionLabel>
+                        <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                          <p className="font-medium text-foreground">{a.service}</p>
+                          <p className="text-muted-foreground">
+                            {new Date(`${a.preferred_date}T00:00:00`).toLocaleDateString(undefined, {
+                              weekday: "long",
+                              month: "long",
+                              day: "numeric",
+                            })}{" "}
+                            · {a.preferred_time}
+                          </p>
+                          <p className="inline-flex items-center gap-2 text-muted-foreground sm:col-span-2">
+                            {a.meeting_type === "online" ? (
+                              <Video className="h-4 w-4 text-gold" />
+                            ) : (
+                              <MapPin className="h-4 w-4 text-gold" />
+                            )}
+                            {a.meeting_type === "online" ? "Online: secure video" : a.address || "Mobile: address TBC"}
+                          </p>
+                        </div>
+                      </div>
 
-                  {a.notes && (
-                    <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
-                      {a.notes}
-                    </p>
-                  )}
+                      {a.notes && (
+                        <div className="mt-4">
+                          <SectionLabel className="mb-2">Client note</SectionLabel>
+                          <p className="rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
+                            {a.notes}
+                          </p>
+                        </div>
+                      )}
 
-                  <AppointmentAuditToggle appointmentId={a.id} />
-                </Card>
+                      {/* Internal workflow fields grouped together */}
+                      <div className="mt-5 rounded-2xl border border-border p-4">
+                        <SectionLabel>Internal workflow</SectionLabel>
 
-              ))}
-            </div>
+                        <AssignRow appointmentId={a.id} assigned={a.assigned_notary_id} notaries={notaries} />
+
+                        <ReferralRow
+                          appointmentId={a.id}
+                          referredBy={a.referred_by}
+                          feeAmount={a.fee_amount}
+                          contacts={referralContacts}
+                        />
+
+                        <QuoteRow appointmentId={a.id} />
+                      </div>
+
+                      <AppointmentAuditToggle appointmentId={a.id} />
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </AdminSection>
     </>
   );
 }
+
 
 function AssignRow({
   appointmentId,
