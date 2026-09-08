@@ -41,7 +41,15 @@ function when(iso: string) {
   return new Date(iso).toLocaleString();
 }
 
-export function AuditTrail({ table, recordId }: { table: AuditTable; recordId: string }) {
+export function AuditTrail({
+  table,
+  recordId,
+  emphasis = "section",
+}: {
+  table: AuditTable;
+  recordId: string;
+  emphasis?: "section" | "subordinate";
+}) {
   const fetchLog = useServerFn(listAuditLog);
   const { data, isPending } = useQuery({
     queryKey: ["audit-log", table, recordId],
@@ -52,11 +60,18 @@ export function AuditTrail({ table, recordId }: { table: AuditTable; recordId: s
 
   return (
     <div>
-      <CardHeader
-        title="Change history"
-        icon={History}
-        meta={!isPending && <span className="text-sm text-muted-foreground">({entries.length})</span>}
-      />
+      {emphasis === "subordinate" ? (
+        <p className="text-sm font-medium text-muted-foreground">
+          Change history
+          {!isPending && <span className="ml-1.5 text-xs">({entries.length})</span>}
+        </p>
+      ) : (
+        <CardHeader
+          title="Change history"
+          icon={History}
+          meta={!isPending && <span className="text-sm text-muted-foreground">({entries.length})</span>}
+        />
+      )}
       <p className="mt-1 text-sm text-muted-foreground">
         Every edit to this record's data, captured automatically — separate from the interaction log above.
       </p>
