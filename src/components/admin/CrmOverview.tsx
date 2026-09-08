@@ -54,7 +54,9 @@ function StatCard({
 }
 
 
-function Donut({ counts, total }: { counts: { stage: string; count: number }[]; total: number }) {
+type StageCount = { stage: string; count: number; color: string };
+
+function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
   let offset = 0;
