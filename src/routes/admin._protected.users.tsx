@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Mail, Shield, UserPlus } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 import { createAdminUser, getMyRole } from "@/lib/users.functions";
 
 export const Route = createFileRoute("/admin/_protected/users")({
@@ -74,16 +76,14 @@ function UsersPage() {
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Checking your permissions…</p>
           ) : !isAdmin ? (
-            <div className="rounded-3xl border border-border bg-card p-8">
+            <Card>
               <p className="text-sm text-muted-foreground">
                 Only Admin accounts can create new users.
               </p>
-            </div>
+            </Card>
           ) : (
-            <div className="rounded-3xl border border-border bg-card p-8">
-              <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-                <UserPlus className="h-5 w-5 text-gold" /> New account
-              </h2>
+            <Card>
+              <CardHeader title="New account" icon={UserPlus} />
 
               <form onSubmit={onAddUser} className="mt-6">
                 <label htmlFor="new-name" className="text-sm font-medium">Name</label>
@@ -96,7 +96,7 @@ function UsersPage() {
                     autoComplete="off"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className="w-full rounded-xl border border-border bg-background py-2 pl-11 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                   />
                 </div>
 
@@ -110,7 +110,7 @@ function UsersPage() {
                     autoComplete="off"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
-                    className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className="w-full rounded-xl border border-border bg-background py-2 pl-11 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                   />
                 </div>
 
@@ -122,7 +122,7 @@ function UsersPage() {
                     required
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className="w-full appearance-none rounded-xl border border-border bg-background py-2 pl-11 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                   >
                     <option value="notary">Notary</option>
                     <option value="employee">Employee</option>
@@ -133,15 +133,11 @@ function UsersPage() {
                 {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
                 {notice && <p className="mt-3 text-sm text-muted-foreground">{notice}</p>}
 
-                <button
-                  type="submit"
-                  disabled={busy || !newName || !newEmail}
-                  className="btn-gold mt-6 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-                >
+                <Button type="submit" variant="primary" disabled={busy || !newName || !newEmail} className="mt-6">
                   {busy ? "Creating…" : "Create account"}
-                </button>
+                </Button>
               </form>
-            </div>
+            </Card>
           )}
         </div>
       </AdminSection>
