@@ -35,9 +35,14 @@ function StatCard({
   const className =
     "block rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)] transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
-  if (href) {
+  if (hash) {
     return (
-      <Link to={href} aria-label={`${label}: ${value}. View details.`} className={className}>
+      <Link
+        to="/admin/dashboard"
+        hash={hash}
+        aria-label={`${label}: ${value}. View details.`}
+        className={className}
+      >
         {inner}
       </Link>
     );
