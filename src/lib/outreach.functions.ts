@@ -10,7 +10,10 @@ function uuid(value: unknown): string {
 
 export const generateOutreachEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { contactId: string }) => ({ contactId: uuid(data.contactId) }))
+  .inputValidator((data: { contactId: string; extraInstructions?: string }) => ({
+    contactId: uuid(data.contactId),
+    extraInstructions: String(data.extraInstructions ?? "").trim().slice(0, 1500),
+  }))
   .handler(async ({ data, context }) => {
     const apiKey = process.env["ANTHROPIC_API_KEY"];
     if (!apiKey) {
@@ -40,8 +43,19 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const { credentialsLine } = await import("./business-profile");
+    const { loadEmailTemplate } = await import("./email-templates.server");
+    const { fillPlaceholders } = await import("./email-templates");
     const profile = await loadBusinessProfile();
     const business = profile.business_name;
+
+    // Editable default guidance from Settings > Email Templates. The contact's own
+    // details above still drive the email, so every draft is unique to them.
+    const guidance = fillPlaceholders((await loadEmailTemplate("outreach_instructions")).body, {
+      business_name: business,
+      service_area: profile.service_area,
+      phone: profile.phone,
+      contact_email: profile.email,
+    }).trim();
 
     const prompt = [
       `Write a warm, professional outreach email introducing ${business} to this business contact.`,
@@ -62,14 +76,14 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
       history || "- No activity logged yet; this is a first introduction.",
       "",
       "Requirements:",
-      "- Genuine and specific to what is known above; never generic filler.",
-      "- Reference the credentials only where they read naturally, not as a list.",
-      "- Speak to how mobile and online notary work matters to this kind of business.",
-      `- Invite them to reach out or keep ${business} in mind for future notary needs.`,
-      "- 120-200 words, plain text, no markdown.",
-      "- Start with a 'Subject: ...' line, then a blank line, then the email body.",
-      `- Sign off as the ${business} team with the phone and email above.`,
-      "- Output only the email. No commentary.",
+      guidance,
+      ...(data.extraInstructions
+        ? [
+            "",
+            "Additional instructions for this specific email (follow these too, they take priority):",
+            data.extraInstructions,
+          ]
+        : []),
     ].join("\n");
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
