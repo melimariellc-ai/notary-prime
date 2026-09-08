@@ -523,11 +523,11 @@ function ContactDetailPage() {
             </p>
           ) : (
             <ol className="mt-6 relative border-l border-border pl-6">
-              {activities.map((a, index) => (
+              {activities.map((a) => (
                 <li
                   key={a.id}
                   className={`relative pb-8 last:pb-0 ${
-                    highlightLatest && index === 0
+                    highlightId === a.id
                       ? "-mx-3 rounded-2xl bg-[var(--gold)]/12 px-3 pt-3 ring-1 ring-gold/40 transition-colors"
                       : "transition-colors"
                   }`}
