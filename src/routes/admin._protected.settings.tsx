@@ -57,7 +57,7 @@ function SettingsPage() {
             CRM <span className="italic font-light text-gradient-gold">settings.</span>
           </>
         }
-        intro="Shape the CRM around how you work: add your own contact fields, and manage the contact types and pipeline stages available on every contact."
+        intro="Shape the CRM around how you work: add your own contact fields, manage the contact types and pipeline stages available on every contact, and look after your team's accounts."
       />
 
       <AdminSection>
