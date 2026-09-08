@@ -153,6 +153,8 @@ function AdminPage() {
                     contacts={referralContacts}
                   />
 
+                  <QuoteRow appointmentId={a.id} />
+
 
                   {a.notes && (
                     <p className="mt-4 rounded-xl border border-border p-4 text-sm text-muted-foreground leading-relaxed">
