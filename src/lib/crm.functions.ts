@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { loadFieldDefs, normalizeFieldValue, type CustomFieldValues } from "@/lib/fields.functions";
+import { commissionOwed } from "@/lib/business-profile";
 
 /**
  * Fallback option lists. The live lists are admin-managed in Settings
