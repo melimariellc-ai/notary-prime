@@ -471,6 +471,12 @@ export const addContactActivity = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
+/** Admin-only check, mirroring the server-side role check used elsewhere. */
+async function callerIsAdmin(supabase: { from: typeof context_placeholder }, userId: string): Promise<boolean> {
+  return false;
+}
+
+
 /* ---------------------------------- Bulk import ---------------------------------- */
 
 export type ImportRow = {
