@@ -191,7 +191,34 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
 
         // Notify the owner that a reply landed.
         const bodyText = text || strip(html);
-        const notifyTo = process.env["INBOUND_NOTIFY_EMAIL"] ?? "info@enlivennotary.com";
+        // Forward only to admin/employee accounts that want reply copies
+        // (missing preference row = opted in). Fall back to the owner inbox.
+        let notifyList: string[] = [];
+        const { data: staff } = await supabaseAdmin
+          .from("profiles")
+          .select("id, email, role, is_active")
+          .in("role", ["admin", "employee"]);
+        const { data: prefRows } = await supabaseAdmin
+          .from("notification_preferences")
+          .select("user_id, forward_replies");
+        const forwardOptedOut = new Set(
+          (prefRows ?? []).filter((r) => r.forward_replies === false).map((r) => r.user_id),
+        );
+        notifyList = Array.from(
+          new Set(
+            (staff ?? [])
+              .filter((r) => r.is_active !== false && !forwardOptedOut.has(r.id))
+              .map((r) => (r.email ?? "").trim())
+              .filter(Boolean),
+          ),
+        );
+        if (notifyList.length === 0 && !staff?.length) {
+          const fallback = process.env["INBOUND_NOTIFY_EMAIL"] ?? "info@enlivennotary.com";
+          notifyList = [fallback];
+        }
+        if (notifyList.length === 0) {
+          return Response.json({ ok: true, matched: Boolean(contact?.id), notified: false });
+        }
         const esc = (v: string) =>
           v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         try {
@@ -201,7 +228,7 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
             body: JSON.stringify({
               from: "Enliven Notary <replies@send.enlivennotary.com>",
               reply_to: fromEmail,
-              to: [notifyTo],
+              to: notifyList,
               subject: `New reply from ${displayName(fromRaw) ?? fromEmail}${subject ? `: ${subject}` : ""}`,
               text: [
                 `From: ${fromRaw}`,
