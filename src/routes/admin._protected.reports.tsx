@@ -54,6 +54,7 @@ function downloadCsv(name: string, headers: string[], rows: string[][]) {
 }
 
 function ReportsPage() {
+  const { contactTypes, pipelineStages } = useCrmOptions();
   const build = useServerFn(runReport);
 
   const [dataset, setDataset] = useState<ReportDataset>("contacts");
