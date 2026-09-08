@@ -94,6 +94,8 @@ const ROUTE_LABELS: { match: (p: string) => boolean; label: string }[] = [
   { match: (p) => p.startsWith("/admin/reports"), label: "Reports" },
   { match: (p) => p.startsWith("/admin/users"), label: "Add User" },
   { match: (p) => p.startsWith("/admin/settings"), label: "Settings" },
+  { match: (p) => p.startsWith("/admin/notifications"), label: "My Notification Preferences" },
+
 ];
 
 function todayISO() {
