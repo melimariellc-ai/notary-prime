@@ -266,7 +266,7 @@ function ContactDetailPage() {
 
       <AdminSection>
         <div className="max-w-3xl">
-          <QuickAddActivity contactId={contact.id} />
+          <QuickAddActivity contactId={contact.id} onLogged={flagLatestActivity} />
 
           <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Contact sections">
             {(["Overview", "Referrals", "Activity"] as const).map((t) => (
