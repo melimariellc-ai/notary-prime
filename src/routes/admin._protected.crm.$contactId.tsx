@@ -71,7 +71,79 @@ export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
 const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
 
+function QuickAddActivity({ contactId }: { contactId: string }) {
+  const logActivity = useServerFn(addContactActivity);
+  const router = useRouter();
+  const [type, setType] = useState<string>("Call");
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!note.trim()) return;
+    setSaving(true);
+    try {
+      const res = await logActivity({
+        data: {
+          contactId,
+          date: new Date().toISOString().slice(0, 10),
+          type,
+          description: note.trim(),
+        },
+      });
+      if (res.ok) {
+        setNote("");
+        toast.success("Activity added to the history.");
+        await router.invalidate();
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not log that activity.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={submit}
+      className="flex flex-wrap items-center gap-2 rounded-3xl border border-border bg-card p-3 shadow-[0_1px_0_var(--color-border)]"
+    >
+      <label htmlFor="quick_type" className="sr-only">
+        Activity type
+      </label>
+      <select
+        id="quick_type"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        className="h-10 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+      >
+        {ACTIVITY_TYPES.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
+      <label htmlFor="quick_note" className="sr-only">
+        Quick note
+      </label>
+      <input
+        id="quick_note"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Log an activity — quick note"
+        className="h-10 min-w-0 flex-1 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+      />
+      <Button type="submit" size="sm" disabled={saving || !note.trim()}>
+        {saving ? "Saving…" : "Log"}
+      </Button>
+    </form>
+  );
+}
+
 function ContactDetailPage() {
+
   const { contactTypes, pipelineStages } = useCrmOptions();
   const { contact, activities, appointments, referralCount, referralValue, commission } = Route.useLoaderData();
   const router = useRouter();
