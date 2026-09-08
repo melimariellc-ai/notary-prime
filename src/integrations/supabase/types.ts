@@ -599,6 +599,12 @@ export type Database = {
         | "Real Estate Agent"
         | "Attorney"
         | "Other Referral Source"
+        | "Mortgage Lender/Loan Officer"
+        | "Signing Service"
+        | "Senior Living/Care Facility"
+        | "Financial Advisor"
+        | "Property Management Company"
+        | "HR/Employer"
       bd_pipeline_stage:
         | "New Lead"
         | "Contacted"
@@ -740,6 +746,12 @@ export const Constants = {
         "Real Estate Agent",
         "Attorney",
         "Other Referral Source",
+        "Mortgage Lender/Loan Officer",
+        "Signing Service",
+        "Senior Living/Care Facility",
+        "Financial Advisor",
+        "Property Management Company",
+        "HR/Employer",
       ],
       bd_pipeline_stage: [
         "New Lead",
