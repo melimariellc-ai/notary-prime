@@ -363,9 +363,9 @@ export const updateBusinessContact = createServerFn({ method: "POST" })
 export const setPipelineStage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string; stage: string }) => {
-    const stage = String(data.stage ?? "");
-    if (!PIPELINE_STAGES.includes(stage as PipelineStage)) throw new Error("Invalid pipeline stage.");
-    return { id: uuid(data.id), stage: stage as PipelineStage };
+    const stage = optionLabel(data.stage, "", "pipeline stage");
+    if (!stage) throw new Error("Invalid pipeline stage.");
+    return { id: uuid(data.id), stage };
   })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
@@ -486,9 +486,7 @@ export const commitContactImport = createServerFn({ method: "POST" })
     const rows = (Array.isArray(data.rows) ? data.rows : []).slice(0, 500).map((r) => {
       const business_name = String(r.business_name ?? "").trim().slice(0, 200);
       if (!business_name) throw new Error("Every row needs a business name.");
-      const contact_type = CONTACT_TYPES.includes(r.contact_type as ContactType)
-        ? (r.contact_type as ContactType)
-        : ("Other Referral Source" as ContactType);
+      const contact_type = optionLabel(r.contact_type, "Other Referral Source", "contact type");
       return {
         business_name,
         contact_person: text(r.contact_person, 200),
@@ -591,8 +589,8 @@ export const listRecentActivity = createServerFn({ method: "GET" })
 export const bulkSetPipelineStage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { ids: string[]; stage: string }) => {
-    const stage = String(data.stage ?? "");
-    if (!PIPELINE_STAGES.includes(stage as PipelineStage)) throw new Error("Invalid pipeline stage.");
+    const stage = optionLabel(data.stage, "", "pipeline stage");
+    if (!stage) throw new Error("Invalid pipeline stage.");
     const ids = (Array.isArray(data.ids) ? data.ids : []).slice(0, 500).map((id) => uuid(id));
     if (ids.length === 0) throw new Error("Select at least one contact.");
     return { ids, stage: stage as PipelineStage };
@@ -622,13 +620,13 @@ const PATCHABLE = {
   first_contacted_date: (v: unknown) => dateOrNull(v),
   next_follow_up_date: (v: unknown) => dateOrNull(v),
   contact_type: (v: unknown) => {
-    const s = String(v ?? "");
-    if (!CONTACT_TYPES.includes(s as ContactType)) throw new Error("Invalid contact type.");
+    const s = optionLabel(v, "", "contact type");
+    if (!s) throw new Error("Invalid contact type.");
     return s;
   },
   pipeline_stage: (v: unknown) => {
-    const s = String(v ?? "");
-    if (!PIPELINE_STAGES.includes(s as PipelineStage)) throw new Error("Invalid pipeline stage.");
+    const s = optionLabel(v, "", "pipeline stage");
+    if (!s) throw new Error("Invalid pipeline stage.");
     return s;
   },
 } as const;
