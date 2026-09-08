@@ -471,6 +471,74 @@ export const addContactActivity = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
+/** Admin-only check, mirroring the server-side role check used elsewhere. */
+async function callerIsAdmin(
+  supabase: { from: (t: "user_roles") => any },
+  userId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin");
+  if (error) {
+    console.error("Failed to verify admin role", error);
+    return false;
+  }
+  return (data ?? []).length > 0;
+}
+
+export const updateContactActivity = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; date?: string | null; type: string; description: string }) => {
+    const type = String(data.type ?? "Note");
+    if (!ACTIVITY_TYPES.includes(type as ActivityType)) throw new Error("Invalid activity type.");
+    const description = text(data.description, 5000);
+    if (!description) throw new Error("Please add a description.");
+    return {
+      id: uuid(data.id),
+      activity_date: dateOrNull(data.date) ?? new Date().toISOString().slice(0, 10),
+      activity_type: type as ActivityType,
+      description,
+    };
+  })
+  .handler(async ({ data, context }) => {
+    if (!(await callerIsAdmin(context.supabase, context.userId)))
+      return { ok: false as const, message: "Only Admin accounts can edit history entries." };
+
+    const { error } = await context.supabase
+      .from("contact_activities")
+      .update({
+        activity_date: data.activity_date,
+        activity_type: data.activity_type,
+        description: data.description,
+      })
+      .eq("id", data.id);
+    if (error) {
+      console.error("Failed to update activity", error);
+      return { ok: false as const, message: "Could not save that change." };
+    }
+    return { ok: true as const };
+  });
+
+export const deleteContactActivity = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => ({ id: uuid(data.id) }))
+  .handler(async ({ data, context }) => {
+    if (!(await callerIsAdmin(context.supabase, context.userId)))
+      return { ok: false as const, message: "Only Admin accounts can delete history entries." };
+
+    const { error } = await context.supabase.from("contact_activities").delete().eq("id", data.id);
+    if (error) {
+      console.error("Failed to delete activity", error);
+      return { ok: false as const, message: "Could not delete that entry." };
+    }
+    return { ok: true as const };
+  });
+
+
+
+
 /* ---------------------------------- Bulk import ---------------------------------- */
 
 export type ImportRow = {
