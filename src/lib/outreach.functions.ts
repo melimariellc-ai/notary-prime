@@ -136,6 +136,9 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
     if (!contact) return { ok: false as const, message: "Could not load that contact." };
     if (!contact.email) return { ok: false as const, message: "This contact has no email address on file." };
 
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const senderName = (await loadBusinessProfile()).business_name;
+
     const html = `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c;white-space:pre-wrap">${data.body
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
