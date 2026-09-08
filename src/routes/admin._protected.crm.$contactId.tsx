@@ -28,6 +28,7 @@ import {
   type PatchableField,
 } from "@/lib/crm.functions";
 import { generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
+import { rateLabel, usd, type ReferralRateType } from "@/lib/business-profile";
 
 export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
   head: () => ({
@@ -66,7 +67,7 @@ const inputClass =
 
 function ContactDetailPage() {
   const { contactTypes, pipelineStages } = useCrmOptions();
-  const { contact, activities, appointments, referralCount, referralValue } = Route.useLoaderData();
+  const { contact, activities, appointments, referralCount, referralValue, commission } = Route.useLoaderData();
   const router = useRouter();
   const logActivity = useServerFn(addContactActivity);
   const removeContact = useServerFn(deleteBusinessContact);
