@@ -152,7 +152,29 @@ function ContactDetailPage() {
 
       <AdminSection>
         <div className="max-w-3xl">
-          <Card>
+          <QuickAddActivity contactId={contact.id} />
+
+          <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Contact sections">
+            {(["Overview", "Referrals", "Activity"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                onClick={() => setTab(t)}
+                className={
+                  tab === t
+                    ? buttonClass("primary", "sm")
+                    : buttonClass("secondary", "sm")
+                }
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {tab === "Overview" && (
+          <Card className="mt-6">
             <CardHeader title="Details" />
             <p className="mt-2 text-sm text-muted-foreground">
               Click any value to edit it. Changes save as soon as you confirm.
@@ -228,7 +250,10 @@ function ContactDetailPage() {
               </span>
             </div>
           </Card>
+          )}
 
+          {tab === "Referrals" && (
+          <>
           <Card className="mt-6">
             <CardHeader title="Referral commission" />
             <p className="mt-2 text-sm text-muted-foreground">An estimate only — nothing is paid out from here.</p>
@@ -306,7 +331,11 @@ function ContactDetailPage() {
               </ul>
             )}
           </Card>
+          </>
+          )}
 
+          {tab === "Activity" && (
+          <>
           <OutreachPanel
             contactId={contact.id}
             businessName={contact.business_name}
@@ -385,11 +414,27 @@ function ContactDetailPage() {
             </ol>
           )}
 
-          <div className="mt-12">
-            <AuditTrail table="business_contacts" recordId={contact.id} />
+          <div className="mt-10 border-t border-border pt-4">
+            <button
+              type="button"
+              onClick={() => setShowAudit((v) => !v)}
+              aria-expanded={showAudit}
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            >
+              {showAudit ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+              {showAudit ? "Hide change history" : "View change history"}
+            </button>
+            {showAudit && (
+              <div className="mt-4">
+                <AuditTrail table="business_contacts" recordId={contact.id} />
+              </div>
+            )}
           </div>
+          </>
+          )}
         </div>
       </AdminSection>
+
 
       {confirmDelete && (
         <ConfirmDialog
