@@ -182,6 +182,13 @@ function ContactDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
   const [showAudit, setShowAudit] = useState(false);
+  const [highlightLatest, setHighlightLatest] = useState(false);
+
+  function flagLatestActivity() {
+    setHighlightLatest(true);
+    window.setTimeout(() => setHighlightLatest(false), 3000);
+  }
+
 
 
   if (!contact) {
