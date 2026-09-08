@@ -223,6 +223,48 @@ export type Database = {
         }
         Relationships: []
       }
+      business_profile: {
+        Row: {
+          business_name: string
+          created_at: string
+          email: string
+          eo_insured_amount: string
+          id: number
+          is_bonded: boolean
+          is_nna_certified: boolean
+          is_texas_commissioned: boolean
+          phone: string
+          service_area: string
+          updated_at: string
+        }
+        Insert: {
+          business_name?: string
+          created_at?: string
+          email?: string
+          eo_insured_amount?: string
+          id?: number
+          is_bonded?: boolean
+          is_nna_certified?: boolean
+          is_texas_commissioned?: boolean
+          phone?: string
+          service_area?: string
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string
+          created_at?: string
+          email?: string
+          eo_insured_amount?: string
+          id?: number
+          is_bonded?: boolean
+          is_nna_certified?: boolean
+          is_texas_commissioned?: boolean
+          phone?: string
+          service_area?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_activities: {
         Row: {
           activity_date: string

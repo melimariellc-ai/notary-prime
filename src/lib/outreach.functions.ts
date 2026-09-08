@@ -7,8 +7,6 @@ function uuid(value: unknown): string {
   return s;
 }
 
-const CREDENTIALS =
-  "Texas Commissioned Notary Public, Bonded, Errors & Omissions (E&O) Insured, and NNA Certified Signing Agent";
 
 export const generateOutreachEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -40,13 +38,18 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
       .map((a) => `- ${a.activity_date} (${a.activity_type}): ${a.description}`)
       .join("\n");
 
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const { credentialsLine } = await import("./business-profile");
+    const profile = await loadBusinessProfile();
+    const business = profile.business_name;
+
     const prompt = [
-      "Write a warm, professional outreach email introducing Enliven Notary to this business contact.",
+      `Write a warm, professional outreach email introducing ${business} to this business contact.`,
       "",
-      "About Enliven Notary:",
-      "- Mobile notary and remote online notary (RON) services across the Dallas-Fort Worth Metroplex",
-      `- Credentials: ${CREDENTIALS}`,
-      "- Phone: (469) 991-2777 · Email: info@enlivennotary.com",
+      `About ${business}:`,
+      `- Mobile notary and remote online notary (RON) services across ${profile.service_area}`,
+      `- Credentials: ${credentialsLine(profile)}`,
+      `- Phone: ${profile.phone} · Email: ${profile.email}`,
       "",
       "Contact details:",
       `- Business: ${contact.business_name}`,
@@ -62,10 +65,10 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
       "- Genuine and specific to what is known above; never generic filler.",
       "- Reference the credentials only where they read naturally, not as a list.",
       "- Speak to how mobile and online notary work matters to this kind of business.",
-      "- Invite them to reach out or keep Enliven Notary in mind for future notary needs.",
+      `- Invite them to reach out or keep ${business} in mind for future notary needs.`,
       "- 120-200 words, plain text, no markdown.",
       "- Start with a 'Subject: ...' line, then a blank line, then the email body.",
-      "- Sign off as the Enliven Notary team with the phone and email above.",
+      `- Sign off as the ${business} team with the phone and email above.`,
       "- Output only the email. No commentary.",
     ].join("\n");
 
@@ -133,6 +136,9 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
     if (!contact) return { ok: false as const, message: "Could not load that contact." };
     if (!contact.email) return { ok: false as const, message: "This contact has no email address on file." };
 
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const senderName = (await loadBusinessProfile()).business_name;
+
     const html = `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c;white-space:pre-wrap">${data.body
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -142,7 +148,7 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: "Enliven Notary <outreach@send.enlivennotary.com>",
+        from: `${senderName} <outreach@send.enlivennotary.com>`,
         reply_to: "replies@replies.enlivennotary.com",
         to: [contact.email],
         subject: data.subject,
