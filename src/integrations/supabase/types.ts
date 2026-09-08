@@ -605,6 +605,10 @@ export type Database = {
         | "Financial Advisor"
         | "Property Management Company"
         | "HR/Employer"
+        | "Hospital"
+        | "Hospice/Home Health Care Agency"
+        | "Funeral Home"
+        | "Immigration Services"
       bd_pipeline_stage:
         | "New Lead"
         | "Contacted"
@@ -752,6 +756,10 @@ export const Constants = {
         "Financial Advisor",
         "Property Management Company",
         "HR/Employer",
+        "Hospital",
+        "Hospice/Home Health Care Agency",
+        "Funeral Home",
+        "Immigration Services",
       ],
       bd_pipeline_stage: [
         "New Lead",
