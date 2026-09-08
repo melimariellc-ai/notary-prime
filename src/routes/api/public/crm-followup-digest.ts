@@ -50,7 +50,7 @@ export const Route = createFileRoute("/api/public/crm-followup-digest")({
 
         const { data: recipients, error: rErr } = await supabase
           .from("profiles")
-          .select("email, role")
+          .select("id, email, role, is_active")
           .in("role", ["admin", "employee"]);
 
         if (rErr) {
@@ -58,11 +58,28 @@ export const Route = createFileRoute("/api/public/crm-followup-digest")({
           return new Response(`Query failed: ${rErr.message}`, { status: 500 });
         }
 
+        // Honour each person's own notification preference (missing row = opted in).
+        const { data: prefRows, error: pErr } = await supabase
+          .from("notification_preferences")
+          .select("user_id, daily_digest");
+        if (pErr) {
+          console.error("Preference query failed", pErr);
+          return new Response(`Query failed: ${pErr.message}`, { status: 500 });
+        }
+        const optedOut = new Set(
+          (prefRows ?? []).filter((r) => r.daily_digest === false).map((r) => r.user_id),
+        );
+
         const to = Array.from(
-          new Set((recipients ?? []).map((r) => (r.email ?? "").trim()).filter(Boolean)),
+          new Set(
+            (recipients ?? [])
+              .filter((r) => r.is_active !== false && !optedOut.has(r.id))
+              .map((r) => (r.email ?? "").trim())
+              .filter(Boolean),
+          ),
         );
         if (to.length === 0) {
-          return new Response(JSON.stringify({ sent: false, reason: "no admin or employee recipients" }), {
+          return new Response(JSON.stringify({ sent: false, reason: "no opted-in admin or employee recipients" }), {
             headers: { "Content-Type": "application/json" },
           });
         }
