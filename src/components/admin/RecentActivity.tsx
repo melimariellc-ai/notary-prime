@@ -110,15 +110,9 @@ export function RecentActivityCard() {
               </li>
             );
           })}
-
-                    <ActivityDescription description={item.description} />
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
         </ul>
       )}
-    </div>
+    </Card>
   );
 }
+
