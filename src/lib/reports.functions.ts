@@ -66,8 +66,8 @@ export const runReport = createServerFn({ method: "POST" })
       dataset,
       from,
       to,
-      stage: oneOf(data?.stage, PIPELINE_STAGES),
-      type: oneOf(data?.type, CONTACT_TYPES),
+      stage: String(data?.stage ?? "").trim().slice(0, 80),
+      type: String(data?.type ?? "").trim().slice(0, 80),
     };
   })
   .handler(async ({ data, context }): Promise<ReportResult> => {

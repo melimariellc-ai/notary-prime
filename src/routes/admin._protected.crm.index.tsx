@@ -20,10 +20,8 @@ import {
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CustomFieldInputs, customFieldsFromForm } from "@/components/admin/CustomFields";
-import { STAGE_COLORS } from "@/components/admin/CrmOverview";
+import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
-  CONTACT_TYPES,
-  PIPELINE_STAGES,
   bulkSetPipelineStage,
   checkContactDuplicates,
   commitContactImport,
@@ -60,7 +58,7 @@ export const Route = createFileRoute("/admin/_protected/crm/")({
   }),
   validateSearch: (search: Record<string, unknown>): { stage?: string } => {
     const stage = typeof search.stage === "string" ? search.stage : undefined;
-    return stage && (PIPELINE_STAGES as readonly string[]).includes(stage) ? { stage } : {};
+    return stage ? { stage } : {};
   },
   loader: async () => {
     const [data, views] = await Promise.all([listBusinessContacts(), listSavedViews()]);
@@ -103,6 +101,7 @@ function CrmSkeleton() {
 }
 
 function CrmPage() {
+  const { contactTypes, pipelineStages } = useCrmOptions();
   const { contacts, referrals, savedViews } = Route.useLoaderData();
   const router = useRouter();
   const bulkStage = useServerFn(bulkSetPipelineStage);
@@ -120,7 +119,7 @@ function CrmPage() {
   const [activeViewId, setActiveViewId] = useState<string | null>(null);
   const [showColumns, setShowColumns] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
-  const [bulkTarget, setBulkTarget] = useState<string>(PIPELINE_STAGES[0]);
+  const [bulkTarget, setBulkTarget] = useState<string>("");
   const [showAdd, setShowAdd] = useState(false);
   const [showImport, setShowImport] = useState(false);
 
@@ -343,7 +342,7 @@ function CrmPage() {
                   className={`mt-2 ${inputClass}`}
                 >
                   <option value="">All types</option>
-                  {CONTACT_TYPES.map((t) => (
+                  {contactTypes.map((t) => (
                     <option key={t} value={t}>
                       {t}
                     </option>
@@ -361,7 +360,7 @@ function CrmPage() {
                   className={`mt-2 ${inputClass}`}
                 >
                   <option value="">All stages</option>
-                  {PIPELINE_STAGES.map((s) => (
+                  {pipelineStages.map((s) => (
                     <option key={s} value={s}>
                       {s}
                     </option>
@@ -456,7 +455,7 @@ function CrmPage() {
                   onChange={(e) => setBulkTarget(e.target.value)}
                   className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
                 >
-                  {PIPELINE_STAGES.map((s) => (
+                  {pipelineStages.map((s) => (
                     <option key={s} value={s}>
                       {s}
                     </option>
@@ -646,9 +645,10 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
 }
 
 function StageChip({ stage }: { stage: string }) {
+  const { pipelineStages } = useCrmOptions();
   return (
     <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-[11px] font-medium">
-      <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: STAGE_COLORS[stage] }} />
+      <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: stageColor(stage, pipelineStages) }} />
       {stage}
     </span>
   );
@@ -800,6 +800,7 @@ function KanbanView({
   today: string;
 }) {
   const save = useServerFn(setPipelineStage);
+  const { pipelineStages } = useCrmOptions();
   const router = useRouter();
   const [dragOver, setDragOver] = useState<string | null>(null);
 
@@ -820,7 +821,7 @@ function KanbanView({
 
   return (
     <div className="mt-6 flex gap-4 overflow-x-auto pb-4">
-      {PIPELINE_STAGES.map((stage) => {
+      {pipelineStages.map((stage) => {
         const column = rows.filter((c) => c.pipeline_stage === stage);
         return (
           <div
@@ -844,7 +845,7 @@ function KanbanView({
                 <span
                   aria-hidden="true"
                   className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: STAGE_COLORS[stage] }}
+                  style={{ backgroundColor: stageColor(stage, pipelineStages) }}
                 />
                 {stage}
               </span>
@@ -884,6 +885,7 @@ function KanbanCard({
   referrals: Referrals;
   onMove: (stage: string) => void;
 }) {
+  const { pipelineStages } = useCrmOptions();
   const overdue = !!contact.next_follow_up_date && contact.next_follow_up_date <= today;
   const stats = referrals[contact.id] ?? { count: 0, value: 0 };
 
@@ -934,7 +936,7 @@ function KanbanCard({
         onChange={(e) => onMove(e.target.value)}
         className="mt-1 w-full rounded-xl border border-border bg-card px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gold/60"
       >
-        {PIPELINE_STAGES.map((s) => (
+        {pipelineStages.map((s) => (
           <option key={s} value={s}>
             {s}
           </option>
@@ -972,6 +974,7 @@ function DuplicateWarning({ matches }: { matches: DuplicateMatch[] }) {
 }
 
 function AddContactForm({ onSaved }: { onSaved: () => void }) {
+  const { contactTypes, pipelineStages } = useCrmOptions();
   const create = useServerFn(createBusinessContact);
   const check = useServerFn(checkContactDuplicates);
   const [busy, setBusy] = useState(false);
@@ -1059,8 +1062,8 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
           <label htmlFor="contact_type" className="text-sm font-medium">
             Contact type
           </label>
-          <select id="contact_type" name="contact_type" defaultValue="Title Company" className={`mt-2 ${inputClass}`}>
-            {CONTACT_TYPES.map((t) => (
+          <select id="contact_type" name="contact_type" defaultValue={contactTypes[0]} className={`mt-2 ${inputClass}`}>
+            {contactTypes.map((t) => (
               <option key={t} value={t}>
                 {t}
               </option>
@@ -1072,7 +1075,7 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             Pipeline stage
           </label>
           <select id="pipeline_stage" name="pipeline_stage" defaultValue="New Lead" className={`mt-2 ${inputClass}`}>
-            {PIPELINE_STAGES.map((s) => (
+            {pipelineStages.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>

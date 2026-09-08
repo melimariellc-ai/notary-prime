@@ -179,7 +179,7 @@ export type Database = {
         Row: {
           business_name: string
           contact_person: string | null
-          contact_type: Database["public"]["Enums"]["bd_contact_type"]
+          contact_type: string
           created_at: string
           custom_fields: Json
           email: string | null
@@ -187,14 +187,14 @@ export type Database = {
           id: string
           next_follow_up_date: string | null
           phone: string | null
-          pipeline_stage: Database["public"]["Enums"]["bd_pipeline_stage"]
+          pipeline_stage: string
           referral_source: string | null
           updated_at: string
         }
         Insert: {
           business_name: string
           contact_person?: string | null
-          contact_type?: Database["public"]["Enums"]["bd_contact_type"]
+          contact_type?: string
           created_at?: string
           custom_fields?: Json
           email?: string | null
@@ -202,14 +202,14 @@ export type Database = {
           id?: string
           next_follow_up_date?: string | null
           phone?: string | null
-          pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
+          pipeline_stage?: string
           referral_source?: string | null
           updated_at?: string
         }
         Update: {
           business_name?: string
           contact_person?: string | null
-          contact_type?: Database["public"]["Enums"]["bd_contact_type"]
+          contact_type?: string
           created_at?: string
           custom_fields?: Json
           email?: string | null
@@ -217,7 +217,7 @@ export type Database = {
           id?: string
           next_follow_up_date?: string | null
           phone?: string | null
-          pipeline_stage?: Database["public"]["Enums"]["bd_pipeline_stage"]
+          pipeline_stage?: string
           referral_source?: string | null
           updated_at?: string
         }
@@ -295,6 +295,33 @@ export type Database = {
           is_active?: boolean
           label?: string
           options?: string[]
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_options: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string
           sort_order?: number
           updated_at?: string
         }
