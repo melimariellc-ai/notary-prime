@@ -423,6 +423,14 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                     {roleLabel} account
                   </p>
                 )}
+                <Link
+                  to="/admin/notifications"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="mt-1 inline-flex w-full items-center gap-2 rounded-xl px-2 py-2.5 text-sm hover:bg-secondary"
+                >
+                  <Bell className="h-4 w-4 text-accent-foreground" /> My Notification Preferences
+                </Link>
                 <button
                   type="button"
                   role="menuitem"
@@ -431,6 +439,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 >
                   <LogOut className="h-4 w-4 text-accent-foreground" /> Sign out
                 </button>
+
               </div>
             )}
           </div>
