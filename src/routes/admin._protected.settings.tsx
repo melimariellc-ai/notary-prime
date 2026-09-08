@@ -108,6 +108,8 @@ function SettingsPage() {
               noun="Pipeline stage"
             />
           )}
+          {tab === "users" && <UserManagementTab />}
+
         </div>
       </AdminSection>
     </>
