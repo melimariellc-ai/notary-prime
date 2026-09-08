@@ -266,28 +266,27 @@ function CrmPage() {
         intro={`${contacts.length} referral relationship${contacts.length === 1 ? "" : "s"} tracked · ${dueCount} follow-up${dueCount === 1 ? "" : "s"} due.`}
         actions={
           <>
-            <button
+            <Button
               type="button"
               onClick={() => {
                 setShowAdd((v) => !v);
                 setShowImport(false);
               }}
               aria-expanded={showAdd}
-              className="btn-gold inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
             >
               <Plus className="h-4 w-4" /> Add contact
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => {
                 setShowImport((v) => !v);
                 setShowAdd(false);
               }}
               aria-expanded={showImport}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium hover:bg-secondary"
             >
-              <Upload className="h-4 w-4 text-accent-foreground" /> Bulk import
-            </button>
+              <Upload className="h-4 w-4" /> Bulk import
+            </Button>
           </>
         }
       />

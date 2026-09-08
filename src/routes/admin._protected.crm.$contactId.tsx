@@ -140,27 +140,20 @@ function ContactDetailPage() {
         }
         actions={
           <>
-            <Link
-              to="/admin/crm"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm hover:bg-secondary"
-            >
+            <ButtonLink to="/admin/crm" variant="secondary">
               <ArrowLeft className="h-4 w-4" /> Pipeline
-            </Link>
-            <button
-              type="button"
-              onClick={() => setConfirmDelete(true)}
-              className="inline-flex items-center gap-2 rounded-full border border-destructive/50 px-5 py-2.5 text-sm text-destructive hover:bg-destructive/10"
-            >
+            </ButtonLink>
+            <Button type="button" variant="destructive" onClick={() => setConfirmDelete(true)}>
               <Trash2 className="h-4 w-4" /> Delete
-            </button>
+            </Button>
           </>
         }
       />
 
       <AdminSection>
         <div className="max-w-3xl">
-          <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="font-display text-2xl tracking-tight">Details</h2>
+          <Card>
+            <CardHeader title="Details" />
             <p className="mt-2 text-sm text-muted-foreground">
               Click any value to edit it. Changes save as soon as you confirm.
             </p>
@@ -234,22 +227,22 @@ function ContactDetailPage() {
                 </span>
               </span>
             </div>
-          </div>
+          </Card>
 
-          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="font-display text-2xl tracking-tight">Referral commission</h2>
+          <Card className="mt-6">
+            <CardHeader title="Referral commission" />
             <p className="mt-2 text-sm text-muted-foreground">An estimate only — nothing is paid out from here.</p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-border bg-background p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Referred value</p>
+                <SectionLabel>Referred value</SectionLabel>
                 <p className="mt-1.5 font-display text-2xl tracking-tight">{usd(referralValue)}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {referralCount} job{referralCount === 1 ? "" : "s"}
                 </p>
               </div>
               <div className="rounded-2xl border border-border bg-background p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Estimated commission owed</p>
+                <SectionLabel>Estimated commission owed</SectionLabel>
                 <p className="mt-1.5 font-display text-2xl tracking-tight text-accent-foreground">
                   {usd(commission.amount)}
                 </p>
@@ -262,7 +255,7 @@ function ContactDetailPage() {
 
             <dl className="mt-6 grid gap-4 border-t border-border pt-6 sm:grid-cols-2">
               <div>
-                <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Custom rate format</dt>
+                <dt><SectionLabel>Custom rate format</SectionLabel></dt>
                 <dd className="mt-1.5">
                   <RateTypeSelect
                     id={contact.id}

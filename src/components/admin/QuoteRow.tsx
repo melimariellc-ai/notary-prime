@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createStripeQuoteInvoice, listQuotes, type Quote, type QuoteLineItem } from "@/lib/quotes.functions";
+import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
+import { Button } from "@/components/admin/ui/Button";
 
 type DraftLine = { description: string; quantity: string; unit_price: string };
 
@@ -12,21 +14,18 @@ const emptyLine: DraftLine = { description: "", quantity: "1", unit_price: "" };
 const money = (n: number) =>
   n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 
+const INPUT_CLASS =
+  "rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
 function QuoteBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; className: string }> = {
-    draft: { label: "Quote draft", className: "border-border text-muted-foreground" },
-    sent: { label: "Quote sent", className: "border-gold/50 bg-gold/10 text-foreground" },
-    viewed: { label: "Quote viewed", className: "border-gold/50 bg-gold/20 text-foreground" },
-    paid: { label: "Quote paid", className: "border-gold/60 bg-gold/25 text-foreground" },
+  const map: Record<string, { label: string; tone: BadgeTone }> = {
+    draft: { label: "Quote draft", tone: "neutral" },
+    sent: { label: "Quote sent", tone: "accent" },
+    viewed: { label: "Quote viewed", tone: "accent" },
+    paid: { label: "Quote paid", tone: "positive" },
   };
   const s = map[status] ?? map["draft"]!;
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 uppercase tracking-[0.18em] text-[10px] ${s.className}`}
-    >
-      {s.label}
-    </span>
-  );
+  return <Badge tone={s.tone}>{s.label}</Badge>;
 }
 
 export function QuoteRow({ appointmentId }: { appointmentId: string }) {
@@ -110,15 +109,10 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
             <ExternalLink className="h-3.5 w-3.5" /> View invoice
           </a>
         )}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <FileText className="h-3.5 w-3.5 text-gold" />
+        <Button type="button" variant="secondary" size="sm" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+          <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}
-        </button>
+        </Button>
       </div>
 
       {open && (
@@ -134,7 +128,7 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
                     id={`desc-${appointmentId}-${i}`}
                     value={l.description}
                     onChange={(e) => update(i, { description: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className={`mt-1 w-full ${INPUT_CLASS}`}
                   />
                 </div>
                 <div className="w-24">
@@ -148,7 +142,7 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
                     step="1"
                     value={l.quantity}
                     onChange={(e) => update(i, { quantity: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className={`mt-1 w-full ${INPUT_CLASS}`}
                   />
                 </div>
                 <div className="w-32">
@@ -162,7 +156,7 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
                     step="0.01"
                     value={l.unit_price}
                     onChange={(e) => update(i, { unit_price: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+                    className={`mt-1 w-full ${INPUT_CLASS}`}
                   />
                 </div>
                 <button
@@ -195,7 +189,7 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+              className={`mt-1 w-full ${INPUT_CLASS}`}
             />
           </div>
 
@@ -205,21 +199,12 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
               <span className="font-display text-xl tracking-tight">{money(total)}</span>
             </p>
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-border px-5 py-2 text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-              >
+              <Button type="button" variant="secondary" size="sm" onClick={() => setOpen(false)}>
                 Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => void submit()}
-                disabled={sending}
-                className="btn-gold rounded-full px-6 py-2.5 text-sm font-medium disabled:opacity-60"
-              >
+              </Button>
+              <Button type="button" variant="primary" size="sm" onClick={() => void submit()} disabled={sending}>
                 {sending ? "Sending…" : "Send quote"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
