@@ -143,7 +143,7 @@ function AdminPage() {
                       </span>
                     )}
                     {a.sms_error && (
-                      <span className="text-muted-foreground break-all">{a.sms_error}</span>
+                      <span className="text-muted-foreground">{friendlySmsError(a.sms_error)}</span>
                     )}
                   </div>
 
