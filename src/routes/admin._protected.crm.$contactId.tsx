@@ -17,6 +17,9 @@ import {
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { CustomFieldsPanel } from "@/components/admin/CustomFields";
+import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { Button, ButtonLink, buttonClass } from "@/components/admin/ui/Button";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
   ACTIVITY_TYPES,
@@ -137,27 +140,20 @@ function ContactDetailPage() {
         }
         actions={
           <>
-            <Link
-              to="/admin/crm"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm hover:bg-secondary"
-            >
+            <ButtonLink to="/admin/crm" variant="secondary">
               <ArrowLeft className="h-4 w-4" /> Pipeline
-            </Link>
-            <button
-              type="button"
-              onClick={() => setConfirmDelete(true)}
-              className="inline-flex items-center gap-2 rounded-full border border-destructive/50 px-5 py-2.5 text-sm text-destructive hover:bg-destructive/10"
-            >
+            </ButtonLink>
+            <Button type="button" variant="destructive" onClick={() => setConfirmDelete(true)}>
               <Trash2 className="h-4 w-4" /> Delete
-            </button>
+            </Button>
           </>
         }
       />
 
       <AdminSection>
         <div className="max-w-3xl">
-          <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="font-display text-2xl tracking-tight">Details</h2>
+          <Card>
+            <CardHeader title="Details" />
             <p className="mt-2 text-sm text-muted-foreground">
               Click any value to edit it. Changes save as soon as you confirm.
             </p>
@@ -231,22 +227,22 @@ function ContactDetailPage() {
                 </span>
               </span>
             </div>
-          </div>
+          </Card>
 
-          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="font-display text-2xl tracking-tight">Referral commission</h2>
+          <Card className="mt-6">
+            <CardHeader title="Referral commission" />
             <p className="mt-2 text-sm text-muted-foreground">An estimate only — nothing is paid out from here.</p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-border bg-background p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Referred value</p>
+                <SectionLabel>Referred value</SectionLabel>
                 <p className="mt-1.5 font-display text-2xl tracking-tight">{usd(referralValue)}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {referralCount} job{referralCount === 1 ? "" : "s"}
                 </p>
               </div>
               <div className="rounded-2xl border border-border bg-background p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Estimated commission owed</p>
+                <SectionLabel>Estimated commission owed</SectionLabel>
                 <p className="mt-1.5 font-display text-2xl tracking-tight text-accent-foreground">
                   {usd(commission.amount)}
                 </p>
@@ -259,7 +255,7 @@ function ContactDetailPage() {
 
             <dl className="mt-6 grid gap-4 border-t border-border pt-6 sm:grid-cols-2">
               <div>
-                <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Custom rate format</dt>
+                <dt><SectionLabel>Custom rate format</SectionLabel></dt>
                 <dd className="mt-1.5">
                   <RateTypeSelect
                     id={contact.id}
@@ -275,12 +271,13 @@ function ContactDetailPage() {
                 value={contact.referral_rate === null ? null : String(contact.referral_rate)}
               />
             </dl>
-          </div>
+          </Card>
 
-          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="font-display text-2xl tracking-tight">
-              Referred appointments <span className="text-sm text-muted-foreground">({referralCount})</span>
-            </h2>
+          <Card className="mt-6">
+            <CardHeader
+              title="Referred appointments"
+              meta={<span className="text-sm text-muted-foreground">({referralCount})</span>}
+            />
             {appointments.length === 0 ? (
               <p className="mt-4 text-sm text-muted-foreground">
                 No appointments are linked to this contact yet. Link a booking to this contact from the appointments
@@ -308,7 +305,7 @@ function ContactDetailPage() {
                 ))}
               </ul>
             )}
-          </div>
+          </Card>
 
           <OutreachPanel
             contactId={contact.id}
@@ -317,10 +314,8 @@ function ContactDetailPage() {
             stage={contact.pipeline_stage}
           />
 
-          <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
-            <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-              <MessageSquare className="h-5 w-5 text-accent-foreground" /> Log an activity
-            </h2>
+          <Card className="mt-6">
+            <CardHeader title="Log an activity" icon={MessageSquare} />
             <form onSubmit={onSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
               <div>
                 <label htmlFor="activity_date" className="text-sm font-medium">
@@ -353,20 +348,19 @@ function ContactDetailPage() {
                 <textarea id="description" name="description" required rows={4} className={`mt-2 ${inputClass}`} />
               </div>
               <div className="sm:col-span-2">
-                <button
-                  type="submit"
-                  disabled={busy}
-                  className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-                >
+                <Button type="submit" disabled={busy}>
                   {busy ? "Saving…" : "Add to history"}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
+          </Card>
 
-          <h2 className="mt-10 font-display text-2xl tracking-tight">
-            History <span className="text-sm text-muted-foreground">({activities.length})</span>
-          </h2>
+          <div className="mt-10">
+            <CardHeader
+              title="History"
+              meta={<span className="text-sm text-muted-foreground">({activities.length})</span>}
+            />
+          </div>
           {activities.length === 0 ? (
             <p className="mt-4 rounded-3xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
               Nothing logged yet. Add the first call, email, or meeting above.
@@ -380,9 +374,7 @@ function ContactDetailPage() {
                     className="absolute -left-[1.9rem] top-1.5 h-3 w-3 rounded-full border-2 border-card bg-[var(--gold)]"
                   />
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="text-xs uppercase tracking-[0.18em] text-accent-foreground">
-                      {a.activity_type}
-                    </span>
+                    <Badge tone="accent">{a.activity_type}</Badge>
                     <span className="text-xs text-muted-foreground">
                       {new Date(`${a.activity_date}T00:00:00`).toLocaleDateString()}
                     </span>
@@ -488,28 +480,25 @@ function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-charcoal/60 p-4">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        className="w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-xl"
-      >
-        <h2 className="font-display text-xl tracking-tight">{title}</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
-        <div className="mt-6 flex flex-wrap justify-end gap-3">
-          <button type="button" onClick={onCancel} className="rounded-full border border-border px-5 py-2.5 text-sm">
-            Cancel
-          </button>
-          <button
-            ref={confirmRef}
-            type="button"
-            onClick={onConfirm}
-            className="rounded-full bg-destructive px-5 py-2.5 text-sm font-medium text-destructive-foreground"
-          >
-            {confirmLabel}
-          </button>
+      <Card className="w-full max-w-md p-6 shadow-xl">
+        <div role="dialog" aria-modal="true" aria-label={title}>
+          <h2 className="font-display text-xl tracking-tight">{title}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
+          <div className="mt-6 flex flex-wrap justify-end gap-3">
+            <Button type="button" variant="secondary" onClick={onCancel}>
+              Cancel
+            </Button>
+            <button
+              ref={confirmRef}
+              type="button"
+              onClick={onConfirm}
+              className={buttonClass("destructive")}
+            >
+              {confirmLabel}
+            </button>
+          </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
@@ -566,7 +555,7 @@ function InlineField({
   if (options) {
     return (
       <div>
-        <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{label}</dt>
+        <dt><SectionLabel>{label}</SectionLabel></dt>
         <dd className="mt-1.5 flex items-center gap-2">
           {swatch && (
             <span
@@ -614,26 +603,30 @@ function InlineField({
               }}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
             />
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               aria-label={`Save ${label}`}
               disabled={saving}
               onClick={() => void save(draft)}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border hover:bg-secondary"
+              className="!px-0 h-9 w-9"
             >
               <Check className="h-4 w-4 text-accent-foreground" />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               aria-label={`Cancel editing ${label}`}
               onClick={() => {
                 setDraft(value ?? "");
                 setEditing(false);
               }}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border hover:bg-secondary"
+              className="!px-0 h-9 w-9"
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         ) : (
           <button
@@ -740,32 +733,20 @@ function OutreachPanel({
   }
 
   return (
-    <div className="mt-6 rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Sparkles className="h-5 w-5 text-accent-foreground" /> Outreach email
-      </h2>
+    <Card className="mt-6">
+      <CardHeader title="Outreach email" icon={Sparkles} />
       <p className="mt-2 text-sm text-muted-foreground">
         Write a personalized introduction for {businessName} using what&rsquo;s on file here. Nothing sends until you
         review the draft and press Send.
       </p>
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => void onGenerate()}
-          disabled={drafting}
-          className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-        >
+        <Button type="button" onClick={() => void onGenerate()} disabled={drafting}>
           {drafting ? "Writing…" : hasDraft ? "Write a new draft" : "Generate Outreach Email"}
-        </button>
-        <button
-          type="button"
-          onClick={() => void onFallback()}
-          disabled={drafting}
-          className="rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-60"
-        >
+        </Button>
+        <Button type="button" variant="secondary" onClick={() => void onFallback()} disabled={drafting}>
           Use Fallback Template
-        </button>
+        </Button>
       </div>
 
       <div className="mt-4">
@@ -807,25 +788,21 @@ function OutreachPanel({
         <div className="mt-4 rounded-2xl border border-gold/40 bg-accent/40 p-4 text-sm">
           <p>Move {businessName} to the &ldquo;Contacted&rdquo; stage?</p>
           <div className="mt-3 flex gap-3">
-            <button
+            <Button
               type="button"
+              size="sm"
               onClick={async () => {
                 await saveStage({ data: { id: contactId, stage: "Contacted" } });
                 setAskStage(false);
                 toast.success("Stage updated to Contacted.");
                 await router.invalidate();
               }}
-              className="btn-gold rounded-full px-5 py-2 text-xs font-medium"
             >
               Yes, update stage
-            </button>
-            <button
-              type="button"
-              onClick={() => setAskStage(false)}
-              className="rounded-full border border-border px-5 py-2 text-xs"
-            >
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setAskStage(false)}>
               Keep as {stage}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -856,21 +833,16 @@ function OutreachPanel({
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => void onSend()}
-              disabled={sending || !email}
-              className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-            >
+            <Button type="button" onClick={() => void onSend()} disabled={sending || !email}>
               {sending ? "Sending…" : "Send Email"}
-            </button>
+            </Button>
             <span className="text-xs text-muted-foreground">
               {email ? `Goes to ${email}` : "No email address on file for this contact."}
             </span>
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 

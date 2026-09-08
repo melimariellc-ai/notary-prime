@@ -4,9 +4,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 import { FIELD_TYPES, createFieldDef, deleteFieldDef, updateFieldDef, type FieldDef } from "@/lib/fields.functions";
+import { Card } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 const TYPE_LABELS: Record<string, string> = {
   text: "Text",
@@ -80,7 +82,7 @@ export function CustomFieldsTab({ defs }: { defs: FieldDef[] }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-      <div className="rounded-3xl border border-border bg-card">
+      <Card className="p-0">
         <div className="border-b border-border px-6 py-4">
           <h2 className="font-display text-xl tracking-tight">Your fields</h2>
         </div>
@@ -101,88 +103,83 @@ export function CustomFieldsTab({ defs }: { defs: FieldDef[] }) {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => void toggleActive(def)}
-                    className="rounded-full border border-border px-4 py-1.5 text-xs font-medium hover:bg-secondary"
-                  >
+                  <Button type="button" variant="secondary" size="sm" onClick={() => void toggleActive(def)}>
                     {def.is_active ? "Hide" : "Show"}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant="destructive"
+                    size="sm"
                     onClick={() => setConfirmId(def.id)}
                     aria-label={`Remove ${def.label}`}
-                    className="rounded-full border border-border p-2 text-muted-foreground hover:bg-secondary"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </Card>
 
-      <form onSubmit={onCreate} className="rounded-3xl border border-border bg-card p-6">
-        <h2 className="font-display text-xl tracking-tight">Add a field</h2>
-        <div className="mt-5 space-y-4">
-          <div>
-            <label htmlFor="label" className="text-sm text-muted-foreground">
-              Field name
-            </label>
-            <input
-              id="label"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              required
-              maxLength={80}
-              placeholder="Preferred closing day"
-              className={`mt-2 ${inputClass}`}
-            />
-          </div>
-          <div>
-            <label htmlFor="field_type" className="text-sm text-muted-foreground">
-              Field type
-            </label>
-            <select
-              id="field_type"
-              value={fieldType}
-              onChange={(e) => setFieldType(e.target.value)}
-              className={`mt-2 ${inputClass}`}
-            >
-              {FIELD_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {TYPE_LABELS[t]}
-                </option>
-              ))}
-            </select>
-          </div>
-          {fieldType === "dropdown" && (
+      <Card>
+        <form onSubmit={onCreate}>
+          <h2 className="font-display text-xl tracking-tight">Add a field</h2>
+          <div className="mt-5 space-y-4">
             <div>
-              <label htmlFor="options" className="text-sm text-muted-foreground">
-                Choices (comma separated)
+              <label htmlFor="label" className="text-sm text-muted-foreground">
+                Field name
               </label>
               <input
-                id="options"
-                value={options}
-                onChange={(e) => setOptions(e.target.value)}
-                placeholder="Monday, Wednesday, Friday"
+                id="label"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                required
+                maxLength={80}
+                placeholder="Preferred closing day"
                 className={`mt-2 ${inputClass}`}
               />
             </div>
-          )}
-          <button
-            type="submit"
-            disabled={busy}
-            className="btn-gold inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-          >
-            <Plus className="h-4 w-4" /> {busy ? "Adding…" : "Add field"}
-          </button>
-          <p className="text-xs text-muted-foreground">
-            Removing a field takes it off the forms; any values already saved on contacts stay in the record.
-          </p>
-        </div>
-      </form>
+            <div>
+              <label htmlFor="field_type" className="text-sm text-muted-foreground">
+                Field type
+              </label>
+              <select
+                id="field_type"
+                value={fieldType}
+                onChange={(e) => setFieldType(e.target.value)}
+                className={`mt-2 ${inputClass}`}
+              >
+                {FIELD_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {TYPE_LABELS[t]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {fieldType === "dropdown" && (
+              <div>
+                <label htmlFor="options" className="text-sm text-muted-foreground">
+                  Choices (comma separated)
+                </label>
+                <input
+                  id="options"
+                  value={options}
+                  onChange={(e) => setOptions(e.target.value)}
+                  placeholder="Monday, Wednesday, Friday"
+                  className={`mt-2 ${inputClass}`}
+                />
+              </div>
+            )}
+            <Button type="submit" disabled={busy} className="w-full">
+              <Plus className="h-4 w-4" /> {busy ? "Adding…" : "Add field"}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Removing a field takes it off the forms; any values already saved on contacts stay in the record.
+            </p>
+          </div>
+        </form>
+      </Card>
 
       {confirmId && (
         <div
@@ -191,28 +188,20 @@ export function CustomFieldsTab({ defs }: { defs: FieldDef[] }) {
           aria-modal="true"
           onKeyDown={(e) => e.key === "Escape" && setConfirmId(null)}
         >
-          <div className="w-full max-w-md rounded-3xl border border-border bg-card p-6">
+          <Card className="w-full max-w-md">
             <h3 className="font-display text-xl tracking-tight">Remove this field?</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               It will disappear from the contact forms. Values already saved on contacts are kept.
             </p>
             <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setConfirmId(null)}
-                className="rounded-full border border-border px-5 py-2 text-sm hover:bg-secondary"
-              >
+              <Button type="button" variant="secondary" onClick={() => setConfirmId(null)}>
                 Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => void onDelete(confirmId)}
-                className="rounded-full bg-destructive px-5 py-2 text-sm font-medium text-destructive-foreground"
-              >
+              </Button>
+              <Button type="button" variant="destructive" onClick={() => void onDelete(confirmId)}>
                 Remove field
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

@@ -4,9 +4,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { createCrmOption, deleteCrmOption, moveCrmOption, type OptionKind } from "@/lib/options.functions";
+import { Card } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 export type OptionRow = { id: string; label: string; sort_order: number; inUse: number };
 
@@ -77,7 +79,7 @@ export function CrmOptionsTab({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-      <div className="rounded-3xl border border-border bg-card">
+      <Card className="p-0">
         <div className="border-b border-border px-6 py-4">
           <h2 className="font-display text-xl tracking-tight">{heading}</h2>
           <p className="mt-1 text-xs text-muted-foreground">{intro}</p>
@@ -94,26 +96,30 @@ export function CrmOptionsTab({
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
+                  size="sm"
                   onClick={() => void onMove(row.id, "up")}
                   disabled={i === 0}
                   aria-label={`Move ${row.label} up`}
-                  className="rounded-full border border-border p-2 text-muted-foreground hover:bg-secondary disabled:opacity-40"
                 >
                   <ArrowUp className="h-4 w-4" />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="secondary"
+                  size="sm"
                   onClick={() => void onMove(row.id, "down")}
                   disabled={i === rows.length - 1}
                   aria-label={`Move ${row.label} down`}
-                  className="rounded-full border border-border p-2 text-muted-foreground hover:bg-secondary disabled:opacity-40"
                 >
                   <ArrowDown className="h-4 w-4" />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="destructive"
+                  size="sm"
                   onClick={() =>
                     row.inUse > 0
                       ? toast.error(
@@ -122,45 +128,42 @@ export function CrmOptionsTab({
                       : setConfirm(row)
                   }
                   aria-label={`Remove ${row.label}`}
-                  className="rounded-full border border-border p-2 text-muted-foreground hover:bg-secondary"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             </li>
           ))}
         </ul>
-      </div>
+      </Card>
 
-      <form onSubmit={onCreate} className="rounded-3xl border border-border bg-card p-6">
-        <h2 className="font-display text-xl tracking-tight">{addHeading}</h2>
-        <div className="mt-5 space-y-4">
-          <div>
-            <label htmlFor={`new-${kind}`} className="text-sm text-muted-foreground">
-              Name
-            </label>
-            <input
-              id={`new-${kind}`}
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              required
-              maxLength={80}
-              placeholder={placeholder}
-              className={`mt-2 ${inputClass}`}
-            />
+      <Card>
+        <form onSubmit={onCreate}>
+          <h2 className="font-display text-xl tracking-tight">{addHeading}</h2>
+          <div className="mt-5 space-y-4">
+            <div>
+              <label htmlFor={`new-${kind}`} className="text-sm text-muted-foreground">
+                Name
+              </label>
+              <input
+                id={`new-${kind}`}
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                required
+                maxLength={80}
+                placeholder={placeholder}
+                className={`mt-2 ${inputClass}`}
+              />
+            </div>
+            <Button type="submit" disabled={busy} className="w-full">
+              <Plus className="h-4 w-4" /> {busy ? "Adding…" : `Add ${noun.toLowerCase()}`}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              An option in use by existing contacts cannot be removed until those contacts are reassigned.
+            </p>
           </div>
-          <button
-            type="submit"
-            disabled={busy}
-            className="btn-gold inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-          >
-            <Plus className="h-4 w-4" /> {busy ? "Adding…" : `Add ${noun.toLowerCase()}`}
-          </button>
-          <p className="text-xs text-muted-foreground">
-            An option in use by existing contacts cannot be removed until those contacts are reassigned.
-          </p>
-        </div>
-      </form>
+        </form>
+      </Card>
 
       {confirm && (
         <div
@@ -169,28 +172,20 @@ export function CrmOptionsTab({
           aria-modal="true"
           onKeyDown={(e) => e.key === "Escape" && setConfirm(null)}
         >
-          <div className="w-full max-w-md rounded-3xl border border-border bg-card p-6">
+          <Card className="w-full max-w-md">
             <h3 className="font-display text-xl tracking-tight">Remove “{confirm.label}”?</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               It will no longer appear as a choice on contacts. No contacts currently use it.
             </p>
             <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setConfirm(null)}
-                className="rounded-full border border-border px-5 py-2 text-sm hover:bg-secondary"
-              >
+              <Button type="button" variant="secondary" onClick={() => setConfirm(null)}>
                 Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => void onDelete(confirm)}
-                className="rounded-full bg-destructive px-5 py-2 text-sm font-medium text-destructive-foreground"
-              >
+              </Button>
+              <Button type="button" variant="destructive" onClick={() => void onDelete(confirm)}>
                 Remove
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

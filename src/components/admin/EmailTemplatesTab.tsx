@@ -3,9 +3,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { listEmailTemplates, updateEmailTemplate } from "@/lib/email-templates.functions";
 import { renderEmailTemplate, SAMPLE_VALUES, type EmailTemplate } from "@/lib/email-templates";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Button } from "@/components/admin/ui/Button";
 
 const field =
-  "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+  "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
 export function EmailTemplatesTab() {
   const fetchTemplates = useServerFn(listEmailTemplates);
@@ -77,8 +79,8 @@ export function EmailTemplatesTab() {
         ))}
       </nav>
 
-      <div className="rounded-3xl border border-border bg-card p-8">
-        <h2 className="text-xl font-medium text-foreground">{selected.name}</h2>
+      <Card>
+        <CardHeader title={selected.name} />
         {selected.description && (
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{selected.description}</p>
         )}
@@ -122,13 +124,9 @@ export function EmailTemplatesTab() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={mutation.isPending}
-            className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
+          <Button type="submit" variant="secondary" disabled={mutation.isPending}>
             {mutation.isPending ? "Saving…" : "Save template"}
-          </button>
+          </Button>
         </form>
 
         <div className="mt-10 border-t border-border pt-8">
@@ -154,7 +152,7 @@ export function EmailTemplatesTab() {
             </p>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

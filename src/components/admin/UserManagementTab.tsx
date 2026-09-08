@@ -3,6 +3,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Shield, UserCheck, UserX } from "lucide-react";
 import { listTeamMembers, setTeamMemberActive, setTeamMemberRole } from "@/lib/team.functions";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { Button } from "@/components/admin/ui/Button";
 
 const ROLES = [
   { value: "notary", label: "Notary" },
@@ -49,18 +52,16 @@ export function UserManagementTab() {
 
   if (!data || data.forbidden)
     return (
-      <div className="rounded-3xl border border-border bg-card p-8">
+      <Card>
         <p className="text-sm text-muted-foreground">Only Admin accounts can manage users.</p>
-      </div>
+      </Card>
     );
 
   const busy = roleMutation.isPending || activeMutation.isPending;
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Shield className="h-5 w-5 text-gold" /> Team members
-      </h2>
+    <Card>
+      <CardHeader title="Team members" icon={Shield} />
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         Change what someone can access, or switch off their sign-in without removing any of their past
         work. Deactivated people keep their history, assignments, and record of changes.
@@ -99,7 +100,7 @@ export function UserManagementTab() {
                       value={m.role}
                       disabled={isMe || busy}
                       onChange={(e) => roleMutation.mutate({ userId: m.id, role: e.target.value })}
-                      className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60 disabled:opacity-60"
+                      className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 disabled:opacity-60"
                     >
                       {ROLES.map((r) => (
                         <option key={r.value} value={r.value}>
@@ -109,33 +110,28 @@ export function UserManagementTab() {
                     </select>
                   </td>
                   <td className="py-4 pr-4">
-                    <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                        m.is_active
-                          ? "bg-secondary text-foreground"
-                          : "bg-destructive/10 text-destructive"
-                      }`}
-                    >
+                    <Badge tone={m.is_active ? "neutral" : "critical"}>
                       {m.is_active ? "Active" : "Inactive"}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="py-4 text-right">
-                    <button
+                    <Button
                       type="button"
+                      variant={m.is_active ? "destructive" : "secondary"}
+                      size="sm"
                       disabled={isMe || busy}
                       onClick={() => activeMutation.mutate({ userId: m.id, active: !m.is_active })}
-                      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-medium transition-colors hover:bg-secondary disabled:opacity-50"
                     >
                       {m.is_active ? (
                         <>
-                          <UserX className="h-3.5 w-3.5" /> Deactivate
+                          <UserX className="h-4 w-4" /> Deactivate
                         </>
                       ) : (
                         <>
-                          <UserCheck className="h-3.5 w-3.5" /> Reactivate
+                          <UserCheck className="h-4 w-4" /> Reactivate
                         </>
                       )}
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               );
@@ -150,6 +146,6 @@ export function UserManagementTab() {
           </tbody>
         </table>
       </div>
-    </div>
+    </Card>
   );
 }

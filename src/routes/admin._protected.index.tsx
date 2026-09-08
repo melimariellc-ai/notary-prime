@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { QuoteRow } from "@/components/admin/QuoteRow";
+import { Card, CardHeader, CARD_CLASS } from "@/components/admin/ui/Card";
+import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
+import { Button, ButtonLink } from "@/components/admin/ui/Button";
 import {
   assignNotary,
   getAppointments,
@@ -55,19 +58,16 @@ function AdminPage() {
           intro="Appointment requests are available to Admin and Employee accounts."
         />
         <AdminSection>
-          <div className="max-w-md rounded-3xl border border-border bg-card p-8">
+          <Card className="max-w-md">
             <Lock className="h-5 w-5 text-muted-foreground" />
             <p className="mt-4 text-sm text-muted-foreground">
               Your account does not have permission to view this page. Notary accounts see their assigned work on the
               dashboard.
             </p>
-            <Link
-              to="/admin/dashboard"
-              className="btn-gold mt-6 inline-flex rounded-full px-6 py-3 text-sm font-medium"
-            >
+            <ButtonLink to="/admin/dashboard" variant="primary" className="mt-6">
               Go to dashboard
-            </Link>
-          </div>
+            </ButtonLink>
+          </Card>
         </AdminSection>
       </>
     );
@@ -91,21 +91,23 @@ function AdminPage() {
           )}
 
           {appointments.length === 0 ? (
-            <p className="rounded-3xl border border-border bg-card p-10 text-center text-muted-foreground">
+            <p className={`${CARD_CLASS} p-10 text-center text-muted-foreground`}>
               No requests yet. New submissions from the Book page will appear here.
             </p>
           ) : (
 
-            <div className="grid gap-4">
+            <div className="grid gap-6">
 
               {appointments.map((a) => (
-                <article key={a.id} className="rounded-3xl border border-border bg-card p-6 md:p-8">
-                  <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <h2 className="font-display text-2xl tracking-tight">{a.name}</h2>
-                    <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                      {new Date(a.submitted_at).toLocaleString()}
-                    </span>
-                  </div>
+                <Card key={a.id}>
+                  <CardHeader
+                    title={a.name}
+                    meta={
+                      <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                        {new Date(a.submitted_at).toLocaleString()}
+                      </span>
+                    }
+                  />
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
                     <p className="text-muted-foreground">
@@ -164,7 +166,7 @@ function AdminPage() {
                   )}
 
                   <AppointmentAuditToggle appointmentId={a.id} />
-                </article>
+                </Card>
 
               ))}
             </div>
@@ -208,7 +210,7 @@ function AssignRow({
         id={`assign-${appointmentId}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+        className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
       >
         <option value="">Unassigned</option>
         {notaries.map((n) => (
@@ -238,25 +240,18 @@ function SmsStatusButton({
 }) {
   const active = failures.filter((a) => !a.sms_dismissed_at).length;
   return (
-    <button
+    <Button
       type="button"
+      variant={active > 0 ? "destructive" : "secondary"}
+      size="sm"
       onClick={onToggle}
       aria-expanded={open}
       title="Text message delivery log"
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs uppercase tracking-[0.16em] transition-colors ${
-        active > 0
-          ? "border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/20"
-          : "border-border text-muted-foreground hover:text-foreground"
-      }`}
     >
       {active > 0 ? <AlertTriangle className="h-4 w-4" /> : <Check className="h-4 w-4 text-gold" />}
       SMS log
-      {active > 0 && (
-        <span className="rounded-full bg-destructive px-2 py-0.5 text-[0.65rem] text-destructive-foreground">
-          {active}
-        </span>
-      )}
-    </button>
+      {active > 0 && <Badge tone="critical">{active}</Badge>}
+    </Button>
   );
 }
 
@@ -289,9 +284,9 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
 
   if (active.length === 0 && dismissed.length === 0)
     return (
-      <div className="rounded-3xl border border-border bg-card/40 p-6 text-sm text-muted-foreground">
+      <Card className="bg-card/40 text-sm text-muted-foreground">
         No text message delivery failures recorded — all clear.
-      </div>
+      </Card>
     );
 
 
@@ -309,15 +304,16 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
         {a.sms_error || "Unknown error from OpenPhone"}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={() => toggle(a.id, !isDismissed)}
           disabled={busy === a.id}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
         >
-          {isDismissed ? <RotateCcw className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
+          {isDismissed ? <RotateCcw className="h-4 w-4" /> : <Check className="h-4 w-4" />}
           {isDismissed ? "Restore" : "Dismiss"}
-        </button>
+        </Button>
         {isDismissed && a.sms_dismissed_at && (
           <span className="text-xs text-muted-foreground">
             Dismissed {new Date(a.sms_dismissed_at).toLocaleDateString()}
@@ -328,10 +324,10 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
   );
 
   return (
-    <div
-      className={`rounded-3xl border p-6 md:p-8 ${
-        active.length > 0 ? "border-destructive/40 bg-destructive/5" : "border-border bg-card/40"
-      }`}
+    <Card
+      className={
+        active.length > 0 ? "border-destructive/40 bg-destructive/5" : "bg-card/40"
+      }
     >
       <h2
         className={`inline-flex items-center gap-2 font-display text-xl tracking-tight ${
@@ -370,23 +366,19 @@ function SmsDeliveryLog({ failures }: { failures: Appointment[] }) {
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
 function SmsBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; className: string }> = {
-    sent: { label: "SMS sent", className: "border-gold/50 bg-gold/10 text-foreground" },
-    failed: { label: "SMS failed", className: "border-destructive/50 bg-destructive/10 text-destructive" },
-    skipped: { label: "SMS skipped", className: "border-border text-muted-foreground" },
-    pending: { label: "SMS pending", className: "border-border text-muted-foreground" },
+  const map: Record<string, { label: string; tone: BadgeTone }> = {
+    sent: { label: "SMS sent", tone: "accent" },
+    failed: { label: "SMS failed", tone: "critical" },
+    skipped: { label: "SMS skipped", tone: "neutral" },
+    pending: { label: "SMS pending", tone: "neutral" },
   };
   const s = map[status] ?? map["pending"]!;
-  return (
-    <span className={`inline-flex items-center rounded-full border px-3 py-1 uppercase tracking-[0.18em] text-[10px] ${s.className}`}>
-      {s.label}
-    </span>
-  );
+  return <Badge tone={s.tone}>{s.label}</Badge>;
 }
 
 function ReferralRow({
@@ -429,7 +421,7 @@ function ReferralRow({
           setContactId(e.target.value);
           void commit(e.target.value, amount);
         }}
-        className="rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+        className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
       >
         <option value="">No referral source</option>
         {contacts.map((c) => (
@@ -449,7 +441,7 @@ function ReferralRow({
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         onBlur={() => void commit(contactId, amount)}
-        className="w-28 rounded-xl border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+        className="w-28 rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
       />
       {status === "saving" && <span className="text-xs text-muted-foreground">Saving…</span>}
       {status === "saved" && <span className="text-xs text-muted-foreground">Saved</span>}

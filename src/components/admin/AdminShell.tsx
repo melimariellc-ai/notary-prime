@@ -324,7 +324,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
               >
                 <Search className="h-3.5 w-3.5" />
                 Search contacts
-                <kbd className="rounded border border-white/25 px-1.5 py-0.5 text-[10px] tracking-wide">⌘K</kbd>
+                <kbd className="rounded border border-white/25 px-1.5 py-0.5 text-[0.6875rem] tracking-wide">⌘K</kbd>
               </button>
               <button
                 type="button"
@@ -346,7 +346,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 >
                   <Bell className="h-4 w-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
+                    <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[0.6875rem] font-semibold text-destructive-foreground">
                       {unreadCount}
                     </span>
                   )}
@@ -407,7 +407,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
             >
               <span className="hidden max-w-[10rem] truncate sm:inline">{email ?? "Signed in"}</span>
               {roleLabel && (
-                <span className="rounded-full border border-gold/50 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-gold">
+                <span className="rounded-full border border-gold/50 px-2 py-0.5 text-[0.6875rem] uppercase tracking-[0.16em] text-gold">
                   {roleLabel}
                 </span>
               )}
@@ -421,7 +421,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 <p className="px-2 text-xs text-muted-foreground">Signed in as</p>
                 <p className="px-2 pb-2 text-sm font-medium break-words">{email}</p>
                 {roleLabel && (
-                  <p className="px-2 pb-2 text-[10px] uppercase tracking-[0.2em] text-accent-foreground">
+                  <p className="px-2 pb-2 text-[0.6875rem] uppercase tracking-[0.2em] text-accent-foreground">
                     {roleLabel} account
                   </p>
                 )}
@@ -533,7 +533,7 @@ function SidebarBody({
       {groups.map((group) => (
         <div key={group.label}>
           {expanded ? (
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+            <p className="px-3 pb-2 text-[0.6875rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
               {group.label}
             </p>
           ) : (
@@ -643,7 +643,7 @@ function QuickSearch({
             aria-label="Search contacts by name"
             className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
-          <kbd className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">esc</kbd>
+          <kbd className="rounded border border-border px-1.5 py-0.5 text-[0.6875rem] text-muted-foreground">esc</kbd>
         </div>
         <ul className="max-h-72 overflow-y-auto p-2">
           {results.length === 0 && (
@@ -665,7 +665,7 @@ function QuickSearch({
                     <span className="block truncate text-xs text-muted-foreground">{c.contact_person}</span>
                   )}
                 </span>
-                <span className="shrink-0 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                <span className="shrink-0 text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
                   {c.pipeline_stage}
                 </span>
               </button>
