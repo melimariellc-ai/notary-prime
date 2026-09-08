@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { type BusinessContact } from "@/lib/crm.functions";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
-import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
+import { Card, CardHeader, SectionLabel, CARD_CLASS } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
-import { CARD_CLASS } from "@/components/admin/ui/Card";
+
 
 
 function StatCard({
