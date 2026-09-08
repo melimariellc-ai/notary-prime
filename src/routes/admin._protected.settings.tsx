@@ -6,6 +6,7 @@ import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { BusinessProfileTab } from "@/components/admin/BusinessProfileTab";
 import { EmailTemplatesTab } from "@/components/admin/EmailTemplatesTab";
+import { NotificationPreferencesTab } from "@/components/admin/NotificationPreferencesTab";
 
 import { listFieldDefs } from "@/lib/fields.functions";
 import { listCrmOptionUsage } from "@/lib/options.functions";
@@ -43,6 +44,7 @@ const TABS = [
   { id: "users", label: "User Management" },
   { id: "business", label: "Business Profile" },
   { id: "emails", label: "Email Templates" },
+  { id: "notifications", label: "Notification Preferences" },
 ] as const;
 
 
@@ -115,6 +117,7 @@ function SettingsPage() {
           {tab === "users" && <UserManagementTab />}
           {tab === "business" && <BusinessProfileTab />}
           {tab === "emails" && <EmailTemplatesTab />}
+          {tab === "notifications" && <NotificationPreferencesTab />}
 
         </div>
       </AdminSection>
