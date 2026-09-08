@@ -111,6 +111,7 @@ function SettingsPage() {
             />
           )}
           {tab === "users" && <UserManagementTab />}
+          {tab === "business" && <BusinessProfileTab />}
 
         </div>
       </AdminSection>
