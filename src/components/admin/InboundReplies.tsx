@@ -91,6 +91,7 @@ export function InboundRepliesCard() {
           })}
         </ul>
       )}
-    </div>
+    </Card>
+
   );
 }
