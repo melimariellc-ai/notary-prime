@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Download, FileSpreadsheet } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
-import { CONTACT_TYPES, PIPELINE_STAGES } from "@/lib/crm.functions";
+import { useCrmOptions } from "@/hooks/useCrmOptions";
 import { runReport, type ReportDataset, type ReportResult } from "@/lib/reports.functions";
 
 export const Route = createFileRoute("/admin/_protected/reports")({
@@ -137,7 +137,7 @@ function ReportsPage() {
               </label>
               <select id="stage" value={stage} onChange={(e) => setStage(e.target.value)} className={`mt-2 ${inputClass}`}>
                 <option value="">All stages</option>
-                {PIPELINE_STAGES.map((s) => (
+                {pipelineStages.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -150,7 +150,7 @@ function ReportsPage() {
               </label>
               <select id="type" value={type} onChange={(e) => setType(e.target.value)} className={`mt-2 ${inputClass}`}>
                 <option value="">All types</option>
-                {CONTACT_TYPES.map((t) => (
+                {contactTypes.map((t) => (
                   <option key={t} value={t}>
                     {t}
                   </option>

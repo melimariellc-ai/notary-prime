@@ -20,8 +20,6 @@ import { CustomFieldsPanel } from "@/components/admin/CustomFields";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
   ACTIVITY_TYPES,
-  CONTACT_TYPES,
-  PIPELINE_STAGES,
   addContactActivity,
   deleteBusinessContact,
   getBusinessContact,
@@ -170,14 +168,14 @@ function ContactDetailPage() {
                 field="contact_type"
                 label="Contact type"
                 value={contact.contact_type}
-                options={CONTACT_TYPES as readonly string[]}
+                options={contactTypes}
               />
               <InlineField
                 id={contact.id}
                 field="pipeline_stage"
                 label="Pipeline stage"
                 value={contact.pipeline_stage}
-                options={PIPELINE_STAGES as readonly string[]}
+                options={pipelineStages}
                 swatch
               />
               <InlineField id={contact.id} field="phone" label="Phone" value={contact.phone} type="tel" />
@@ -468,6 +466,7 @@ function InlineField({
     }
   }
 
+  const { pipelineStages } = useCrmOptions();
   const display =
     type === "date" && value ? new Date(`${value}T00:00:00`).toLocaleDateString() : value || "Not set";
 
@@ -480,7 +479,7 @@ function InlineField({
             <span
               aria-hidden="true"
               className="h-2.5 w-2.5 shrink-0 rounded-full"
-              style={{ backgroundColor: STAGE_COLORS[value ?? ""] }}
+              style={{ backgroundColor: stageColor(value ?? "", pipelineStages) }}
             />
           )}
           <select
