@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getBusinessProfile, updateBusinessProfile } from "@/lib/business-profile.functions";
-import { credentialsLine, DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "@/lib/business-profile";
+import { credentialsLine, DEFAULT_BUSINESS_PROFILE, rateLabel, type BusinessProfile } from "@/lib/business-profile";
 
 const field =
   "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";

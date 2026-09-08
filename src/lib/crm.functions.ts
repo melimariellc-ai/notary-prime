@@ -58,6 +58,9 @@ export type BusinessContact = {
   referral_source: string | null;
   created_at: string;
   custom_fields: CustomFieldValues;
+  /** Optional per-contact override; null falls back to the business default. */
+  referral_rate: number | null;
+  referral_rate_type: "percent" | "flat" | null;
 };
 
 export type ContactActivity = {
@@ -132,7 +135,7 @@ async function findSimilarContacts(
 }
 
 const COLUMNS =
-  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at, custom_fields";
+  "id, business_name, contact_person, contact_type, phone, email, pipeline_stage, first_contacted_date, next_follow_up_date, referral_source, created_at, custom_fields, referral_rate, referral_rate_type";
 
 function text(value: unknown, max = 300): string | null {
   const s = String(value ?? "").trim();
@@ -619,6 +622,19 @@ const PATCHABLE = {
   referral_source: (v: unknown) => text(v, 500),
   first_contacted_date: (v: unknown) => dateOrNull(v),
   next_follow_up_date: (v: unknown) => dateOrNull(v),
+  referral_rate: (v: unknown) => {
+    const s = String(v ?? "").trim();
+    if (!s) return null;
+    const n = Number(s);
+    if (!Number.isFinite(n) || n < 0) throw new Error("Enter a referral rate of zero or more, or leave it blank.");
+    return Math.round(n * 100) / 100;
+  },
+  referral_rate_type: (v: unknown) => {
+    const s = String(v ?? "").trim();
+    if (!s) return null;
+    if (s !== "percent" && s !== "flat") throw new Error("Invalid rate format.");
+    return s;
+  },
   contact_type: (v: unknown) => {
     const s = optionLabel(v, "", "contact type");
     if (!s) throw new Error("Invalid contact type.");
