@@ -1,91 +1,29 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { BusinessProfile } from "./business-profile";
+import { renderEmailTemplate } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 const FROM_ADDRESS = "team@send.enlivennotary.com";
 
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
-function notaryEmail(name: string, link: string, profile: BusinessProfile) {
-  const safeName = escapeHtml(name);
-  const business = profile.business_name;
-  const safeBusiness = escapeHtml(business);
-  const area = profile.service_area || "our service area";
-  const safeArea = escapeHtml(area);
-  const contactEmail = profile.email;
-  const safeEmail = escapeHtml(contactEmail);
-  const subject = `Welcome to the ${business} Team!`;
-  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a">
-<p>Hi ${safeName},</p>
-<p>Welcome to ${safeBusiness}! We're excited to have you on our team and look forward to working with you as we serve clients throughout ${safeArea}.</p>
-<p>Your account is ready. To get started, click the link below to create your password and access your account.</p>
-<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Create your password</a></p>
-<p>Once you're signed in, you'll be able to view your assigned appointments, appointment details, and everything you need to complete your assignments.</p>
-<p>If you have any questions or need assistance, please contact us at <a href="mailto:${safeEmail}">${safeEmail}</a>. We're always happy to help.</p>
-<p>We're glad to have you with us and look forward to working together!</p>
-<p>${safeBusiness}</p>
-</div>`;
-  const text = `Hi ${name},
-
-Welcome to ${business}! We're excited to have you on our team and look forward to working with you as we serve clients throughout ${area}.
-
-Your account is ready. To get started, click the link below to create your password and access your account.
-
-${link}
-
-Once you're signed in, you'll be able to view your assigned appointments, appointment details, and everything you need to complete your assignments.
-
-If you have any questions or need assistance, please contact us at ${contactEmail}. We're always happy to help.
-
-We're glad to have you with us and look forward to working together!
-
-${business}`;
-  return { subject, html, text };
+async function inviteEmail(
+  key: "notary_invite" | "admin_invite",
+  name: string,
+  link: string,
+  profile: BusinessProfile,
+) {
+  const { loadEmailTemplate } = await import("./email-templates.server");
+  const template = await loadEmailTemplate(key);
+  return renderEmailTemplate(template, {
+    name,
+    link,
+    business_name: profile.business_name,
+    service_area: profile.service_area || "our service area",
+    contact_email: profile.email,
+    phone: profile.phone,
+  });
 }
 
-function adminEmail(name: string, link: string, profile: BusinessProfile) {
-  const safeName = escapeHtml(name);
-  const business = profile.business_name;
-  const safeBusiness = escapeHtml(business);
-  const contactEmail = profile.email;
-  const safeEmail = escapeHtml(contactEmail);
-  const subject = `Welcome to ${business}!`;
-  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a1a1a">
-<p>Hi ${safeName},</p>
-<p>We're excited to officially welcome you to ${safeBusiness}!</p>
-<p>As part of our team, you'll play an important role in helping us manage our day to day operations and provide a smooth experience for both our clients and notaries.</p>
-<p>Your account has been created. Please use the link below to set up your password and access the ${safeBusiness} admin portal.</p>
-<p><a href="${link}" style="color:#8a6b2f;font-weight:bold">Set Up Your Password</a></p>
-<p>Once you're signed in, you'll have access to the areas of the platform associated with your role. This may include managing appointments, coordinating with notaries, assisting clients, and supporting other daily operations.</p>
-<p>If you have any questions while getting started, please reach out to us at <a href="mailto:${safeEmail}">${safeEmail}</a>.</p>
-<p>We're excited to have you on the team and look forward to growing together!</p>
-<p>${safeBusiness}</p>
-</div>`;
-  const text = `Hi ${name},
-
-We're excited to officially welcome you to ${business}!
-
-As part of our team, you'll play an important role in helping us manage our day to day operations and provide a smooth experience for both our clients and notaries.
-
-Your account has been created. Please use the link below to set up your password and access the ${business} admin portal.
-
-${link}
-
-Once you're signed in, you'll have access to the areas of the platform associated with your role. This may include managing appointments, coordinating with notaries, assisting clients, and supporting other daily operations.
-
-If you have any questions while getting started, please reach out to us at ${contactEmail}.
-
-We're excited to have you on the team and look forward to growing together!
-
-${business}`;
-  return { subject, html, text };
-}
 
 
 const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
@@ -167,8 +105,12 @@ export const createAdminUser = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const profile = await loadBusinessProfile();
-    const template =
-      data.role === "notary" ? notaryEmail(data.name, link, profile) : adminEmail(data.name, link, profile);
+    const template = await inviteEmail(
+      data.role === "notary" ? "notary_invite" : "admin_invite",
+      data.name,
+      link,
+      profile,
+    );
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",

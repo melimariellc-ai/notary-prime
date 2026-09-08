@@ -5,6 +5,7 @@ import { CustomFieldsTab } from "@/components/admin/CustomFieldsTab";
 import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { BusinessProfileTab } from "@/components/admin/BusinessProfileTab";
+import { EmailTemplatesTab } from "@/components/admin/EmailTemplatesTab";
 
 import { listFieldDefs } from "@/lib/fields.functions";
 import { listCrmOptionUsage } from "@/lib/options.functions";
@@ -41,6 +42,7 @@ const TABS = [
   { id: "stages", label: "Pipeline Stages" },
   { id: "users", label: "User Management" },
   { id: "business", label: "Business Profile" },
+  { id: "emails", label: "Email Templates" },
 ] as const;
 
 
@@ -112,6 +114,7 @@ function SettingsPage() {
           )}
           {tab === "users" && <UserManagementTab />}
           {tab === "business" && <BusinessProfileTab />}
+          {tab === "emails" && <EmailTemplatesTab />}
 
         </div>
       </AdminSection>

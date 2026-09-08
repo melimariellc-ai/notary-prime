@@ -27,7 +27,7 @@ import {
   setPipelineStage,
   type PatchableField,
 } from "@/lib/crm.functions";
-import { generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
+import { buildFallbackOutreachEmail, generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
 import { rateLabel, usd, type ReferralRateType } from "@/lib/business-profile";
 
 export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
@@ -664,6 +664,7 @@ function OutreachPanel({
 }) {
   const router = useRouter();
   const generate = useServerFn(generateOutreachEmail);
+  const buildFallback = useServerFn(buildFallbackOutreachEmail);
   const send = useServerFn(sendOutreachEmail);
   const saveStage = useServerFn(setPipelineStage);
 
@@ -674,12 +675,14 @@ function OutreachPanel({
   const [hasDraft, setHasDraft] = useState(false);
   const [needsKey, setNeedsKey] = useState(false);
   const [askStage, setAskStage] = useState(false);
+  const [showExtra, setShowExtra] = useState(false);
+  const [extraInstructions, setExtraInstructions] = useState("");
 
   async function onGenerate() {
     setDrafting(true);
     setNeedsKey(false);
     try {
-      const res = await generate({ data: { contactId } });
+      const res = await generate({ data: { contactId, extraInstructions } });
       if (res.ok) {
         setSubject(res.subject);
         setBody(res.body);
@@ -691,6 +694,25 @@ function OutreachPanel({
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not write a draft.");
+    } finally {
+      setDrafting(false);
+    }
+  }
+
+  async function onFallback() {
+    setDrafting(true);
+    try {
+      const res = await buildFallback({ data: { contactId } });
+      if (res.ok) {
+        setSubject(res.subject);
+        setBody(res.body);
+        setHasDraft(true);
+        toast.success("Fallback template ready — edit anything before sending.");
+      } else {
+        toast.error(res.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not load the fallback template.");
     } finally {
       setDrafting(false);
     }
@@ -727,14 +749,53 @@ function OutreachPanel({
         review the draft and press Send.
       </p>
 
-      <button
-        type="button"
-        onClick={() => void onGenerate()}
-        disabled={drafting}
-        className="btn-gold mt-5 rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
-      >
-        {drafting ? "Writing…" : hasDraft ? "Write a new draft" : "Generate Outreach Email"}
-      </button>
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => void onGenerate()}
+          disabled={drafting}
+          className="btn-gold rounded-full px-6 py-3 text-sm font-medium disabled:opacity-60"
+        >
+          {drafting ? "Writing…" : hasDraft ? "Write a new draft" : "Generate Outreach Email"}
+        </button>
+        <button
+          type="button"
+          onClick={() => void onFallback()}
+          disabled={drafting}
+          className="rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-60"
+        >
+          Use Fallback Template
+        </button>
+      </div>
+
+      <div className="mt-4">
+        <button
+          type="button"
+          onClick={() => setShowExtra((v) => !v)}
+          aria-expanded={showExtra}
+          className="text-sm font-medium text-muted-foreground underline-offset-4 hover:underline"
+        >
+          {showExtra ? "Hide extra instructions" : "Add specific instructions for this email (optional)"}
+        </button>
+        {showExtra && (
+          <div className="mt-3">
+            <label htmlFor="outreach_extra" className="text-sm font-medium">
+              Specific instructions for this email
+            </label>
+            <textarea
+              id="outreach_extra"
+              rows={3}
+              value={extraInstructions}
+              onChange={(e) => setExtraInstructions(e.target.value)}
+              placeholder="Mention that we specialize in same-day appointments."
+              className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            />
+            <p className="mt-2 text-xs text-muted-foreground">
+              Used for this one draft only — nothing is saved and no other email is affected.
+            </p>
+          </div>
+        )}
+      </div>
 
       {needsKey && (
         <p className="mt-4 text-sm text-destructive">
