@@ -72,6 +72,7 @@ export const SAMPLE_VALUES: Record<string, string> = {
   location: "Mobile — 1200 Main St, Dallas, TX",
   contact_person: "Jordan Reyes",
   business: "Lakeside Title Company",
+  our_business: "Enliven Notary",
 };
 
 export const FALLBACK_TEMPLATES: Record<string, { name: string; subject: string; body: string }> = {

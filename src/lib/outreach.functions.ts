@@ -191,3 +191,36 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
 
     return { ok: true as const, sentTo: contact.email, logged: !logError };
   });
+
+/**
+ * Fills in the editable "Outreach Fallback" template for one contact — no AI,
+ * instant, and never saved against the contact until it is sent.
+ */
+export const buildFallbackOutreachEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { contactId: string }) => ({ contactId: uuid(data.contactId) }))
+  .handler(async ({ data, context }) => {
+    const { data: contact, error } = await context.supabase
+      .from("business_contacts")
+      .select("id, business_name, contact_person, email")
+      .eq("id", data.contactId)
+      .maybeSingle();
+    if (error || !contact) return { ok: false as const, message: "Could not load that contact." };
+
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const { loadEmailTemplate } = await import("./email-templates.server");
+    const { renderEmailTemplate } = await import("./email-templates");
+    const profile = await loadBusinessProfile();
+    const template = await loadEmailTemplate("outreach_fallback");
+
+    const rendered = renderEmailTemplate(template, {
+      contact_person: contact.contact_person || "there",
+      business_name: contact.business_name,
+      our_business: profile.business_name,
+      service_area: profile.service_area,
+      phone: profile.phone,
+      contact_email: profile.email,
+    });
+
+    return { ok: true as const, subject: rendered.subject, body: rendered.text, email: contact.email ?? null };
+  });
