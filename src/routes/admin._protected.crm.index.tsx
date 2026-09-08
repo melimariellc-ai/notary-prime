@@ -22,8 +22,6 @@ import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeade
 import { CustomFieldInputs, customFieldsFromForm } from "@/components/admin/CustomFields";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
-  CONTACT_TYPES,
-  PIPELINE_STAGES,
   bulkSetPipelineStage,
   checkContactDuplicates,
   commitContactImport,
@@ -887,6 +885,7 @@ function KanbanCard({
   referrals: Referrals;
   onMove: (stage: string) => void;
 }) {
+  const { pipelineStages } = useCrmOptions();
   const overdue = !!contact.next_follow_up_date && contact.next_follow_up_date <= today;
   const stats = referrals[contact.id] ?? { count: 0, value: 0 };
 
@@ -937,7 +936,7 @@ function KanbanCard({
         onChange={(e) => onMove(e.target.value)}
         className="mt-1 w-full rounded-xl border border-border bg-card px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gold/60"
       >
-        {PIPELINE_STAGES.map((s) => (
+        {pipelineStages.map((s) => (
           <option key={s} value={s}>
             {s}
           </option>
@@ -975,6 +974,7 @@ function DuplicateWarning({ matches }: { matches: DuplicateMatch[] }) {
 }
 
 function AddContactForm({ onSaved }: { onSaved: () => void }) {
+  const { contactTypes, pipelineStages } = useCrmOptions();
   const create = useServerFn(createBusinessContact);
   const check = useServerFn(checkContactDuplicates);
   const [busy, setBusy] = useState(false);
@@ -1062,8 +1062,8 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
           <label htmlFor="contact_type" className="text-sm font-medium">
             Contact type
           </label>
-          <select id="contact_type" name="contact_type" defaultValue="Title Company" className={`mt-2 ${inputClass}`}>
-            {CONTACT_TYPES.map((t) => (
+          <select id="contact_type" name="contact_type" defaultValue={contactTypes[0]} className={`mt-2 ${inputClass}`}>
+            {contactTypes.map((t) => (
               <option key={t} value={t}>
                 {t}
               </option>
@@ -1075,7 +1075,7 @@ function AddContactForm({ onSaved }: { onSaved: () => void }) {
             Pipeline stage
           </label>
           <select id="pipeline_stage" name="pipeline_stage" defaultValue="New Lead" className={`mt-2 ${inputClass}`}>
-            {PIPELINE_STAGES.map((s) => (
+            {pipelineStages.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
