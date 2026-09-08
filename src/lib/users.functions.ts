@@ -165,15 +165,18 @@ export const createAdminUser = createServerFn({ method: "POST" })
       };
     }
 
-    const template = data.role === "notary" ? notaryEmail(data.name, link) : adminEmail(data.name, link);
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const profile = await loadBusinessProfile();
+    const template =
+      data.role === "notary" ? notaryEmail(data.name, link, profile) : adminEmail(data.name, link, profile);
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: FROM,
+        from: `${profile.business_name} <${FROM_ADDRESS}>`,
         to: [data.email],
-        reply_to: "info@enlivennotary.com",
+        reply_to: profile.email || undefined,
         subject: template.subject,
         html: template.html,
         text: template.text,
