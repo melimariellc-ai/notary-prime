@@ -51,47 +51,52 @@ export function FollowUpCalendar({ contacts, today }: { contacts: BusinessContac
   }
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl tracking-tight">Follow-up calendar</h2>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => shift(-1)}
-            aria-label="Previous month"
-            className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <span className="min-w-[9rem] text-center text-sm uppercase tracking-[0.16em] text-muted-foreground">
-            {monthLabel}
-          </span>
-          <button
-            type="button"
-            onClick={() => shift(1)}
-            aria-label="Next month"
-            className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
+    <Card>
+      <CardHeader
+        title="Follow-up calendar"
+        meta={
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => shift(-1)}
+              aria-label="Previous month"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="min-w-[9rem] text-center text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              {monthLabel}
+            </span>
+            <button
+              type="button"
+              onClick={() => shift(1)}
+              aria-label="Next month"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        }
+      />
 
       {dueNow.length > 0 && (
-        <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="mt-6 flex flex-wrap items-center gap-2 rounded-2xl border border-destructive/35 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           <BellRing className="h-4 w-4" />
           {dueNow.length} follow-up{dueNow.length === 1 ? "" : "s"} due or overdue
-          <Link
+          <ButtonLink
             to="/admin/dashboard"
             hash="needs-attention"
-            className="ml-auto text-xs uppercase tracking-[0.16em] underline-offset-4 hover:underline"
+            variant="tertiary"
+            size="sm"
+            className="ml-auto text-destructive"
           >
             Review
-          </Link>
+          </ButtonLink>
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-7 gap-1 text-center text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground">
+      <div className="mt-6 grid grid-cols-7 gap-1 text-center text-xs uppercase tracking-[0.18em] text-muted-foreground">
+
         {WEEKDAYS.map((d) => (
           <div key={d} className="py-1">
             {d}

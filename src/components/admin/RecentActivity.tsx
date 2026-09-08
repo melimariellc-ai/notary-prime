@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Activity, Mail, MessageSquare, Phone, StickyNote, Users } from "lucide-react";
 import { listRecentActivity } from "@/lib/crm.functions";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
 
 const ICONS: Record<string, typeof Mail> = {
   Email: Mail,
@@ -10,6 +12,7 @@ const ICONS: Record<string, typeof Mail> = {
   Meeting: Users,
   Note: StickyNote,
 };
+
 
 function timeAgo(iso: string) {
   const then = new Date(iso).getTime();
