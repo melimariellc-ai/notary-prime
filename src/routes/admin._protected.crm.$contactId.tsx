@@ -71,17 +71,26 @@ export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
 const inputClass =
   "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60";
 
-function QuickAddActivity({ contactId }: { contactId: string }) {
+function QuickAddActivity({ contactId, onLogged }: { contactId: string; onLogged?: () => void }) {
   const logActivity = useServerFn(addContactActivity);
   const router = useRouter();
   const [type, setType] = useState<string>("Call");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<{ tone: "ok" | "error"; message: string } | null>(null);
+
+  function flash(next: { tone: "ok" | "error"; message: string }) {
+    setStatus(next);
+    if (next.tone === "ok") {
+      window.setTimeout(() => setStatus(null), 2500);
+    }
+  }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!note.trim()) return;
     setSaving(true);
+    setStatus(null);
     try {
       const res = await logActivity({
         data: {
@@ -93,54 +102,74 @@ function QuickAddActivity({ contactId }: { contactId: string }) {
       });
       if (res.ok) {
         setNote("");
-        toast.success("Activity added to the history.");
+        toast.success("Activity logged");
+        flash({ tone: "ok", message: "Activity logged" });
         await router.invalidate();
+        onLogged?.();
       } else {
         toast.error(res.message);
+        flash({ tone: "error", message: res.message });
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not log that activity.");
+      const message = err instanceof Error ? err.message : "Could not log that activity.";
+      toast.error(message);
+      flash({ tone: "error", message });
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="flex flex-wrap items-center gap-2 rounded-3xl border border-border bg-card p-3 shadow-[0_1px_0_var(--color-border)]"
-    >
-      <label htmlFor="quick_type" className="sr-only">
-        Activity type
-      </label>
-      <select
-        id="quick_type"
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        className="h-10 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+    <div>
+      <form
+        onSubmit={submit}
+        className="flex flex-wrap items-center gap-2 rounded-3xl border border-border bg-card p-3 shadow-[0_1px_0_var(--color-border)]"
       >
-        {ACTIVITY_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="quick_note" className="sr-only">
-        Quick note
-      </label>
-      <input
-        id="quick_note"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-        placeholder="Log an activity — quick note"
-        className="h-10 min-w-0 flex-1 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
-      />
-      <Button type="submit" size="sm" disabled={saving || !note.trim()}>
-        {saving ? "Saving…" : "Log"}
-      </Button>
-    </form>
+        <label htmlFor="quick_type" className="sr-only">
+          Activity type
+        </label>
+        <select
+          id="quick_type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="h-10 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+        >
+          {ACTIVITY_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="quick_note" className="sr-only">
+          Quick note
+        </label>
+        <input
+          id="quick_note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Log an activity — quick note"
+          className="h-10 min-w-0 flex-1 rounded-full border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gold/60"
+        />
+        <Button type="submit" size="sm" disabled={saving || !note.trim()}>
+          {saving ? "Saving…" : "Log"}
+        </Button>
+      </form>
+      <div aria-live="polite" className="min-h-[1.25rem]">
+        {status && (
+          <p
+            className={`mt-2 px-3 text-xs ${
+              status.tone === "ok" ? "text-accent-foreground" : "text-destructive"
+            }`}
+          >
+            {status.tone === "ok" ? "✓ " : ""}
+            {status.message}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
+
 
 function ContactDetailPage() {
 
@@ -153,6 +182,13 @@ function ContactDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
   const [showAudit, setShowAudit] = useState(false);
+  const [highlightLatest, setHighlightLatest] = useState(false);
+
+  function flagLatestActivity() {
+    setHighlightLatest(true);
+    window.setTimeout(() => setHighlightLatest(false), 3000);
+  }
+
 
 
   if (!contact) {
@@ -230,7 +266,7 @@ function ContactDetailPage() {
 
       <AdminSection>
         <div className="max-w-3xl">
-          <QuickAddActivity contactId={contact.id} />
+          <QuickAddActivity contactId={contact.id} onLogged={flagLatestActivity} />
 
           <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Contact sections">
             {(["Overview", "Referrals", "Activity"] as const).map((t) => (
@@ -474,8 +510,16 @@ function ContactDetailPage() {
             </p>
           ) : (
             <ol className="mt-6 relative border-l border-border pl-6">
-              {activities.map((a) => (
-                <li key={a.id} className="relative pb-8 last:pb-0">
+              {activities.map((a, index) => (
+                <li
+                  key={a.id}
+                  className={`relative pb-8 last:pb-0 ${
+                    highlightLatest && index === 0
+                      ? "-mx-3 rounded-2xl bg-[var(--gold)]/12 px-3 pt-3 ring-1 ring-gold/40 transition-colors"
+                      : "transition-colors"
+                  }`}
+                >
+
                   <span
                     aria-hidden="true"
                     className="absolute -left-[1.9rem] top-1.5 h-3 w-3 rounded-full border-2 border-card bg-[var(--gold)]"
