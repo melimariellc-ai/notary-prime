@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CustomFieldInputs, customFieldsFromForm } from "@/components/admin/CustomFields";
-import { STAGE_COLORS } from "@/components/admin/CrmOverview";
+import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
   CONTACT_TYPES,
   PIPELINE_STAGES,

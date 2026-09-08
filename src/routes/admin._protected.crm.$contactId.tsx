@@ -17,7 +17,7 @@ import {
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { CustomFieldsPanel } from "@/components/admin/CustomFields";
-import { STAGE_COLORS } from "@/components/admin/CrmOverview";
+import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
 import {
   ACTIVITY_TYPES,
   CONTACT_TYPES,

@@ -66,7 +66,7 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
       <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="group" aria-label="Pipeline stage mix">
         <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--color-muted)" strokeWidth="20" />
         {total > 0 &&
-          counts.map(({ stage, count }) => {
+          counts.map(({ stage, count, color }) => {
             if (count === 0) return null;
             const length = (count / total) * circumference;
             const dash = `${length} ${circumference - length}`;
@@ -83,7 +83,7 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
                   cy="90"
                   r={radius}
                   fill="none"
-                  stroke={STAGE_COLORS[stage]}
+                  stroke={color}
                   strokeWidth="20"
                   strokeDasharray={dash}
                   strokeDashoffset={-offset}
@@ -135,9 +135,11 @@ export function CrmOverviewSkeleton() {
 }
 
 export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; today: string }) {
-  const counts = PIPELINE_STAGES.map((stage) => ({
-    stage: stage as string,
+  const { pipelineStages } = useCrmOptions();
+  const counts: StageCount[] = pipelineStages.map((stage) => ({
+    stage,
     count: contacts.filter((c) => c.pipeline_stage === stage).length,
+    color: stageColor(stage, pipelineStages),
   }));
   const total = contacts.length;
   const max = Math.max(1, ...counts.map((c) => c.count));
@@ -164,7 +166,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
         <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
           <h2 className="font-display text-2xl tracking-tight">Pipeline breakdown</h2>
           <div className="mt-6 grid gap-2">
-            {counts.map(({ stage, count }) => (
+            {counts.map(({ stage, count, color }) => (
               <Link
                 key={stage}
                 to="/admin/crm"
@@ -181,7 +183,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
                     className="h-full rounded-full transition-[width] duration-700"
                     style={{
                       width: `${Math.round((count / max) * 100)}%`,
-                      backgroundColor: STAGE_COLORS[stage],
+                      backgroundColor: color,
                     }}
                   />
                 </div>
@@ -196,7 +198,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
             <Donut counts={counts} total={total} />
           </div>
           <ul className="mt-6 grid gap-2 text-xs">
-            {counts.map(({ stage, count }) => (
+            {counts.map(({ stage, count, color }) => (
               <li key={stage}>
                 <Link
                   to="/admin/crm"
@@ -205,7 +207,7 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
                 >
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: STAGE_COLORS[stage] }}
+                    style={{ backgroundColor: color }}
                   />
                   <span className="flex-1 truncate text-foreground">{stage}</span>
                   <span>{total > 0 ? Math.round((count / total) * 100) : 0}%</span>
