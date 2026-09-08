@@ -24,15 +24,19 @@ import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
 import { Button, ButtonLink, buttonClass } from "@/components/admin/ui/Button";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
+import { useQuery } from "@tanstack/react-query";
 import {
   ACTIVITY_TYPES,
   addContactActivity,
   deleteBusinessContact,
+  deleteContactActivity,
   getBusinessContact,
   patchBusinessContact,
   setPipelineStage,
+  updateContactActivity,
   type PatchableField,
 } from "@/lib/crm.functions";
+import { getMyRole } from "@/lib/users.functions";
 import { buildFallbackOutreachEmail, generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
 import { rateLabel, usd, type ReferralRateType } from "@/lib/business-profile";
 
