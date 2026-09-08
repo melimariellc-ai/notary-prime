@@ -1,12 +1,12 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { AlertTriangle, Check, Lock, Mail, MapPin, Phone, RotateCcw, UserCheck, Video } from "lucide-react";
+import { AlertTriangle, Check, Lock, Mail, MapPin, Phone, RotateCcw, Search, UserCheck, Video } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { AuditTrail } from "@/components/admin/AuditTrail";
 import { QuoteRow } from "@/components/admin/QuoteRow";
-import { Card, CardHeader, CARD_CLASS } from "@/components/admin/ui/Card";
+import { Card, CardHeader, SectionLabel, CARD_CLASS } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button, ButtonLink } from "@/components/admin/ui/Button";
 import {
