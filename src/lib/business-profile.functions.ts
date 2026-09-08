@@ -7,6 +7,12 @@ const FIELDS =
 
 const text = (value: unknown, max = 200) => String(value ?? "").trim().slice(0, max);
 
+const rate = (value: unknown) => {
+  const n = Number(value ?? 0);
+  if (!Number.isFinite(n) || n < 0) throw new Error("Please enter a referral rate of zero or more.");
+  return Math.round(n * 100) / 100;
+};
+
 export const getBusinessProfile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
