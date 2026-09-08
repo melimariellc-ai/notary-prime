@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { type BusinessContact } from "@/lib/crm.functions";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
+import { Card, CardHeader, SectionLabel } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+import { CARD_CLASS } from "@/components/admin/ui/Card";
 
 
 function StatCard({
@@ -23,11 +26,10 @@ function StatCard({
       >
         {value}
       </p>
-      <p className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+      <SectionLabel className="mt-2">{label}</SectionLabel>
     </>
   );
-  const className =
-    "block rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)] transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+  const className = `${CARD_CLASS} block md:p-6 transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60`;
 
   if (hash) {
     return (
@@ -52,6 +54,7 @@ function StatCard({
     </Link>
   );
 }
+
 
 
 type StageCount = { stage: string; count: number; color: string };
