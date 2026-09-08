@@ -5,12 +5,14 @@ import { CalendarClock, UserPlus, Users } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CrmOverview, CrmOverviewSkeleton } from "@/components/admin/CrmOverview";
 import { FollowUpCalendar } from "@/components/admin/FollowUpCalendar";
+import { Card, CardHeader, CARD_CLASS } from "@/components/admin/ui/Card";
 
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
 import { InboundRepliesCard } from "@/components/admin/InboundReplies";
 
 import { listBusinessContacts } from "@/lib/crm.functions";
 import { getMyRole } from "@/lib/users.functions";
+
 
 export const Route = createFileRoute("/admin/_protected/dashboard")({
   head: () => ({
@@ -80,13 +82,14 @@ function DashboardPage() {
         ) : roleLoading ? (
           <CrmOverviewSkeleton />
         ) : (
-          <div className="rounded-3xl border border-border bg-card p-8">
-            <h2 className="font-display text-2xl tracking-tight">Your assignments</h2>
-            <p className="mt-3 text-sm text-muted-foreground">
+          <Card>
+            <CardHeader title="Your assignments" />
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
               Open Appointment Requests to see the appointments assigned to you.
             </p>
-          </div>
+          </Card>
         )}
+
 
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -142,11 +145,12 @@ function QuickLink({
   return (
     <Link
       to={to}
-      className="rounded-3xl border border-border bg-card p-6 transition-colors hover:border-gold/60 hover:bg-secondary/50"
+      className={`${CARD_CLASS} md:p-6 block transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60`}
     >
       <Icon className="h-5 w-5 text-accent-foreground" />
-      <h2 className="mt-3 font-display text-xl tracking-tight">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+      <h2 className="mt-3 font-display text-xl leading-tight tracking-tight">{title}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
     </Link>
   );
 }
+

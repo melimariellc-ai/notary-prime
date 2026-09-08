@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Activity, Mail, MessageSquare, Phone, StickyNote, Users } from "lucide-react";
 import { listRecentActivity } from "@/lib/crm.functions";
+import { Card, CardHeader } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
 
 const ICONS: Record<string, typeof Mail> = {
   Email: Mail,
@@ -10,6 +12,7 @@ const ICONS: Record<string, typeof Mail> = {
   Meeting: Users,
   Note: StickyNote,
 };
+
 
 function timeAgo(iso: string) {
   const then = new Date(iso).getTime();
@@ -26,7 +29,11 @@ function timeAgo(iso: string) {
 function ActivityDescription({ description }: { description: string }) {
   const match = description.match(/^(Subject:\s*([^\n]+)|Reply received:\s*([^\n]+))(?:\n+([\s\S]+))?$/);
   if (!match) {
-    return <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm text-muted-foreground">{description}</p>;
+    return (
+      <p className="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+        {description}
+      </p>
+    );
   }
 
   const subject = (match[2] ?? match[3] ?? "").trim();
@@ -36,7 +43,7 @@ function ActivityDescription({ description }: { description: string }) {
   return (
     <div className="mt-2 text-sm leading-relaxed">
       <p>
-        <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {isReply ? "Reply · Subject" : "Subject"}
         </span>
         <br />
@@ -51,16 +58,15 @@ function ActivityDescription({ description }: { description: string }) {
   );
 }
 
+
 export function RecentActivityCard() {
   const fetchRecent = useServerFn(listRecentActivity);
   const { data, isLoading } = useQuery({ queryKey: ["recent-activity"], queryFn: () => fetchRecent() });
   const items = data?.items ?? [];
 
   return (
-    <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-      <h2 className="inline-flex items-center gap-2 font-display text-2xl tracking-tight">
-        <Activity className="h-5 w-5 text-accent-foreground" /> Recent activity
-      </h2>
+    <Card>
+      <CardHeader title="Recent activity" icon={Activity} />
 
       {isLoading ? (
         <ul className="mt-6 grid gap-4" aria-busy="true">
@@ -75,7 +81,7 @@ export function RecentActivityCard() {
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
           Nothing logged yet. Calls, emails, meetings, and notes appear here as your team records them.
         </p>
       ) : (
@@ -87,17 +93,15 @@ export function RecentActivityCard() {
                 <Link
                   to="/admin/crm/$contactId"
                   params={{ contactId: item.contact_id }}
-                  className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                  className="group -mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
                   <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-                    <Icon className="h-3.5 w-3.5 text-accent-foreground" />
+                    <Icon className="h-4 w-4 text-accent-foreground" />
                   </span>
                   <div className="min-w-0">
-                    <p className="flex flex-wrap items-baseline gap-2 text-sm">
+                    <p className="flex flex-wrap items-center gap-2 text-sm">
                       <span className="font-medium underline-offset-4 group-hover:underline">{item.business_name}</span>
-                      <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                        {item.activity_type}
-                      </span>
+                      <Badge>{item.activity_type}</Badge>
                       <span className="text-xs text-muted-foreground">· {timeAgo(item.created_at)}</span>
                     </p>
                     <ActivityDescription description={item.description} />
@@ -108,6 +112,7 @@ export function RecentActivityCard() {
           })}
         </ul>
       )}
-    </div>
+    </Card>
   );
 }
+

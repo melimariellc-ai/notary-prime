@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { type BusinessContact } from "@/lib/crm.functions";
 import { stageColor, useCrmOptions } from "@/hooks/useCrmOptions";
+import { Card, CardHeader, SectionLabel, CARD_CLASS } from "@/components/admin/ui/Card";
+import { Badge } from "@/components/admin/ui/Badge";
+
 
 
 function StatCard({
@@ -23,11 +26,10 @@ function StatCard({
       >
         {value}
       </p>
-      <p className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+      <SectionLabel className="mt-2">{label}</SectionLabel>
     </>
   );
-  const className =
-    "block rounded-3xl border border-border bg-card p-6 shadow-[0_1px_0_var(--color-border)] transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+  const className = `${CARD_CLASS} block md:p-6 transition-colors hover:border-gold/60 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60`;
 
   if (hash) {
     return (
@@ -52,6 +54,7 @@ function StatCard({
     </Link>
   );
 }
+
 
 
 type StageCount = { stage: string; count: number; color: string };
@@ -107,14 +110,14 @@ export function CrmOverviewSkeleton() {
     <div className="grid gap-6" aria-busy="true" aria-label="Loading pipeline overview">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="rounded-3xl border border-border bg-card p-6">
+          <Card key={i} className="md:p-6">
             <div className="h-10 w-16 animate-pulse rounded-lg bg-muted" />
             <div className="mt-3 h-3 w-28 animate-pulse rounded bg-muted" />
-          </div>
+          </Card>
         ))}
       </div>
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
+        <Card className="lg:col-span-2">
           <div className="h-6 w-48 animate-pulse rounded bg-muted" />
           <div className="mt-6 grid gap-5">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -124,15 +127,16 @@ export function CrmOverviewSkeleton() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
+        </Card>
+        <Card>
           <div className="h-6 w-32 animate-pulse rounded bg-muted" />
           <div className="mx-auto mt-6 h-52 w-52 animate-pulse rounded-full bg-muted" />
-        </div>
+        </Card>
       </div>
     </div>
   );
 }
+
 
 export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; today: string }) {
   const { pipelineStages } = useCrmOptions();
@@ -163,8 +167,8 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8 lg:col-span-2">
-          <h2 className="font-display text-2xl tracking-tight">Pipeline breakdown</h2>
+        <Card className="lg:col-span-2">
+          <CardHeader title="Pipeline breakdown" />
           <div className="mt-6 grid gap-2">
             {counts.map(({ stage, count, color }) => (
               <Link
@@ -190,10 +194,10 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
               </Link>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-3xl border border-border bg-card p-6 md:p-8">
-          <h2 className="font-display text-2xl tracking-tight">Stage mix</h2>
+        <Card>
+          <CardHeader title="Stage mix" />
           <div className="mt-6">
             <Donut counts={counts} total={total} />
           </div>
@@ -215,16 +219,16 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
       </div>
 
-      <div id="needs-attention" className="scroll-mt-20 rounded-3xl border border-border bg-card p-6 md:p-8">
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="font-display text-2xl tracking-tight">Needs attention</h2>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{due.length} due or overdue</p>
-        </div>
+      <Card id="needs-attention" className="scroll-mt-20">
+        <CardHeader
+          title="Needs attention"
+          meta={<SectionLabel>{due.length} due or overdue</SectionLabel>}
+        />
         {due.length === 0 ? (
-          <p className="mt-6 text-sm text-muted-foreground">
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
             Nothing due. Contacts appear here once their next follow-up date arrives.
           </p>
         ) : (
@@ -234,30 +238,27 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
                 <Link
                   to="/admin/crm/$contactId"
                   params={{ contactId: c.id }}
-                  className="group flex flex-wrap items-center justify-between gap-3 rounded-xl py-4 transition-colors hover:bg-secondary/60"
+                  className="group -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
-                  <span>
+                  <span className="flex flex-wrap items-center gap-3">
                     <span className="font-display text-lg tracking-tight transition-colors group-hover:text-accent-foreground">
                       {c.business_name}
                     </span>
-                    <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <Badge dotColor={stageColor(c.pipeline_stage, pipelineStages)}>
                       {c.pipeline_stage}
-                    </span>
+                    </Badge>
                   </span>
                   <span className="flex items-center gap-3 text-xs text-muted-foreground">
                     {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
-                    {c.next_follow_up_date! < today && (
-                      <span className="rounded-full bg-destructive/10 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-destructive">
-                        Overdue
-                      </span>
-                    )}
+                    {c.next_follow_up_date! < today && <Badge tone="critical">Overdue</Badge>}
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </Card>
+
     </div>
   );
 }
