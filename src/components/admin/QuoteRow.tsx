@@ -10,6 +10,7 @@ import {
   type Quote,
   type QuoteLineItem,
 } from "@/lib/quotes.functions";
+import { previewQuotePdf } from "@/lib/quote-pdf.functions";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
 import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
