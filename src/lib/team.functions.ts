@@ -118,10 +118,13 @@ export const setTeamMemberActive = createServerFn({ method: "POST" })
     return { userId, active: Boolean(data.active) };
   })
   .handler(async ({ data, context }) => {
-    if (!(await isAdmin(context.supabase, context.userId)))
-      return { ok: false as const, message: "Only Admin accounts can deactivate or reactivate users." };
+    const admin = await isAdmin(context.supabase, context.userId);
+    const permissions = admin ? await loadPermissions(context.userId) : [];
+    if (!permissions.includes("can_deactivate_users"))
+      return { ok: false as const, message: "You do not have permission to deactivate users." };
     if (data.userId === context.userId)
       return { ok: false as const, message: "You cannot deactivate your own account." };
+
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
