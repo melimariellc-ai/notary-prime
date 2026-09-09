@@ -35,8 +35,16 @@ function QuoteBadge({ status }: { status: string }) {
   return <Badge tone={s.tone}>{s.label}</Badge>;
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  draft: "Drafted",
+  sent: "Sent to client",
+  viewed: "Opened by client",
+  paid: "Paid",
+};
+
 export function QuoteRow({ appointmentId }: { appointmentId: string }) {
   const fetchQuotes = useServerFn(listQuotes);
+  const fetchHistory = useServerFn(listQuoteHistory);
   const sendQuote = useServerFn(createStripeQuoteInvoice);
 
   const { data, refetch } = useQuery({
@@ -47,9 +55,17 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
   const latest: Quote | undefined = data?.quotes?.[0];
 
   const [open, setOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [lines, setLines] = useState<DraftLine[]>([{ ...emptyLine }]);
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+
+  const { data: history } = useQuery({
+    queryKey: ["quote-history", appointmentId],
+    queryFn: () => fetchHistory({ data: { appointmentId } }),
+    enabled: historyOpen,
+  });
+
 
   const total = lines.reduce((sum, l) => {
     const q = Number(l.quantity);
