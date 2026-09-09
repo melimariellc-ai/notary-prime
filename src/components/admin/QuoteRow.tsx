@@ -264,7 +264,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
                 </div>
                 <button
                   type="button"
-                  onClick={() => setLines((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== i)))}
+                  onClick={() => {
+                    clearPreview();
+                    setLines((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== i)));
+                  }}
                   disabled={lines.length === 1}
                   aria-label={`Remove line item ${i + 1}`}
                   className="mb-1 inline-flex items-center rounded-full border border-border p-2 text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40"
@@ -277,7 +280,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
 
           <button
             type="button"
-            onClick={() => setLines((prev) => [...prev, { ...emptyLine }])}
+            onClick={() => {
+              clearPreview();
+              setLines((prev) => [...prev, { ...emptyLine }]);
+            }}
             className="mt-4 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
             <Plus className="h-3.5 w-3.5" /> Add line item
@@ -291,10 +297,30 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
               id={`notes-${appointmentId}`}
               rows={3}
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={(e) => {
+                clearPreview();
+                setNotes(e.target.value);
+              }}
               className={`mt-1 w-full ${INPUT_CLASS}`}
             />
           </div>
+
+          {previewUrl && (
+            <div className="mt-5 rounded-2xl border border-border bg-background p-3">
+              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                Preview — exactly what the client receives
+              </p>
+              <iframe
+                title="Quote PDF preview"
+                src={previewUrl}
+                className="h-[32rem] w-full rounded-xl border border-border"
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Edit anything above to update it — the preview refreshes when you press Preview PDF again. The payment
+                link is added once the quote is sent.
+              </p>
+            </div>
+          )}
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
             <p className="text-sm">
@@ -304,6 +330,16 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
             <div className="flex items-center gap-3">
               <Button type="button" variant="secondary" size="sm" onClick={() => setOpen(false)}>
                 Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => void preview()}
+                disabled={previewing || sending}
+              >
+                <Eye className="h-4 w-4 text-gold" />
+                {previewing ? "Building…" : previewUrl ? "Refresh preview" : "Preview PDF"}
               </Button>
               <Button type="button" variant="primary" size="sm" onClick={() => void submit()} disabled={sending}>
                 {sending ? "Sending…" : "Send quote"}
