@@ -81,18 +81,19 @@ export const FALLBACK_TEMPLATES: Record<string, { name: string; subject: string;
     subject: "Welcome to the {{business_name}} Team!",
     body: `Hi {{name}},
 
-Welcome to {{business_name}}! We're excited to have you on our team and look forward to working with you as we serve clients throughout {{service_area}}.
+Welcome aboard — we're genuinely glad to have you as part of the {{business_name}} team.
 
-Your account is ready. To get started, click the link below to create your password and access your account.
+Your experience and certification are exactly what makes this business able to serve the Dallas-Fort Worth area the way we do, and we're excited to have you representing that with us.
+
+Your account has been created. Click the button below to set up your password and access your account.
 
 {{link}}
 
-Once you're signed in, you'll be able to view your assigned appointments, appointment details, and everything you need to complete your assignments.
+Once you're in, you'll be able to see your assigned appointments and everything you need to get started.
 
-If you have any questions or need assistance, please contact us at {{contact_email}}. We're always happy to help.
+If anything is unclear or you run into any issues, reach out anytime at {{contact_email}} — we're here to help you succeed.
 
-We're glad to have you with us and look forward to working together!
-
+Glad to have you with us,
 {{business_name}}`,
   },
   admin_invite: {
@@ -102,9 +103,9 @@ We're glad to have you with us and look forward to working together!
 
 We're excited to officially welcome you to {{business_name}}!
 
-As part of our team, you'll play an important role in helping us manage our day to day operations and provide a smooth experience for both our clients and notaries.
+As part of our team, you'll play an important role in helping us manage our day-to-day operations and provide a smooth experience for both our clients and notaries.
 
-Your account has been created. Please use the link below to set up your password and access the {{business_name}} admin portal.
+Your account has been created. Please use the button below to set up your password and access the {{business_name}} admin portal.
 
 {{link}}
 
@@ -116,6 +117,7 @@ We're excited to have you on the team and look forward to growing together!
 
 {{business_name}}`,
   },
+
   outreach_instructions: {
     name: "AI Outreach Instructions",
     subject: "",
