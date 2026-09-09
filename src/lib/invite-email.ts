@@ -75,8 +75,11 @@ export function renderInviteEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};padding:24px 12px">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e7e0d1">
-  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:28px 24px">
-    <img src="${LOCKUP_URL}" width="320" alt="${escapeHtml(businessName)} — Mobile, Online, Trusted" style="display:block;width:320px;max-width:88%;height:auto;border:0;margin:0 auto"/>
+  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:26px 24px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto"><tr>
+      <td valign="middle" style="padding-right:12px"><img src="${MARK_GOLD_URL}" width="44" alt="${escapeHtml(businessName)}" style="display:block;width:44px;height:auto;border:0"/></td>
+      <td valign="middle" style="font-family:Fraunces,Georgia,'Times New Roman',serif;font-size:26px;line-height:32px;letter-spacing:0.015em;color:${CREAM};white-space:nowrap">Enliven Notary</td>
+    </tr></table>
   </td></tr>
   <tr><td height="4" style="height:4px;background-color:${GOLD};font-size:0;line-height:0">&nbsp;</td></tr>
   <tr><td style="padding:32px 32px 24px">
