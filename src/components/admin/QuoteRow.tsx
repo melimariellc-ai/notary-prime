@@ -188,7 +188,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
               <div key={i} className="flex flex-wrap items-end gap-3">
                 <div className="min-w-[12rem] flex-1">
                   <label htmlFor={`desc-${appointmentId}-${i}`} className="block text-xs text-muted-foreground">
-                    Description
+                    Description (optional)
                   </label>
                   <input
                     id={`desc-${appointmentId}-${i}`}
