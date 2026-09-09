@@ -255,3 +255,77 @@ export const listQuoteHistory = createServerFn({ method: "GET" })
     return { events: (rows ?? []) as QuoteStatusEvent[] };
   });
 
+
+export type QuoteOverviewRow = {
+  id: string;
+  appointment_id: string;
+  status: string;
+  total: number;
+  hosted_invoice_url: string | null;
+  sent_at: string | null;
+  viewed_at: string | null;
+  paid_at: string | null;
+  created_at: string;
+  client_name: string;
+  client_email: string;
+  service: string;
+  last_updated_by: string | null;
+  last_updated_at: string | null;
+};
+
+/** Every quote across all appointment requests, newest first — Admin/Employee only. */
+export const listAllQuotes = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!(await canManageQuotes(context.supabase, context.userId)))
+      return { ok: false as const, quotes: [] as QuoteOverviewRow[] };
+
+    const { data: rows, error } = await context.supabase
+      .from("quotes")
+      .select(
+        "id, appointment_id, status, total, hosted_invoice_url, sent_at, viewed_at, paid_at, created_at, appointments(name, email, service)",
+      )
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("Failed to load quotes overview", error);
+      return { ok: true as const, quotes: [] as QuoteOverviewRow[] };
+    }
+
+    const ids = (rows ?? []).map((r) => r.id);
+    const latest = new Map<string, { email: string | null; at: string }>();
+    if (ids.length) {
+      const { data: events } = await context.supabase
+        .from("quote_status_events")
+        .select("quote_id, changed_by_email, created_at")
+        .in("quote_id", ids)
+        .order("created_at", { ascending: true });
+      for (const e of events ?? []) {
+        latest.set(e.quote_id, { email: e.changed_by_email ?? null, at: e.created_at });
+      }
+    }
+
+    return {
+      ok: true as const,
+      quotes: (rows ?? []).map((r) => {
+        const appt = (r as unknown as { appointments: { name: string; email: string; service: string } | null })
+          .appointments;
+        const last = latest.get(r.id);
+        return {
+          id: r.id,
+          appointment_id: r.appointment_id,
+          status: r.status,
+          total: Number(r.total),
+          hosted_invoice_url: r.hosted_invoice_url,
+          sent_at: r.sent_at,
+          viewed_at: r.viewed_at,
+          paid_at: r.paid_at,
+          created_at: r.created_at,
+          client_name: appt?.name ?? "Unknown client",
+          client_email: appt?.email ?? "",
+          service: appt?.service ?? "—",
+          last_updated_by: last?.email ?? null,
+          last_updated_at: last?.at ?? null,
+        };
+      }) as QuoteOverviewRow[],
+    };
+  });

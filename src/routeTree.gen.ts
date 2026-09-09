@@ -31,6 +31,7 @@ import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protect
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as AdminProtectedDuplicatesRouteImport } from './routes/admin._protected.duplicates'
 import { Route as AdminProtectedNotificationsRouteImport } from './routes/admin._protected.notifications'
+import { Route as AdminProtectedQuotesRouteImport } from './routes/admin._protected.quotes'
 import { Route as AdminProtectedReportsRouteImport } from './routes/admin._protected.reports'
 import { Route as AdminProtectedSettingsRouteImport } from './routes/admin._protected.settings'
 import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
@@ -153,6 +154,11 @@ const AdminProtectedNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AdminProtectedRoute,
   } as any)
+const AdminProtectedQuotesRoute = AdminProtectedQuotesRouteImport.update({
+  id: '/quotes',
+  path: '/quotes',
+  getParentRoute: () => AdminProtectedRoute,
+} as any)
 const AdminProtectedReportsRoute = AdminProtectedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -230,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/notifications': typeof AdminProtectedNotificationsRoute
+  '/admin/quotes': typeof AdminProtectedQuotesRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/settings': typeof AdminProtectedSettingsRoute
   '/admin/users': typeof AdminProtectedUsersRoute
@@ -263,6 +270,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/notifications': typeof AdminProtectedNotificationsRoute
+  '/admin/quotes': typeof AdminProtectedQuotesRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/settings': typeof AdminProtectedSettingsRoute
   '/admin/users': typeof AdminProtectedUsersRoute
@@ -297,6 +305,7 @@ export interface FileRoutesById {
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/_protected/duplicates': typeof AdminProtectedDuplicatesRoute
   '/admin/_protected/notifications': typeof AdminProtectedNotificationsRoute
+  '/admin/_protected/quotes': typeof AdminProtectedQuotesRoute
   '/admin/_protected/reports': typeof AdminProtectedReportsRoute
   '/admin/_protected/settings': typeof AdminProtectedSettingsRoute
   '/admin/_protected/users': typeof AdminProtectedUsersRoute
@@ -332,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/duplicates'
     | '/admin/notifications'
+    | '/admin/quotes'
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/users'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/duplicates'
     | '/admin/notifications'
+    | '/admin/quotes'
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/users'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/admin/_protected/dashboard'
     | '/admin/_protected/duplicates'
     | '/admin/_protected/notifications'
+    | '/admin/_protected/quotes'
     | '/admin/_protected/reports'
     | '/admin/_protected/settings'
     | '/admin/_protected/users'
@@ -590,6 +602,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedNotificationsRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
+    '/admin/_protected/quotes': {
+      id: '/admin/_protected/quotes'
+      path: '/quotes'
+      fullPath: '/admin/quotes'
+      preLoaderRoute: typeof AdminProtectedQuotesRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
     '/admin/_protected/reports': {
       id: '/admin/_protected/reports'
       path: '/reports'
@@ -667,6 +686,7 @@ interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
   AdminProtectedDuplicatesRoute: typeof AdminProtectedDuplicatesRoute
   AdminProtectedNotificationsRoute: typeof AdminProtectedNotificationsRoute
+  AdminProtectedQuotesRoute: typeof AdminProtectedQuotesRoute
   AdminProtectedReportsRoute: typeof AdminProtectedReportsRoute
   AdminProtectedSettingsRoute: typeof AdminProtectedSettingsRoute
   AdminProtectedUsersRoute: typeof AdminProtectedUsersRoute
@@ -679,6 +699,7 @@ const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
   AdminProtectedDuplicatesRoute: AdminProtectedDuplicatesRoute,
   AdminProtectedNotificationsRoute: AdminProtectedNotificationsRoute,
+  AdminProtectedQuotesRoute: AdminProtectedQuotesRoute,
   AdminProtectedReportsRoute: AdminProtectedReportsRoute,
   AdminProtectedSettingsRoute: AdminProtectedSettingsRoute,
   AdminProtectedUsersRoute: AdminProtectedUsersRoute,
