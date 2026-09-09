@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isAdminUser, loadPermissions } from "./permissions.functions";
 
 const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
 type AllowedRole = (typeof ALLOWED_ROLES)[number];
@@ -17,32 +18,38 @@ export type TeamMember = {
   role: string;
   is_active: boolean;
   deactivated_at: string | null;
+  archived_at: string | null;
 };
 
 /** Same server-side admin check used when creating accounts. */
 async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin");
-  if (error) {
-    console.error("Failed to verify admin role", error);
-    return false;
-  }
-  return (data ?? []).length > 0;
+  return isAdminUser(supabase, userId);
 }
 
 export const listTeamMembers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data?: { includeArchived?: boolean }) => ({
+    includeArchived: Boolean(data?.includeArchived),
+  }))
+  .handler(async ({ data, context }) => {
     if (!(await isAdmin(context.supabase, context.userId)))
-      return { forbidden: true as const, members: [] as TeamMember[], meId: context.userId };
+      return {
+        forbidden: true as const,
+        members: [] as TeamMember[],
+        meId: context.userId,
+        canArchiveUsers: false,
+        canDeactivateUsers: false,
+      };
 
-    const { data, error } = await context.supabase
+    const permissions = await loadPermissions(context.userId);
+
+    let query = context.supabase
       .from("profiles")
-      .select("id, name, email, role, is_active, deactivated_at")
+      .select("id, name, email, role, is_active, deactivated_at, archived_at")
       .order("name", { ascending: true });
+    if (!data.includeArchived) query = query.is("archived_at", null);
+
+    const { data: rows, error } = await query;
 
     if (error) {
       console.error("Failed to load team members", error);
@@ -51,10 +58,13 @@ export const listTeamMembers = createServerFn({ method: "GET" })
 
     return {
       forbidden: false as const,
-      members: (data ?? []) as TeamMember[],
+      members: (rows ?? []) as TeamMember[],
       meId: context.userId,
+      canArchiveUsers: permissions.includes("can_archive_users"),
+      canDeactivateUsers: permissions.includes("can_deactivate_users"),
     };
   });
+
 
 export const setTeamMemberRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -108,10 +118,13 @@ export const setTeamMemberActive = createServerFn({ method: "POST" })
     return { userId, active: Boolean(data.active) };
   })
   .handler(async ({ data, context }) => {
-    if (!(await isAdmin(context.supabase, context.userId)))
-      return { ok: false as const, message: "Only Admin accounts can deactivate or reactivate users." };
+    const admin = await isAdmin(context.supabase, context.userId);
+    const permissions = admin ? await loadPermissions(context.userId) : [];
+    if (!permissions.includes("can_deactivate_users"))
+      return { ok: false as const, message: "You do not have permission to deactivate users." };
     if (data.userId === context.userId)
       return { ok: false as const, message: "You cannot deactivate your own account." };
+
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -142,5 +155,65 @@ export const setTeamMemberActive = createServerFn({ method: "POST" })
     return {
       ok: true as const,
       message: data.active ? "Account reactivated." : "Account deactivated — they can no longer sign in.",
+    };
+  });
+
+export const setTeamMemberArchived = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string; archived: boolean }) => {
+    const userId = String(data.userId ?? "");
+    if (!UUID.test(userId)) throw new Error("Invalid user.");
+    return { userId, archived: Boolean(data.archived) };
+  })
+  .handler(async ({ data, context }) => {
+    const admin = await isAdmin(context.supabase, context.userId);
+    const permissions = admin ? await loadPermissions(context.userId) : [];
+    if (!permissions.includes("can_archive_users"))
+      return { ok: false as const, message: "You do not have permission to archive users." };
+    if (data.userId === context.userId)
+      return { ok: false as const, message: "You cannot archive your own account." };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Archiving only hides the person from the default team list and blocks
+    // sign-in. Nothing is deleted: history, audit records, assigned
+    // appointments and contacts all keep pointing at this same account.
+    const { data: existing, error: readError } = await supabaseAdmin
+      .from("profiles")
+      .select("is_active")
+      .eq("id", data.userId)
+      .maybeSingle();
+    if (readError) {
+      console.error("Failed to read profile", readError);
+      return { ok: false as const, message: "Could not update that account." };
+    }
+
+    // Un-archiving restores sign-in only when the account is not also deactivated.
+    const shouldBan = data.archived || existing?.is_active === false;
+    const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      ban_duration: shouldBan ? BAN_FOREVER : "none",
+    });
+    if (authError) {
+      console.error("Failed to update sign-in access", authError);
+      return { ok: false as const, message: "Could not update sign-in access." };
+    }
+
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        archived_at: data.archived ? new Date().toISOString() : null,
+        archived_by: data.archived ? context.userId : null,
+      })
+      .eq("id", data.userId);
+    if (profileError) {
+      console.error("Failed to update archive status", profileError);
+      return { ok: false as const, message: "Sign-in access changed, but the status could not be saved." };
+    }
+
+    return {
+      ok: true as const,
+      message: data.archived
+        ? "Account archived — they can no longer sign in, and all of their records stay in place."
+        : "Account restored.",
     };
   });
