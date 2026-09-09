@@ -152,8 +152,64 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
     .sort((a, b) => (a.next_follow_up_date! < b.next_follow_up_date! ? -1 : 1));
   const find = (stage: string) => counts.find((c) => c.stage === stage)?.count ?? 0;
 
+  const fmt = (d: string) => new Date(`${d}T00:00:00`).toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
+
+  const attention: { contact: BusinessContact; reason: string; overdue: boolean }[] = [
+    ...due.map((c) => ({
+      contact: c,
+      reason: `Follow-up overdue since ${fmt(c.next_follow_up_date!)}`,
+      overdue: c.next_follow_up_date! < today,
+    })),
+    ...contacts
+      .filter(
+        (c) =>
+          c.pipeline_stage === "New Lead" &&
+          !c.first_contacted_date &&
+          !due.some((d) => d.id === c.id),
+      )
+      .map((c) => ({ contact: c, reason: "New lead, not yet contacted", overdue: false })),
+  ];
+
   return (
     <div className="grid gap-6">
+      <Card id="needs-attention" className="scroll-mt-20">
+        <CardHeader
+          title="Needs attention"
+          meta={<SectionLabel>{attention.length} to act on</SectionLabel>}
+        />
+        {attention.length === 0 ? (
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+            Nothing needs attention. Contacts appear here when a follow-up comes due or a new lead
+            hasn’t been contacted yet.
+          </p>
+        ) : (
+          <ul className="mt-6 divide-y divide-border">
+            {attention.map(({ contact: c, reason, overdue }) => (
+              <li key={`${c.id}-${reason}`}>
+                <Link
+                  to="/admin/crm/$contactId"
+                  params={{ contactId: c.id }}
+                  className="group -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-center gap-3">
+                      <span className="font-display text-lg tracking-tight transition-colors group-hover:text-accent-foreground">
+                        {c.business_name}
+                      </span>
+                      <Badge dotColor={stageColor(c.pipeline_stage, pipelineStages)}>
+                        {c.pipeline_stage}
+                      </Badge>
+                    </span>
+                    <span className="mt-1 block text-sm text-muted-foreground">{reason}</span>
+                  </span>
+                  {overdue && <Badge tone="critical">Overdue</Badge>}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard value={total} label="Total contacts" />
         <StatCard value={find("New Lead")} label="New leads" stage="New Lead" />
@@ -163,11 +219,10 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
           label="Active referral sources"
           stage="Active Referral Source"
         />
-
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+      <div className="grid gap-6 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
           <CardHeader title="Pipeline breakdown" />
           <div className="mt-6 grid gap-2">
             {counts.map(({ stage, count, color }) => (
@@ -196,12 +251,12 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
           </div>
         </Card>
 
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader title="Stage mix" />
-          <div className="mt-6">
+          <div className="mt-8">
             <Donut counts={counts} total={total} />
           </div>
-          <ul className="mt-6 grid gap-2 text-xs">
+          <ul className="mt-8 grid gap-2 text-xs">
             {counts.map(({ stage, count, color }) => (
               <li key={stage}>
                 <Link
@@ -221,44 +276,6 @@ export function CrmOverview({ contacts, today }: { contacts: BusinessContact[]; 
           </ul>
         </Card>
       </div>
-
-      <Card id="needs-attention" className="scroll-mt-20">
-        <CardHeader
-          title="Needs attention"
-          meta={<SectionLabel>{due.length} due or overdue</SectionLabel>}
-        />
-        {due.length === 0 ? (
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            Nothing due. Contacts appear here once their next follow-up date arrives.
-          </p>
-        ) : (
-          <ul className="mt-6 divide-y divide-border">
-            {due.map((c) => (
-              <li key={c.id}>
-                <Link
-                  to="/admin/crm/$contactId"
-                  params={{ contactId: c.id }}
-                  className="group -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
-                >
-                  <span className="flex flex-wrap items-center gap-3">
-                    <span className="font-display text-lg tracking-tight transition-colors group-hover:text-accent-foreground">
-                      {c.business_name}
-                    </span>
-                    <Badge dotColor={stageColor(c.pipeline_stage, pipelineStages)}>
-                      {c.pipeline_stage}
-                    </Badge>
-                  </span>
-                  <span className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {new Date(`${c.next_follow_up_date}T00:00:00`).toLocaleDateString()}
-                    {c.next_follow_up_date! < today && <Badge tone="critical">Overdue</Badge>}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
-
     </div>
   );
 }
