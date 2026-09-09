@@ -82,14 +82,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
   /** Validated line items, or null after showing the reason. */
   function validated(): QuoteLineItem[] | null {
     const lineItems: QuoteLineItem[] = lines.map((l) => ({
-      description: l.description.trim(),
-      quantity: Number(l.quantity),
+      description: l.description.trim() || "Notary services",
+      quantity: Number(l.quantity) || 1,
       unit_price: Number(l.unit_price),
     }));
-    if (lineItems.some((l) => !l.description)) {
-      toast.error("Every line item needs a description.");
-      return null;
-    }
     if (lineItems.some((l) => !Number.isFinite(l.quantity) || l.quantity <= 0)) {
       toast.error("Quantities must be greater than 0.");
       return null;
