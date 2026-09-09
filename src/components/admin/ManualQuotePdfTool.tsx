@@ -4,6 +4,7 @@ import { Download, Eye, ExternalLink, Plus, Send, Trash2, Wrench } from "lucide-
 import { toast } from "sonner";
 import { emailDraftQuotePdf, previewQuotePdf } from "@/lib/quote-pdf.functions";
 import { Button } from "@/components/admin/ui/Button";
+import { PdfPreview } from "@/components/admin/PdfPreview";
 
 /**
  * Standalone "build a quote PDF by hand" tool.
