@@ -173,7 +173,11 @@ export const previewQuotePdf = createServerFn({ method: "POST" })
         },
       });
 
-      return { ok: true as const, pdfBase64: toBase64(bytes) };
+      return {
+        ok: true as const,
+        pdfBase64: toBase64(bytes),
+        fileName: safeFileName(appointment.name, "draft0000"),
+      };
     } catch (err) {
       console.error("Failed to build quote preview", err);
       return { ok: false as const, message: "Could not build the preview. Please try again." };
