@@ -29,7 +29,7 @@ function button(link: string) {
 <tr><td align="center" bgcolor="${GOLD}" style="border-radius:8px">
 <a href="${href}" target="_blank" style="display:inline-block;padding:16px 34px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;line-height:20px;color:#ffffff;text-decoration:none;border-radius:8px;background-color:${GOLD};mso-padding-alt:0">Set Up Your Password</a>
 </td></tr></table>
-<p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:${MUTED};text-align:center">This secure link is personal to you. For your security, please don't forward this email.</p>`;
+<p style="margin:0 0 22px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:${MUTED};text-align:center">This secure link is personal to you. For your security, please don't forward this email.</p>`;
 }
 
 /**
