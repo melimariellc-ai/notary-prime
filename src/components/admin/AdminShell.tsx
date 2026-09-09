@@ -83,7 +83,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Admin",
     items: [
       { to: "/admin/settings", label: "Settings", icon: SlidersHorizontal, exact: true, need: "admin" },
-      { to: "/admin/settings", label: "Settings", icon: SlidersHorizontal, exact: true, need: "admin" },
+
     ],
   },
 ];
