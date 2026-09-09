@@ -148,7 +148,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
           clientEmail={clientEmail}
           initialLines={latest?.line_items}
           initialNotes={latest?.notes ?? null}
-          openLabel={latest ? "Review &amp; edit PDF" : "Build quote PDF manually"}
+          openLabel={latest ? "Review & edit PDF" : "Build quote PDF manually"}
         />
         {latest && (
           <button
