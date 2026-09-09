@@ -4,11 +4,13 @@
 
 import logoAsset from "@/assets/enliven-logo.png.asset.json";
 import lockupAsset from "@/assets/enliven-lockup.png.asset.json";
+import markGoldAsset from "@/assets/enliven-mark-gold.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 export const LOGO_URL = `${SITE_URL}${logoAsset.url}`;
 export const LOCKUP_URL = `${SITE_URL}${lockupAsset.url}`;
+export const MARK_GOLD_URL = `${SITE_URL}${markGoldAsset.url}`;
 
 const CHARCOAL = "#2b3244";
 const GOLD = "#b08a3c";
