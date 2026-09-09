@@ -376,6 +376,101 @@ export function UserManagementTab() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog
+        open={addOpen}
+        onOpenChange={(open) => {
+          if (!open) closeAdd();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add member</DialogTitle>
+            <DialogDescription>
+              They'll get a welcome email with a secure link to set their own password.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={onAddUser}>
+            <label htmlFor="new-name" className="text-sm font-medium">
+              Name
+            </label>
+            <div className="relative mt-2">
+              <UserPlus className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                id="new-name"
+                type="text"
+                required
+                autoComplete="off"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className={FIELD_CLASS}
+              />
+            </div>
+
+            <label htmlFor="new-email" className="mt-5 block text-sm font-medium">
+              Email
+            </label>
+            <div className="relative mt-2">
+              <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                id="new-email"
+                type="email"
+                required
+                autoComplete="off"
+                aria-invalid={duplicate ? true : undefined}
+                aria-describedby={duplicate ? "new-email-duplicate" : undefined}
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className={FIELD_CLASS}
+              />
+            </div>
+            {duplicate && (
+              <p id="new-email-duplicate" className="mt-2 text-sm text-destructive">
+                {duplicate.email} already belongs to {duplicate.name}
+                {duplicate.archived_at ? " (archived)" : duplicate.is_active ? "" : " (deactivated)"} — use a
+                different email address.
+              </p>
+            )}
+
+            <label htmlFor="new-role" className="mt-5 block text-sm font-medium">
+              Role
+            </label>
+            <div className="relative mt-2">
+              <Shield className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <select
+                id="new-role"
+                required
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value)}
+                className={`${FIELD_CLASS} appearance-none`}
+              >
+                {ROLES.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {addError && <p className="mt-4 text-sm text-destructive">{addError}</p>}
+
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="secondary" onClick={closeAdd}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={addBusy || !newName || !newEmail || Boolean(duplicate)}
+              >
+                {addBusy ? "Creating…" : "Create account"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Card>
+
   );
 }
