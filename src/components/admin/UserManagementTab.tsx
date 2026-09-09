@@ -50,25 +50,32 @@ export function UserManagementTab() {
     if (res.ok) queryClient.invalidateQueries({ queryKey: ["team-members"] });
   };
 
+  // Never surface a raw server/HTTP error in the UI — log it and show plain language.
+  const friendly = (err: unknown, fallback: string) => {
+    console.error(fallback, err);
+    setError(fallback);
+  };
+
   const roleMutation = useMutation({
     mutationFn: (vars: { userId: string; role: string }) => changeRole({ data: vars }),
     onSuccess: handleResult,
-    onError: (err: unknown) =>
-      setError(err instanceof Error ? err.message : "Could not update that role."),
+    onError: (err: unknown) => friendly(err, "Could not update that role. Please try again."),
   });
 
   const activeMutation = useMutation({
     mutationFn: (vars: { userId: string; active: boolean }) => changeActive({ data: vars }),
     onSuccess: handleResult,
     onError: (err: unknown) =>
-      setError(err instanceof Error ? err.message : "Could not update that account."),
+      friendly(err, "Could not update that account. Please reload the page and try again."),
   });
+
 
   const archiveMutation = useMutation({
     mutationFn: (vars: { userId: string; archived: boolean }) => changeArchived({ data: vars }),
     onSuccess: handleResult,
     onError: (err: unknown) =>
-      setError(err instanceof Error ? err.message : "Could not update that account."),
+      friendly(err, "Could not update that account. Please reload the page and try again."),
+
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading team…</p>;
