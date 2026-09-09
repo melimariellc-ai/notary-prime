@@ -83,7 +83,7 @@ export function QuotePdfActions({
     <>
       <Button type="button" variant="secondary" size={size} onClick={() => void download()} disabled={downloading}>
         <Download className="h-4 w-4 text-gold" />
-        {downloading ? "Preparing…" : "Download PDF"}
+        {downloading ? "Preparing…" : "Quick download"}
       </Button>
       <Button type="button" variant="secondary" size={size} onClick={() => setEmailOpen(true)}>
         <Send className="h-4 w-4 text-gold" /> Email PDF
