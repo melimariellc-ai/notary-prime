@@ -136,7 +136,43 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
           <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}
         </Button>
+        {latest && (
+          <button
+            type="button"
+            onClick={() => setHistoryOpen((v) => !v)}
+            aria-expanded={historyOpen}
+            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            <Clock className="h-3.5 w-3.5" /> {historyOpen ? "Hide quote history" : "Quote history"}
+          </button>
+        )}
       </div>
+
+      {historyOpen && (
+        <div className="mt-4 rounded-2xl border border-border bg-card/40 p-4">
+          {history?.events?.length ? (
+            <ol className="grid gap-3">
+              {history.events.map((e) => (
+                <li key={e.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="font-medium">{STATUS_LABEL[e.status] ?? e.status}</span>
+                  <span className="text-muted-foreground">
+                    {new Date(e.created_at).toLocaleString(undefined, {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    {e.changed_by_email ?? (e.source === "stripe" ? "Updated automatically" : "System")}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="text-muted-foreground">No status changes recorded yet.</p>
+          )}
+        </div>
+      )}
+
 
       {open && (
         <div className="mt-4 rounded-2xl border border-border bg-card/40 p-4 md:p-6">
