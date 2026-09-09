@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
+import { Clock, ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { createStripeQuoteInvoice, listQuotes, type Quote, type QuoteLineItem } from "@/lib/quotes.functions";
+import {
+  createStripeQuoteInvoice,
+  listQuoteHistory,
+  listQuotes,
+  type Quote,
+  type QuoteLineItem,
+} from "@/lib/quotes.functions";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
+
 
 type DraftLine = { description: string; quantity: string; unit_price: string };
 
@@ -28,8 +35,16 @@ function QuoteBadge({ status }: { status: string }) {
   return <Badge tone={s.tone}>{s.label}</Badge>;
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  draft: "Drafted",
+  sent: "Sent to client",
+  viewed: "Opened by client",
+  paid: "Paid",
+};
+
 export function QuoteRow({ appointmentId }: { appointmentId: string }) {
   const fetchQuotes = useServerFn(listQuotes);
+  const fetchHistory = useServerFn(listQuoteHistory);
   const sendQuote = useServerFn(createStripeQuoteInvoice);
 
   const { data, refetch } = useQuery({
@@ -40,9 +55,17 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
   const latest: Quote | undefined = data?.quotes?.[0];
 
   const [open, setOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [lines, setLines] = useState<DraftLine[]>([{ ...emptyLine }]);
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+
+  const { data: history } = useQuery({
+    queryKey: ["quote-history", appointmentId],
+    queryFn: () => fetchHistory({ data: { appointmentId } }),
+    enabled: historyOpen,
+  });
+
 
   const total = lines.reduce((sum, l) => {
     const q = Number(l.quantity);
@@ -113,7 +136,43 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
           <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}
         </Button>
+        {latest && (
+          <button
+            type="button"
+            onClick={() => setHistoryOpen((v) => !v)}
+            aria-expanded={historyOpen}
+            className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            <Clock className="h-3.5 w-3.5" /> {historyOpen ? "Hide quote history" : "Quote history"}
+          </button>
+        )}
       </div>
+
+      {historyOpen && (
+        <div className="mt-4 rounded-2xl border border-border bg-card/40 p-4">
+          {history?.events?.length ? (
+            <ol className="grid gap-3">
+              {history.events.map((e) => (
+                <li key={e.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="font-medium">{STATUS_LABEL[e.status] ?? e.status}</span>
+                  <span className="text-muted-foreground">
+                    {new Date(e.created_at).toLocaleString(undefined, {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                    {e.changed_by_email ?? (e.source === "stripe" ? "Updated automatically" : "System")}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="text-muted-foreground">No status changes recorded yet.</p>
+          )}
+        </div>
+      )}
+
 
       {open && (
         <div className="mt-4 rounded-2xl border border-border bg-card/40 p-4 md:p-6">

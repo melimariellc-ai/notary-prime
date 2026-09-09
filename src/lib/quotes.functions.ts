@@ -159,7 +159,24 @@ export const createStripeQuoteInvoice = createServerFn({ method: "POST" })
         console.error("Failed to save quote", error);
         return { ok: false as const, message: "The invoice was sent but the quote could not be saved." };
       }
+
+      // Record the first history entry with the staff member who sent it.
+      const { data: actor } = await context.supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const { error: historyError } = await context.supabase.from("quote_status_events").insert({
+        quote_id: quote.id,
+        status: "sent",
+        source: "staff",
+        changed_by: context.userId,
+        changed_by_email: actor?.email ?? null,
+      });
+      if (historyError) console.error("Failed to record quote history", historyError);
+
       return { ok: true as const, quote };
+
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not create the invoice.";
       return { ok: false as const, message };
@@ -195,3 +212,46 @@ export const listQuotes = createServerFn({ method: "GET" })
       })) as Quote[],
     };
   });
+
+export type QuoteStatusEvent = {
+  id: string;
+  quote_id: string;
+  status: string;
+  source: string;
+  changed_by_email: string | null;
+  created_at: string;
+};
+
+/** Status history for every quote on one appointment request, oldest first. */
+export const listQuoteHistory = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { appointmentId: string }) => {
+    const appointmentId = String(data?.appointmentId ?? "");
+    if (!UUID.test(appointmentId)) throw new Error("Invalid appointment id.");
+    return { appointmentId };
+  })
+  .handler(async ({ data, context }) => {
+    const { data: quoteRows, error: quotesError } = await context.supabase
+      .from("quotes")
+      .select("id")
+      .eq("appointment_id", data.appointmentId);
+    if (quotesError || !quoteRows?.length) {
+      if (quotesError) console.error("Failed to load quotes for history", quotesError);
+      return { events: [] as QuoteStatusEvent[] };
+    }
+
+    const { data: rows, error } = await context.supabase
+      .from("quote_status_events")
+      .select("id, quote_id, status, source, changed_by_email, created_at")
+      .in(
+        "quote_id",
+        quoteRows.map((q) => q.id),
+      )
+      .order("created_at", { ascending: true });
+    if (error) {
+      console.error("Failed to load quote history", error);
+      return { events: [] as QuoteStatusEvent[] };
+    }
+    return { events: (rows ?? []) as QuoteStatusEvent[] };
+  });
+
