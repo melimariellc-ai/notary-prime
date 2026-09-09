@@ -29,13 +29,12 @@ import {
   ACTIVITY_TYPES,
   addContactActivity,
   deleteBusinessContact,
-  deleteContactActivity,
   getBusinessContact,
   patchBusinessContact,
   setPipelineStage,
-  updateContactActivity,
   type PatchableField,
 } from "@/lib/crm.functions";
+import { deleteContactHistoryEntry, updateContactHistoryEntry } from "@/lib/contact-history.functions";
 import { getMyRole } from "@/lib/users.functions";
 import { buildFallbackOutreachEmail, generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
 import { rateLabel, usd, type ReferralRateType } from "@/lib/business-profile";
@@ -193,8 +192,8 @@ function HistoryEntry({
   highlighted: boolean;
 }) {
   const router = useRouter();
-  const saveEntry = useServerFn(updateContactActivity);
-  const removeEntry = useServerFn(deleteContactActivity);
+  const saveEntry = useServerFn(updateContactHistoryEntry);
+  const removeEntry = useServerFn(deleteContactHistoryEntry);
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
