@@ -4,13 +4,11 @@
 
 import logoAsset from "@/assets/enliven-logo.png.asset.json";
 import lockupAsset from "@/assets/enliven-lockup.png.asset.json";
-import markGoldAsset from "@/assets/enliven-mark-gold.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 export const LOGO_URL = `${SITE_URL}${logoAsset.url}`;
 export const LOCKUP_URL = `${SITE_URL}${lockupAsset.url}`;
-export const MARK_GOLD_URL = `${SITE_URL}${markGoldAsset.url}`;
 
 const CHARCOAL = "#2b3244";
 const GOLD = "#b08a3c";
@@ -69,18 +67,15 @@ export function renderInviteEmail(
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${escapeHtml(subject)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&display=swap" rel="stylesheet"/>
+
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM}">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">Set up your ${escapeHtml(businessName)} password to access your account.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};padding:24px 12px">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e7e0d1">
-  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:26px 24px">
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto"><tr>
-      <td valign="middle" style="padding-right:12px"><img src="${MARK_GOLD_URL}" width="44" alt="${escapeHtml(businessName)}" style="display:block;width:44px;height:auto;border:0"/></td>
-      <td valign="middle" style="font-family:Fraunces,Georgia,'Times New Roman',serif;font-size:26px;line-height:32px;letter-spacing:0.015em;color:${CREAM};white-space:nowrap">Enliven Notary</td>
-    </tr></table>
+  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:28px 24px">
+    <img src="${LOCKUP_URL}" width="320" alt="${escapeHtml(businessName)} — Mobile, Online, Trusted" style="display:block;width:320px;max-width:88%;height:auto;border:0;margin:0 auto"/>
   </td></tr>
   <tr><td height="4" style="height:4px;background-color:${GOLD};font-size:0;line-height:0">&nbsp;</td></tr>
   <tr><td style="padding:32px 32px 24px">
