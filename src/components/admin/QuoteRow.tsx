@@ -132,6 +132,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
             <ExternalLink className="h-3.5 w-3.5" /> View invoice
           </a>
         )}
+        {latest && <QuotePdfActions quoteId={latest.id} clientEmail={clientEmail} />}
         <Button type="button" variant="secondary" size="sm" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
           <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}
