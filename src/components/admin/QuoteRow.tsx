@@ -78,11 +78,20 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
     return sum + (Number.isFinite(q) && Number.isFinite(p) ? q * p : 0);
   }, 0);
 
+  function clearPreview() {
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  }
+
   function update(i: number, patch: Partial<DraftLine>) {
+    clearPreview();
     setLines((prev) => prev.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
   }
 
-  async function submit() {
+  /** Validated line items, or null after showing the reason. */
+  function validated(): QuoteLineItem[] | null {
     const lineItems: QuoteLineItem[] = lines.map((l) => ({
       description: l.description.trim(),
       quantity: Number(l.quantity),
@@ -90,16 +99,44 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
     }));
     if (lineItems.some((l) => !l.description)) {
       toast.error("Every line item needs a description.");
-      return;
+      return null;
     }
     if (lineItems.some((l) => !Number.isFinite(l.quantity) || l.quantity <= 0)) {
       toast.error("Quantities must be greater than 0.");
-      return;
+      return null;
     }
     if (lineItems.some((l) => !Number.isFinite(l.unit_price) || l.unit_price < 0)) {
       toast.error("Enter a valid unit price for every line item.");
-      return;
+      return null;
     }
+    return lineItems;
+  }
+
+  async function preview() {
+    const lineItems = validated();
+    if (!lineItems) return;
+    setPreviewing(true);
+    try {
+      const res = await makePreview({ data: { appointmentId, lineItems, notes: notes.trim() || null } });
+      if (!res.ok) {
+        toast.error(res.message);
+        return;
+      }
+      const bytes = Uint8Array.from(atob(res.pdfBase64), (c) => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      clearPreview();
+      setPreviewUrl(url);
+    } catch (err) {
+      console.error("Quote preview failed", err);
+      toast.error("Could not build the preview. Please try again.");
+    } finally {
+      setPreviewing(false);
+    }
+  }
+
+  async function submit() {
+    const lineItems = validated();
+    if (!lineItems) return;
 
     setSending(true);
     try {
@@ -107,6 +144,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
       if (res.ok) {
         toast.success("Quote sent — the client has been emailed an invoice.");
         setOpen(false);
+        clearPreview();
         setLines([{ ...emptyLine }]);
         setNotes("");
         await refetch();
