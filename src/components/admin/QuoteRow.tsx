@@ -307,9 +307,19 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
 
           {previewUrl && (
             <div className="mt-5 rounded-2xl border border-border bg-background p-3">
-              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                Preview — exactly what the client receives
-              </p>
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                  Preview — exactly what the client receives
+                </p>
+                <a
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-accent-foreground underline underline-offset-4"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
+                </a>
+              </div>
               <iframe
                 title="Quote PDF preview"
                 src={previewUrl}
