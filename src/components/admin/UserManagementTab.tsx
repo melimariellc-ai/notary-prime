@@ -28,6 +28,7 @@ export function UserManagementTab() {
   const queryClient = useQueryClient();
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingDeactivate, setPendingDeactivate] = useState<TeamMemberRow | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["team-members"],
