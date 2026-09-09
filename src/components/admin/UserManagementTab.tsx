@@ -166,6 +166,41 @@ export function UserManagementTab() {
           </tbody>
         </table>
       </div>
+
+      <Dialog
+        open={pendingDeactivate !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeactivate(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deactivate {pendingDeactivate?.name}?</DialogTitle>
+            <DialogDescription>
+              {pendingDeactivate?.name} ({pendingDeactivate?.email}) will keep their history,
+              assignments, and record of changes — nothing is deleted. They will immediately lose the
+              ability to log in until you reactivate them.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={() => setPendingDeactivate(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={busy}
+              onClick={() => {
+                if (!pendingDeactivate) return;
+                activeMutation.mutate({ userId: pendingDeactivate.id, active: false });
+                setPendingDeactivate(null);
+              }}
+            >
+              <UserX className="h-4 w-4" /> Yes, deactivate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
