@@ -56,7 +56,7 @@ export function PdfPreview({
         canvas.setAttribute("aria-label", `Quote document page ${pageNumber}`);
         const ctx = canvas.getContext("2d");
         if (!ctx) throw new Error("Canvas unavailable");
-        await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+        await page.render({ canvasContext: ctx, viewport }).promise;
         if (cancelled) return;
         host.appendChild(canvas);
       }
