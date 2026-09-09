@@ -59,10 +59,9 @@ function normalizeLineItems(raw: unknown): QuoteLineItem[] {
   if (!Array.isArray(raw) || raw.length === 0) throw new Error("Add at least one line item.");
   return raw.map((item, i) => {
     const row = item as Record<string, unknown>;
-    const description = String(row["description"] ?? "").trim();
-    const quantity = Number(row["quantity"]);
+    const description = String(row["description"] ?? "").trim() || "Notary services";
+    const quantity = Number(row["quantity"]) || 1;
     const unitPrice = Number(row["unit_price"]);
-    if (!description) throw new Error(`Line ${i + 1}: description is required.`);
     if (!Number.isFinite(quantity) || quantity <= 0) throw new Error(`Line ${i + 1}: quantity must be greater than 0.`);
     if (!Number.isFinite(unitPrice) || unitPrice < 0) throw new Error(`Line ${i + 1}: unit price is invalid.`);
     return { description, quantity: Math.round(quantity), unit_price: Math.round(unitPrice * 100) / 100 };
