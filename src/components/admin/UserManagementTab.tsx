@@ -125,23 +125,33 @@ export function UserManagementTab() {
                     </Badge>
                   </td>
                   <td className="py-4 text-right">
-                    <Button
-                      type="button"
-                      variant={m.is_active ? "destructive" : "secondary"}
-                      size="sm"
-                      disabled={isMe || busy}
-                      onClick={() => activeMutation.mutate({ userId: m.id, active: !m.is_active })}
-                    >
-                      {m.is_active ? (
-                        <>
-                          <UserX className="h-4 w-4" /> Deactivate
-                        </>
-                      ) : (
-                        <>
-                          <UserCheck className="h-4 w-4" /> Reactivate
-                        </>
-                      )}
-                    </Button>
+                    {isMe ? (
+                      <span className="text-xs text-muted-foreground">
+                        You can't deactivate your own account
+                      </span>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() =>
+                          m.is_active
+                            ? setPendingDeactivate(m)
+                            : activeMutation.mutate({ userId: m.id, active: true })
+                        }
+                      >
+                        {m.is_active ? (
+                          <>
+                            <UserX className="h-4 w-4" /> Deactivate
+                          </>
+                        ) : (
+                          <>
+                            <UserCheck className="h-4 w-4" /> Reactivate
+                          </>
+                        )}
+                      </Button>
+                    )}
                   </td>
                 </tr>
               );
