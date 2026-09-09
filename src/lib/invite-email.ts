@@ -3,10 +3,12 @@
 // used as the href of the "Set Up Your Password" button.
 
 import logoAsset from "@/assets/enliven-logo.png.asset.json";
+import lockupAsset from "@/assets/enliven-lockup.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 export const LOGO_URL = `${SITE_URL}${logoAsset.url}`;
+export const LOCKUP_URL = `${SITE_URL}${lockupAsset.url}`;
 
 const CHARCOAL = "#2b3244";
 const GOLD = "#b08a3c";
