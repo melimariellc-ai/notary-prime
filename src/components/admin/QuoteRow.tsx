@@ -12,6 +12,7 @@ import {
 } from "@/lib/quotes.functions";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
+import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
 
 
 type DraftLine = { description: string; quantity: string; unit_price: string };
