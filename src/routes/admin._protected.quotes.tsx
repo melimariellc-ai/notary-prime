@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
+import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
