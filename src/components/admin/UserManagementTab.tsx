@@ -74,7 +74,8 @@ export function UserManagementTab() {
     mutationFn: (vars: { userId: string; archived: boolean }) => changeArchived({ data: vars }),
     onSuccess: handleResult,
     onError: (err: unknown) =>
-      setError(err instanceof Error ? err.message : "Could not update that account."),
+      friendly(err, "Could not update that account. Please reload the page and try again."),
+
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading team…</p>;
