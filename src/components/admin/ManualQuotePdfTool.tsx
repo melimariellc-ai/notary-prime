@@ -285,11 +285,7 @@ export function ManualQuotePdfTool({
                   <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
                 </a>
               </div>
-              <iframe
-                title="Manual quote PDF preview"
-                src={previewUrl}
-                className="h-[32rem] w-full rounded-xl border border-border"
-              />
+              {previewBytes && <PdfPreview bytes={previewBytes} fallbackUrl={previewUrl} />
               <p className="mt-2 text-xs text-muted-foreground">
                 Edit anything above and press Preview PDF again to refresh this document.
               </p>
