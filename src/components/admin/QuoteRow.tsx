@@ -61,6 +61,9 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
   const [lines, setLines] = useState<DraftLine[]>([{ ...emptyLine }]);
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewing, setPreviewing] = useState(false);
+  const makePreview = useServerFn(previewQuotePdf);
 
   const { data: history } = useQuery({
     queryKey: ["quote-history", appointmentId],
