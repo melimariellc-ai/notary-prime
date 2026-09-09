@@ -2,11 +2,12 @@
 // The secure password-setup URL is never printed as text — it is only ever
 // used as the href of the "Set Up Your Password" button.
 
-import logoAsset from "@/assets/enliven-logo.png.asset.json";
+import logoAsset from "@/assets/enliven-logo-gold.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 export const LOGO_URL = `${SITE_URL}${logoAsset.url}`;
+
 
 const CHARCOAL = "#2b3244";
 const GOLD = "#b08a3c";
