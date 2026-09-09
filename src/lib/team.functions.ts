@@ -212,12 +212,19 @@ export const setTeamMemberArchived = createServerFn({ method: "POST" })
     return { userId, archived: Boolean(data.archived) };
   })
   .handler(async ({ data, context }) => {
+    // Archiving also revokes sign-in, so the same hard rule applies.
+    if (await isProtectedOwner(data.userId))
+      return {
+        ok: false as const,
+        message: "The Owner account is protected and can never be archived.",
+      };
     const admin = await isAdmin(context.supabase, context.userId);
     const permissions = admin ? await loadPermissions(context.userId) : [];
     if (!permissions.includes("can_archive_users"))
       return { ok: false as const, message: "You do not have permission to archive users." };
     if (data.userId === context.userId)
       return { ok: false as const, message: "You cannot archive your own account." };
+
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
