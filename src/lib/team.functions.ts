@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isAdminUser, loadPermissions } from "./permissions.functions";
 
 const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
 type AllowedRole = (typeof ALLOWED_ROLES)[number];
@@ -17,32 +18,38 @@ export type TeamMember = {
   role: string;
   is_active: boolean;
   deactivated_at: string | null;
+  archived_at: string | null;
 };
 
 /** Same server-side admin check used when creating accounts. */
 async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin");
-  if (error) {
-    console.error("Failed to verify admin role", error);
-    return false;
-  }
-  return (data ?? []).length > 0;
+  return isAdminUser(supabase, userId);
 }
 
 export const listTeamMembers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data?: { includeArchived?: boolean }) => ({
+    includeArchived: Boolean(data?.includeArchived),
+  }))
+  .handler(async ({ data, context }) => {
     if (!(await isAdmin(context.supabase, context.userId)))
-      return { forbidden: true as const, members: [] as TeamMember[], meId: context.userId };
+      return {
+        forbidden: true as const,
+        members: [] as TeamMember[],
+        meId: context.userId,
+        canArchiveUsers: false,
+        canDeactivateUsers: false,
+      };
 
-    const { data, error } = await context.supabase
+    const permissions = await loadPermissions(context.userId);
+
+    let query = context.supabase
       .from("profiles")
-      .select("id, name, email, role, is_active, deactivated_at")
+      .select("id, name, email, role, is_active, deactivated_at, archived_at")
       .order("name", { ascending: true });
+    if (!data.includeArchived) query = query.is("archived_at", null);
+
+    const { data: rows, error } = await query;
 
     if (error) {
       console.error("Failed to load team members", error);
@@ -51,10 +58,13 @@ export const listTeamMembers = createServerFn({ method: "GET" })
 
     return {
       forbidden: false as const,
-      members: (data ?? []) as TeamMember[],
+      members: (rows ?? []) as TeamMember[],
       meId: context.userId,
+      canArchiveUsers: permissions.includes("can_archive_users"),
+      canDeactivateUsers: permissions.includes("can_deactivate_users"),
     };
   });
+
 
 export const setTeamMemberRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
