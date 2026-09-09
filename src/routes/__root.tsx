@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
   useRouterState,
+  type ErrorRouteComponent,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -74,7 +75,7 @@ const ErrorComponent: ErrorRouteComponent = ({ error, reset }) => {
       </div>
     </div>
   );
-}
+};
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
