@@ -205,6 +205,10 @@ function QuotesPage() {
                       {q.last_updated_by ? ` by ${q.last_updated_by}` : " (automatic)"}
                     </span>
                   </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <QuotePdfActions quoteId={q.id} clientEmail={q.client_email} />
+                  </div>
                 </Card>
               );
             })
