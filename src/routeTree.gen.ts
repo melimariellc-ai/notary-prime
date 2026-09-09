@@ -9,92 +9,42 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ServicesRouteImport } from './routes/services'
-import { Route as ReviewsRouteImport } from './routes/reviews'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BookRouteImport } from './routes/book'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AccessibilityRouteImport } from './routes/accessibility'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BookRouteImport } from './routes/book'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminSetPasswordRouteImport } from './routes/admin.set-password'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
-import { Route as AdminSetPasswordRouteImport } from './routes/admin.set-password'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminProtectedRouteImport } from './routes/admin._protected'
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
-import { Route as ApiPublicStripeInvoiceWebhookRouteImport } from './routes/api/public/stripe-invoice-webhook'
-import { Route as ApiPublicResendInboundRouteImport } from './routes/api/public/resend-inbound'
-import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
-import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
-import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
-import { Route as AdminProtectedSettingsRouteImport } from './routes/admin._protected.settings'
-import { Route as AdminProtectedReportsRouteImport } from './routes/admin._protected.reports'
-import { Route as AdminProtectedNotificationsRouteImport } from './routes/admin._protected.notifications'
-import { Route as AdminProtectedDuplicatesRouteImport } from './routes/admin._protected.duplicates'
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
+import { Route as AdminProtectedDuplicatesRouteImport } from './routes/admin._protected.duplicates'
+import { Route as AdminProtectedNotificationsRouteImport } from './routes/admin._protected.notifications'
+import { Route as AdminProtectedReportsRouteImport } from './routes/admin._protected.reports'
+import { Route as AdminProtectedSettingsRouteImport } from './routes/admin._protected.settings'
+import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
+import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
+import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
+import { Route as ApiPublicResendInboundRouteImport } from './routes/api/public/resend-inbound'
+import { Route as ApiPublicStripeInvoiceWebhookRouteImport } from './routes/api/public/stripe-invoice-webhook'
 import { Route as AdminProtectedCrmIndexRouteImport } from './routes/admin._protected.crm.index'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AdminProtectedCrmContactIdRouteImport } from './routes/admin._protected.crm.$contactId'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
-const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
-  id: '/terms-of-service',
-  path: '/terms-of-service',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesRoute = ServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReviewsRoute = ReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccessibilityRoute = AccessibilityRouteImport.update({
-  id: '/accessibility',
-  path: '/accessibility',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -102,10 +52,74 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProtectedRoute = AdminProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSetPasswordRoute = AdminSetPasswordRouteImport.update({
+  id: '/set-password',
+  path: '/set-password',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ServiceAreasIndexRoute = ServiceAreasIndexRouteImport.update({
   id: '/service-areas/',
@@ -117,51 +131,31 @@ const ServiceAreasCityRoute = ServiceAreasCityRouteImport.update({
   path: '/service-areas/$city',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSetPasswordRoute = AdminSetPasswordRouteImport.update({
-  id: '/set-password',
-  path: '/set-password',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProtectedRoute = AdminProtectedRouteImport.update({
-  id: '/_protected',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminProtectedIndexRoute = AdminProtectedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
-const ApiPublicStripeInvoiceWebhookRoute =
-  ApiPublicStripeInvoiceWebhookRouteImport.update({
-    id: '/api/public/stripe-invoice-webhook',
-    path: '/api/public/stripe-invoice-webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicResendInboundRoute = ApiPublicResendInboundRouteImport.update({
-  id: '/api/public/resend-inbound',
-  path: '/api/public/resend-inbound',
-  getParentRoute: () => rootRouteImport,
+const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminProtectedRoute,
 } as any)
-const ApiPublicCrmFollowupDigestRoute =
-  ApiPublicCrmFollowupDigestRouteImport.update({
-    id: '/api/public/crm-followup-digest',
-    path: '/api/public/crm-followup-digest',
-    getParentRoute: () => rootRouteImport,
+const AdminProtectedDuplicatesRoute =
+  AdminProtectedDuplicatesRouteImport.update({
+    id: '/duplicates',
+    path: '/duplicates',
+    getParentRoute: () => AdminProtectedRoute,
   } as any)
-const ApiPublicAppointmentNotifyRoute =
-  ApiPublicAppointmentNotifyRouteImport.update({
-    id: '/api/public/appointment-notify',
-    path: '/api/public/appointment-notify',
-    getParentRoute: () => rootRouteImport,
+const AdminProtectedNotificationsRoute =
+  AdminProtectedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AdminProtectedRoute,
   } as any)
-const AdminProtectedUsersRoute = AdminProtectedUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
+const AdminProtectedReportsRoute = AdminProtectedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
 const AdminProtectedSettingsRoute = AdminProtectedSettingsRouteImport.update({
@@ -169,44 +163,50 @@ const AdminProtectedSettingsRoute = AdminProtectedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
-const AdminProtectedReportsRoute = AdminProtectedReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
+const AdminProtectedUsersRoute = AdminProtectedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
-const AdminProtectedNotificationsRoute =
-  AdminProtectedNotificationsRouteImport.update({
-    id: '/notifications',
-    path: '/notifications',
-    getParentRoute: () => AdminProtectedRoute,
+const ApiPublicAppointmentNotifyRoute =
+  ApiPublicAppointmentNotifyRouteImport.update({
+    id: '/api/public/appointment-notify',
+    path: '/api/public/appointment-notify',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const AdminProtectedDuplicatesRoute =
-  AdminProtectedDuplicatesRouteImport.update({
-    id: '/duplicates',
-    path: '/duplicates',
-    getParentRoute: () => AdminProtectedRoute,
+const ApiPublicCrmFollowupDigestRoute =
+  ApiPublicCrmFollowupDigestRouteImport.update({
+    id: '/api/public/crm-followup-digest',
+    path: '/api/public/crm-followup-digest',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const AdminProtectedDashboardRoute = AdminProtectedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminProtectedRoute,
+const ApiPublicResendInboundRoute = ApiPublicResendInboundRouteImport.update({
+  id: '/api/public/resend-inbound',
+  path: '/api/public/resend-inbound',
+  getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicStripeInvoiceWebhookRoute =
+  ApiPublicStripeInvoiceWebhookRouteImport.update({
+    id: '/api/public/stripe-invoice-webhook',
+    path: '/api/public/stripe-invoice-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminProtectedCrmIndexRoute = AdminProtectedCrmIndexRouteImport.update({
   id: '/crm/',
   path: '/crm/',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AdminProtectedCrmContactIdRoute =
   AdminProtectedCrmContactIdRouteImport.update({
     id: '/crm/$contactId',
     path: '/crm/$contactId',
     getParentRoute: () => AdminProtectedRoute,
+  } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -436,81 +436,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms-of-service': {
-      id: '/terms-of-service'
-      path: '/terms-of-service'
-      fullPath: '/terms-of-service'
-      preLoaderRoute: typeof TermsOfServiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services': {
-      id: '/services'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reviews': {
-      id: '/reviews'
-      path: '/reviews'
-      fullPath: '/reviews'
-      preLoaderRoute: typeof ReviewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/accessibility': {
-      id: '/accessibility'
-      path: '/accessibility'
-      fullPath: '/accessibility'
-      preLoaderRoute: typeof AccessibilityRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -520,12 +450,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/_protected': {
+      id: '/admin/_protected'
+      path: ''
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminProtectedRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/set-password': {
+      id: '/admin/set-password'
+      path: '/set-password'
+      fullPath: '/admin/set-password'
+      preLoaderRoute: typeof AdminSetPasswordRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/service-areas/': {
       id: '/service-areas/'
@@ -541,95 +562,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceAreasCityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/set-password': {
-      id: '/admin/set-password'
-      path: '/set-password'
-      fullPath: '/admin/set-password'
-      preLoaderRoute: typeof AdminSetPasswordRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/_protected': {
-      id: '/admin/_protected'
-      path: ''
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminProtectedRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/_protected/': {
       id: '/admin/_protected/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminProtectedIndexRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
-    '/api/public/stripe-invoice-webhook': {
-      id: '/api/public/stripe-invoice-webhook'
-      path: '/api/public/stripe-invoice-webhook'
-      fullPath: '/api/public/stripe-invoice-webhook'
-      preLoaderRoute: typeof ApiPublicStripeInvoiceWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/resend-inbound': {
-      id: '/api/public/resend-inbound'
-      path: '/api/public/resend-inbound'
-      fullPath: '/api/public/resend-inbound'
-      preLoaderRoute: typeof ApiPublicResendInboundRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/crm-followup-digest': {
-      id: '/api/public/crm-followup-digest'
-      path: '/api/public/crm-followup-digest'
-      fullPath: '/api/public/crm-followup-digest'
-      preLoaderRoute: typeof ApiPublicCrmFollowupDigestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/appointment-notify': {
-      id: '/api/public/appointment-notify'
-      path: '/api/public/appointment-notify'
-      fullPath: '/api/public/appointment-notify'
-      preLoaderRoute: typeof ApiPublicAppointmentNotifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/_protected/users': {
-      id: '/admin/_protected/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminProtectedUsersRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
-    '/admin/_protected/settings': {
-      id: '/admin/_protected/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminProtectedSettingsRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
-    '/admin/_protected/reports': {
-      id: '/admin/_protected/reports'
-      path: '/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminProtectedReportsRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
-    '/admin/_protected/notifications': {
-      id: '/admin/_protected/notifications'
-      path: '/notifications'
-      fullPath: '/admin/notifications'
-      preLoaderRoute: typeof AdminProtectedNotificationsRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
-    '/admin/_protected/duplicates': {
-      id: '/admin/_protected/duplicates'
-      path: '/duplicates'
-      fullPath: '/admin/duplicates'
-      preLoaderRoute: typeof AdminProtectedDuplicatesRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
     '/admin/_protected/dashboard': {
@@ -639,11 +576,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedDashboardRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
+    '/admin/_protected/duplicates': {
+      id: '/admin/_protected/duplicates'
+      path: '/duplicates'
+      fullPath: '/admin/duplicates'
+      preLoaderRoute: typeof AdminProtectedDuplicatesRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/admin/_protected/notifications': {
+      id: '/admin/_protected/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminProtectedNotificationsRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/admin/_protected/reports': {
+      id: '/admin/_protected/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminProtectedReportsRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/admin/_protected/settings': {
+      id: '/admin/_protected/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminProtectedSettingsRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/admin/_protected/users': {
+      id: '/admin/_protected/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminProtectedUsersRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/api/public/appointment-notify': {
+      id: '/api/public/appointment-notify'
+      path: '/api/public/appointment-notify'
+      fullPath: '/api/public/appointment-notify'
+      preLoaderRoute: typeof ApiPublicAppointmentNotifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/crm-followup-digest': {
+      id: '/api/public/crm-followup-digest'
+      path: '/api/public/crm-followup-digest'
+      fullPath: '/api/public/crm-followup-digest'
+      preLoaderRoute: typeof ApiPublicCrmFollowupDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/resend-inbound': {
+      id: '/api/public/resend-inbound'
+      path: '/api/public/resend-inbound'
+      fullPath: '/api/public/resend-inbound'
+      preLoaderRoute: typeof ApiPublicResendInboundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/stripe-invoice-webhook': {
+      id: '/api/public/stripe-invoice-webhook'
+      path: '/api/public/stripe-invoice-webhook'
+      fullPath: '/api/public/stripe-invoice-webhook'
+      preLoaderRoute: typeof ApiPublicStripeInvoiceWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/_protected/crm/': {
       id: '/admin/_protected/crm/'
       path: '/crm'
       fullPath: '/admin/crm/'
       preLoaderRoute: typeof AdminProtectedCrmIndexRouteImport
+      parentRoute: typeof AdminProtectedRoute
+    }
+    '/admin/_protected/crm/$contactId': {
+      id: '/admin/_protected/crm/$contactId'
+      path: '/crm/$contactId'
+      fullPath: '/admin/crm/$contactId'
+      preLoaderRoute: typeof AdminProtectedCrmContactIdRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
     '/lovable/email/queue/process': {
@@ -652,13 +659,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/lovable/email/queue/process'
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/admin/_protected/crm/$contactId': {
-      id: '/admin/_protected/crm/$contactId'
-      path: '/crm/$contactId'
-      fullPath: '/admin/crm/$contactId'
-      preLoaderRoute: typeof AdminProtectedCrmContactIdRouteImport
-      parentRoute: typeof AdminProtectedRoute
     }
   }
 }
