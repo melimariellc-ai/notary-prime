@@ -25,16 +25,30 @@ const money = (n: number) =>
 export function ManualQuotePdfTool({
   appointmentId,
   clientEmail,
+  initialLines,
+  initialNotes,
+  openLabel = "Build quote PDF manually",
 }: {
   appointmentId: string;
   clientEmail?: string | null;
+  initialLines?: { description: string; quantity: number; unit_price: number }[];
+  initialNotes?: string | null;
+  openLabel?: string;
 }) {
   const buildPdf = useServerFn(previewQuotePdf);
   const sendPdf = useServerFn(emailDraftQuotePdf);
 
   const [open, setOpen] = useState(false);
-  const [lines, setLines] = useState<DraftLine[]>([{ ...emptyLine }]);
-  const [notes, setNotes] = useState("");
+  const [lines, setLines] = useState<DraftLine[]>(
+    initialLines?.length
+      ? initialLines.map((l) => ({
+          description: l.description ?? "",
+          quantity: String(l.quantity ?? 1),
+          unit_price: String(l.unit_price ?? ""),
+        }))
+      : [{ ...emptyLine }],
+  );
+  const [notes, setNotes] = useState(initialNotes ?? "");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewName, setPreviewName] = useState("quote.pdf");
   const [busy, setBusy] = useState(false);
@@ -62,14 +76,10 @@ export function ManualQuotePdfTool({
 
   function validated() {
     const items = lines.map((l) => ({
-      description: l.description.trim(),
-      quantity: Number(l.quantity),
+      description: l.description.trim() || "Notary services",
+      quantity: Number(l.quantity) || 1,
       unit_price: Number(l.unit_price),
     }));
-    if (items.some((l) => !l.description)) {
-      toast.error("Every line item needs a description.");
-      return null;
-    }
     if (items.some((l) => !Number.isFinite(l.quantity) || l.quantity <= 0)) {
       toast.error("Quantities must be greater than 0.");
       return null;
@@ -164,7 +174,7 @@ export function ManualQuotePdfTool({
     <>
       <Button type="button" variant="secondary" size="sm" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
         <Wrench className="h-4 w-4 text-gold" />
-        {open ? "Close PDF builder" : "Build quote PDF manually"}
+        {open ? "Close PDF builder" : openLabel}
       </Button>
 
       {open && (
@@ -180,7 +190,7 @@ export function ManualQuotePdfTool({
               <div key={i} className="flex flex-wrap items-end gap-3">
                 <div className="min-w-[12rem] flex-1">
                   <label htmlFor={`m-desc-${appointmentId}-${i}`} className="block text-xs text-muted-foreground">
-                    Description
+                    Description (optional)
                   </label>
                   <input
                     id={`m-desc-${appointmentId}-${i}`}
