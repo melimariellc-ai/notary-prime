@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMyRole } from "@/lib/users.functions";
+import { getMyPermissions } from "@/lib/permissions.functions";
 import { useState } from "react";
 
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { CustomFieldsTab } from "@/components/admin/CustomFieldsTab";
 import { CrmOptionsTab } from "@/components/admin/CrmOptionsTab";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
+import { PermissionsTab } from "@/components/admin/PermissionsTab";
 import { BusinessProfileTab } from "@/components/admin/BusinessProfileTab";
 import { EmailTemplatesTab } from "@/components/admin/EmailTemplatesTab";
 import { SectionLabel } from "@/components/admin/ui/Card";
@@ -56,6 +58,7 @@ const TAB_GROUPS = [
     items: [
       { id: "business", label: "Business Profile" },
       { id: "users", label: "User Management" },
+      { id: "permissions", label: "Permissions" },
     ],
   },
   {
@@ -71,6 +74,8 @@ function SettingsPage() {
   const [tab, setTab] = useState<TabId>("fields");
   const fetchRole = useServerFn(getMyRole);
   const { data: me, isLoading } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole({}) });
+  const fetchPermissions = useServerFn(getMyPermissions);
+  const { data: perms } = useQuery({ queryKey: ["my-permissions"], queryFn: () => fetchPermissions({}) });
 
   if (isLoading) return <div className="px-8 py-24 text-center text-muted-foreground">Loading…</div>;
   if (!me?.isAdmin)
@@ -108,7 +113,9 @@ function SettingsPage() {
               <div key={group.label}>
                 <SectionLabel className="px-3 pb-2">{group.label}</SectionLabel>
                 <div className="space-y-1">
-                  {group.items.map((t) => (
+                  {group.items
+                    .filter((t) => t.id !== "permissions" || perms?.canGrantPermissions)
+                    .map((t) => (
                     <button
                       key={t.id}
                       type="button"
@@ -156,6 +163,7 @@ function SettingsPage() {
               />
             )}
             {tab === "users" && <UserManagementTab />}
+            {tab === "permissions" && <PermissionsTab />}
             {tab === "business" && <BusinessProfileTab />}
             {tab === "emails" && <EmailTemplatesTab />}
           </div>
