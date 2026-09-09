@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
-import { Archive, ArchiveRestore, Shield, UserCheck, UserX } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Archive, ArchiveRestore, Mail, Shield, UserCheck, UserPlus, UserX } from "lucide-react";
 import {
   listTeamMembers,
   setTeamMemberActive,
@@ -9,6 +9,7 @@ import {
   setTeamMemberRole,
 } from "@/lib/team.functions";
 import type { TeamMember } from "@/lib/team.functions";
+import { createAdminUser } from "@/lib/users.functions";
 import { Card, CardHeader } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
@@ -27,11 +28,15 @@ const ROLES = [
   { value: "admin", label: "Admin" },
 ];
 
+const FIELD_CLASS =
+  "w-full rounded-xl border border-border bg-background py-2 pl-11 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
 export function UserManagementTab() {
   const fetchMembers = useServerFn(listTeamMembers);
   const changeRole = useServerFn(setTeamMemberRole);
   const changeActive = useServerFn(setTeamMemberActive);
   const changeArchived = useServerFn(setTeamMemberArchived);
+  const addUser = useServerFn(createAdminUser);
   const queryClient = useQueryClient();
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,10 +44,64 @@ export function UserManagementTab() {
   const [pendingArchive, setPendingArchive] = useState<TeamMember | null>(null);
   const [showArchived, setShowArchived] = useState(false);
 
+  const [addOpen, setAddOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newRole, setNewRole] = useState("notary");
+  const [addError, setAddError] = useState<string | null>(null);
+  const [addBusy, setAddBusy] = useState(false);
+
   const { data, isLoading } = useQuery({
     queryKey: ["team-members", showArchived],
     queryFn: () => fetchMembers({ data: { includeArchived: showArchived } }),
   });
+
+  // Full roster (active + archived) so the live duplicate check catches everyone,
+  // even people hidden from the current view.
+  const { data: allMembersData } = useQuery({
+    queryKey: ["team-members", true],
+    queryFn: () => fetchMembers({ data: { includeArchived: true } }),
+  });
+
+  const duplicate = useMemo(() => {
+    const email = newEmail.trim().toLowerCase();
+    if (!email) return null;
+    return (
+      (allMembersData?.members ?? []).find((m) => (m.email ?? "").toLowerCase() === email) ?? null
+    );
+  }, [newEmail, allMembersData]);
+
+  function closeAdd() {
+    setAddOpen(false);
+    setAddError(null);
+    setNewName("");
+    setNewEmail("");
+    setNewRole("notary");
+  }
+
+  async function onAddUser(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (duplicate) return;
+    setAddBusy(true);
+    setAddError(null);
+    try {
+      const res = await addUser({ data: { name: newName, email: newEmail, role: newRole } });
+      if (res.ok) {
+        setNotice(res.message);
+        setError(null);
+        queryClient.invalidateQueries({ queryKey: ["team-members"] });
+        closeAdd();
+      } else {
+        setAddError(res.message);
+      }
+    } catch (err) {
+      console.error("Failed to create account", err);
+      setAddError("Could not create that account. Please try again.");
+    } finally {
+      setAddBusy(false);
+    }
+  }
+
 
   const handleResult = (res: { ok: boolean; message: string }) => {
     setNotice(res.ok ? res.message : null);
