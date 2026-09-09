@@ -12,6 +12,7 @@ import {
 } from "@/lib/quotes.functions";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
+import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
 
 
 type DraftLine = { description: string; quantity: string; unit_price: string };
@@ -42,7 +43,7 @@ const STATUS_LABEL: Record<string, string> = {
   paid: "Paid",
 };
 
-export function QuoteRow({ appointmentId }: { appointmentId: string }) {
+export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string; clientEmail?: string | null }) {
   const fetchQuotes = useServerFn(listQuotes);
   const fetchHistory = useServerFn(listQuoteHistory);
   const sendQuote = useServerFn(createStripeQuoteInvoice);
@@ -132,6 +133,7 @@ export function QuoteRow({ appointmentId }: { appointmentId: string }) {
             <ExternalLink className="h-3.5 w-3.5" /> View invoice
           </a>
         )}
+        {latest && <QuotePdfActions quoteId={latest.id} clientEmail={clientEmail} />}
         <Button type="button" variant="secondary" size="sm" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
           <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}

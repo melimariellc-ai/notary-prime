@@ -284,7 +284,7 @@ function AdminPage() {
                           contacts={referralContacts}
                         />
 
-                        <QuoteRow appointmentId={a.id} />
+                        <QuoteRow appointmentId={a.id} clientEmail={a.email} />
                       </div>
 
                       <AppointmentAuditToggle appointmentId={a.id} />

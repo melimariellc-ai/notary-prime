@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
+import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
@@ -204,6 +205,10 @@ function QuotesPage() {
                       Last update {when(q.last_updated_at)}
                       {q.last_updated_by ? ` by ${q.last_updated_by}` : " (automatic)"}
                     </span>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <QuotePdfActions quoteId={q.id} clientEmail={q.client_email} />
                   </div>
                 </Card>
               );
