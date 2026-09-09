@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { BusinessProfile } from "./business-profile";
-import { renderEmailTemplate } from "./email-templates";
+import { renderInviteEmail } from "./invite-email";
 
 const SITE_URL = "https://enlivennotary.com";
 const FROM_ADDRESS = "team@send.enlivennotary.com";
@@ -14,7 +14,7 @@ async function inviteEmail(
 ) {
   const { loadEmailTemplate } = await import("./email-templates.server");
   const template = await loadEmailTemplate(key);
-  return renderEmailTemplate(template, {
+  return renderInviteEmail(template, {
     name,
     link,
     business_name: profile.business_name,
@@ -23,6 +23,7 @@ async function inviteEmail(
     phone: profile.phone,
   });
 }
+
 
 
 
