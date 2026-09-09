@@ -3,9 +3,18 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Shield, UserCheck, UserX } from "lucide-react";
 import { listTeamMembers, setTeamMemberActive, setTeamMemberRole } from "@/lib/team.functions";
+import type { TeamMember } from "@/lib/team.functions";
 import { Card, CardHeader } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ROLES = [
   { value: "notary", label: "Notary" },
@@ -20,6 +29,7 @@ export function UserManagementTab() {
   const queryClient = useQueryClient();
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingDeactivate, setPendingDeactivate] = useState<TeamMember | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["team-members"],
@@ -115,23 +125,33 @@ export function UserManagementTab() {
                     </Badge>
                   </td>
                   <td className="py-4 text-right">
-                    <Button
-                      type="button"
-                      variant={m.is_active ? "destructive" : "secondary"}
-                      size="sm"
-                      disabled={isMe || busy}
-                      onClick={() => activeMutation.mutate({ userId: m.id, active: !m.is_active })}
-                    >
-                      {m.is_active ? (
-                        <>
-                          <UserX className="h-4 w-4" /> Deactivate
-                        </>
-                      ) : (
-                        <>
-                          <UserCheck className="h-4 w-4" /> Reactivate
-                        </>
-                      )}
-                    </Button>
+                    {isMe ? (
+                      <span className="text-xs text-muted-foreground">
+                        You can't deactivate your own account
+                      </span>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() =>
+                          m.is_active
+                            ? setPendingDeactivate(m)
+                            : activeMutation.mutate({ userId: m.id, active: true })
+                        }
+                      >
+                        {m.is_active ? (
+                          <>
+                            <UserX className="h-4 w-4" /> Deactivate
+                          </>
+                        ) : (
+                          <>
+                            <UserCheck className="h-4 w-4" /> Reactivate
+                          </>
+                        )}
+                      </Button>
+                    )}
                   </td>
                 </tr>
               );
@@ -146,6 +166,41 @@ export function UserManagementTab() {
           </tbody>
         </table>
       </div>
+
+      <Dialog
+        open={pendingDeactivate !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeactivate(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deactivate {pendingDeactivate?.name}?</DialogTitle>
+            <DialogDescription>
+              {pendingDeactivate?.name} ({pendingDeactivate?.email}) will keep their history,
+              assignments, and record of changes — nothing is deleted. They will immediately lose the
+              ability to log in until you reactivate them.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={() => setPendingDeactivate(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={busy}
+              onClick={() => {
+                if (!pendingDeactivate) return;
+                activeMutation.mutate({ userId: pendingDeactivate.id, active: false });
+                setPendingDeactivate(null);
+              }}
+            >
+              <UserX className="h-4 w-4" /> Yes, deactivate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
