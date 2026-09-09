@@ -111,7 +111,19 @@ export const Route = createFileRoute("/api/public/stripe-invoice-webhook")({
           console.error("Failed to update quote from Stripe webhook", error);
           return new Response("update failed", { status: 500 });
         }
+
+        // Trace each status change so staff can follow a quote's progress.
+        const newStatus = update["status"] ?? (update["viewed_at"] ? "viewed" : null);
+        if (newStatus && newStatus !== quote.status) {
+          const { error: historyError } = await supabaseAdmin.from("quote_status_events").insert({
+            quote_id: quote.id,
+            status: newStatus,
+            source: "stripe",
+          });
+          if (historyError) console.error("Failed to record quote history", historyError);
+        }
         return new Response("ok", { status: 200 });
+
       },
     },
   },
