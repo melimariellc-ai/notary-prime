@@ -6,6 +6,14 @@ import { listTeamMembers, setTeamMemberActive, setTeamMemberRole } from "@/lib/t
 import { Card, CardHeader } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ROLES = [
   { value: "notary", label: "Notary" },
