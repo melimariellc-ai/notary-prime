@@ -92,7 +92,13 @@ export function AuditTrail({
             <li key={e.id} className="px-5 py-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <Badge tone="accent">
-                  {e.action === "updated" ? label(e.field_name) : e.action === "created" ? "Record created" : "Record deleted"}
+                  {e.action === "updated"
+                    ? label(e.field_name)
+                    : e.action === "created"
+                      ? "Record created"
+                      : e.field_name === "activity"
+                        ? "History entry deleted"
+                        : "Record deleted"}
                 </Badge>
                 <span className="text-xs text-muted-foreground">
                   {when(e.changed_at)}
@@ -107,6 +113,9 @@ export function AuditTrail({
                   </span>
                   <span className="font-medium">{value(e.new_value)}</span>
                 </p>
+              )}
+              {e.action === "deleted" && e.old_value && (
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-through">{value(e.old_value)}</p>
               )}
             </li>
           ))}
