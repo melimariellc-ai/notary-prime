@@ -73,9 +73,8 @@ export function renderInviteEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};padding:24px 12px">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e7e0d1">
-  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:32px 24px">
-    <img src="${LOGO_URL}" width="150" alt="${escapeHtml(businessName)}" style="display:block;width:150px;max-width:70%;height:auto;border:0;margin:0 auto"/>
-    <p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#d8c9a3">Mobile &middot; Online &middot; Trusted</p>
+  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:28px 24px">
+    <img src="${LOCKUP_URL}" width="320" alt="${escapeHtml(businessName)} — Mobile, Online, Trusted" style="display:block;width:320px;max-width:88%;height:auto;border:0;margin:0 auto"/>
   </td></tr>
   <tr><td height="4" style="height:4px;background-color:${GOLD};font-size:0;line-height:0">&nbsp;</td></tr>
   <tr><td style="padding:32px 32px 24px">
