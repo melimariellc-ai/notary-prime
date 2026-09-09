@@ -4,6 +4,7 @@ import { Download, Eye, ExternalLink, Plus, Send, Trash2, Wrench } from "lucide-
 import { toast } from "sonner";
 import { emailDraftQuotePdf, previewQuotePdf } from "@/lib/quote-pdf.functions";
 import { Button } from "@/components/admin/ui/Button";
+import { PdfPreview } from "@/components/admin/PdfPreview";
 
 /**
  * Standalone "build a quote PDF by hand" tool.
@@ -51,6 +52,7 @@ export function ManualQuotePdfTool({
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewName, setPreviewName] = useState("quote.pdf");
+  const [previewBytes, setPreviewBytes] = useState<Uint8Array | null>(null);
   const [busy, setBusy] = useState(false);
   const [emailing, setEmailing] = useState(false);
   const [to, setTo] = useState(clientEmail ?? "");
@@ -67,6 +69,7 @@ export function ManualQuotePdfTool({
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
+    setPreviewBytes(null);
   }
 
   function update(i: number, patch: Partial<DraftLine>) {
@@ -112,6 +115,7 @@ export function ManualQuotePdfTool({
       clearPreview();
       setPreviewUrl(url);
       setPreviewName(res.fileName);
+      setPreviewBytes(bytes);
     } catch (err) {
       console.error("Manual quote PDF preview failed", err);
       toast.error("Could not build the document. Please try again.");
@@ -285,11 +289,7 @@ export function ManualQuotePdfTool({
                   <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
                 </a>
               </div>
-              <iframe
-                title="Manual quote PDF preview"
-                src={previewUrl}
-                className="h-[32rem] w-full rounded-xl border border-border"
-              />
+              {previewBytes && <PdfPreview bytes={previewBytes} fallbackUrl={previewUrl} />}
               <p className="mt-2 text-xs text-muted-foreground">
                 Edit anything above and press Preview PDF again to refresh this document.
               </p>
