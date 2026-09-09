@@ -52,6 +52,7 @@ export function ManualQuotePdfTool({
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewName, setPreviewName] = useState("quote.pdf");
+  const [previewBytes, setPreviewBytes] = useState<Uint8Array | null>(null);
   const [busy, setBusy] = useState(false);
   const [emailing, setEmailing] = useState(false);
   const [to, setTo] = useState(clientEmail ?? "");
