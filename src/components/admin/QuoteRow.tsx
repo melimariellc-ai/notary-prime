@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
+import { Clock, Eye, ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   createStripeQuoteInvoice,
