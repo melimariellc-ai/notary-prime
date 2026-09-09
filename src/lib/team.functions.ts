@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isAdminUser, loadPermissions } from "./permissions.functions";
+import { OWNER_EMAIL, OWNER_USER_ID, isOwnerAccount } from "./owner";
 
 const ALLOWED_ROLES = ["notary", "employee", "admin"] as const;
 type AllowedRole = (typeof ALLOWED_ROLES)[number];
@@ -19,11 +20,24 @@ export type TeamMember = {
   is_active: boolean;
   deactivated_at: string | null;
   archived_at: string | null;
+  is_owner?: boolean;
 };
 
 /** Same server-side admin check used when creating accounts. */
 async function isAdmin(supabase: SupabaseClient, userId: string): Promise<boolean> {
   return isAdminUser(supabase, userId);
+}
+
+/**
+ * Hard block, checked before anything else and not overridable by any
+ * permission. Resolves the target's email so the rule holds even if the row is
+ * reached by id alone.
+ */
+async function isProtectedOwner(userId: string): Promise<boolean> {
+  if (userId === OWNER_USER_ID) return true;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin.auth.admin.getUserById(userId);
+  return isOwnerAccount(userId, data?.user?.email ?? null);
 }
 
 export const listTeamMembers = createServerFn({ method: "GET" })
@@ -56,14 +70,38 @@ export const listTeamMembers = createServerFn({ method: "GET" })
       throw new Error("Could not load the team list.");
     }
 
+    const members = (rows ?? []).map((m) => ({
+      ...m,
+      is_owner: isOwnerAccount(m.id, m.email),
+    })) as TeamMember[];
+
+    // The Owner is always shown, even if they have no profile row yet.
+    if (!members.some((m) => m.is_owner)) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: ownerUser } = await supabaseAdmin.auth.admin.getUserById(OWNER_USER_ID);
+      if (ownerUser?.user) {
+        members.unshift({
+          id: ownerUser.user.id,
+          name: (ownerUser.user.user_metadata?.["full_name"] as string) || "Owner",
+          email: ownerUser.user.email ?? OWNER_EMAIL,
+          role: "admin",
+          is_active: true,
+          deactivated_at: null,
+          archived_at: null,
+          is_owner: true,
+        });
+      }
+    }
+
     return {
       forbidden: false as const,
-      members: (rows ?? []) as TeamMember[],
+      members,
       meId: context.userId,
       canArchiveUsers: permissions.includes("can_archive_users"),
       canDeactivateUsers: permissions.includes("can_deactivate_users"),
     };
   });
+
 
 
 export const setTeamMemberRole = createServerFn({ method: "POST" })
