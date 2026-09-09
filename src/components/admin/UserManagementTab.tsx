@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Shield, UserCheck, UserX } from "lucide-react";
 import { listTeamMembers, setTeamMemberActive, setTeamMemberRole } from "@/lib/team.functions";
+import type { TeamMember } from "@/lib/team.functions";
 import { Card, CardHeader } from "@/components/admin/ui/Card";
 import { Badge } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
