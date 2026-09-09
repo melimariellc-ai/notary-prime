@@ -53,7 +53,12 @@ export function Nav() {
           />
 
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg tracking-tight whitespace-nowrap">Enliven Notary</span>
+            <span
+              className="font-display text-lg tracking-[0.015em] whitespace-nowrap"
+              style={{ fontWeight: 400, fontVariationSettings: '"opsz" 144, "wght" 400' }}
+            >
+              Enliven Notary
+            </span>
             <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-white/60 whitespace-nowrap">
               Mobile · Online · Trusted
             </span>
