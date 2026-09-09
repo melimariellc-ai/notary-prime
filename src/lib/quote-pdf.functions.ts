@@ -173,7 +173,11 @@ export const previewQuotePdf = createServerFn({ method: "POST" })
         },
       });
 
-      return { ok: true as const, pdfBase64: toBase64(bytes) };
+      return {
+        ok: true as const,
+        pdfBase64: toBase64(bytes),
+        fileName: safeFileName(appointment.name, "draft0000"),
+      };
     } catch (err) {
       console.error("Failed to build quote preview", err);
       return { ok: false as const, message: "Could not build the preview. Please try again." };
@@ -256,6 +260,128 @@ export const emailQuotePdf = createServerFn({ method: "POST" })
       return { ok: true as const, message: `Quote emailed to ${recipient}.` };
     } catch (err) {
       console.error("Failed to email quote PDF", err);
+      return { ok: false as const, message: "Could not send the quote document. Please try again." };
+    }
+  });
+
+/**
+ * Emails a manually built (unsaved) quote document as a PDF attachment.
+ * Standalone backup path: it does NOT create a Stripe invoice or a quote row.
+ */
+export const emailDraftQuotePdf = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (data: {
+      appointmentId: string;
+      lineItems: { description: string; quantity: number; unit_price: number }[];
+      notes?: string | null;
+      to?: string | null;
+      message?: string | null;
+    }) => {
+      const appointmentId = String(data?.appointmentId ?? "");
+      if (!UUID.test(appointmentId)) throw new Error("Invalid appointment id.");
+      const raw = Array.isArray(data?.lineItems) ? data.lineItems : [];
+      if (!raw.length) throw new Error("Add at least one line item.");
+      const lineItems = raw.map((l, i) => {
+        const description = String(l?.description ?? "").trim();
+        const quantity = Number(l?.quantity);
+        const unit_price = Number(l?.unit_price);
+        if (!description) throw new Error(`Line ${i + 1}: description is required.`);
+        if (!Number.isFinite(quantity) || quantity <= 0) throw new Error(`Line ${i + 1}: quantity must be above 0.`);
+        if (!Number.isFinite(unit_price) || unit_price < 0) throw new Error(`Line ${i + 1}: unit price is invalid.`);
+        return { description, quantity: Math.round(quantity), unit_price: Math.round(unit_price * 100) / 100 };
+      });
+      const to = data?.to ? String(data.to).trim() : "";
+      if (to && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) throw new Error("That email address doesn't look right.");
+      return {
+        appointmentId,
+        lineItems,
+        notes: data?.notes ? String(data.notes).slice(0, 1000) : null,
+        to: to || null,
+        message: data?.message ? String(data.message).slice(0, 1000) : null,
+      };
+    },
+  )
+  .handler(async ({ data, context }) => {
+    if (!(await canManageQuotes(context.supabase, context.userId)))
+      return { ok: false as const, message: "Only Admin and Employee accounts can email quotes." };
+
+    const resendKey = process.env["RESEND_API_KEY"];
+    if (!resendKey) return { ok: false as const, message: "Email sending isn't configured yet." };
+
+    try {
+      const { data: appointment, error } = await context.supabase
+        .from("appointments")
+        .select("name, email, phone, service, meeting_type, preferred_date, preferred_time, address")
+        .eq("id", data.appointmentId)
+        .maybeSingle();
+      if (error || !appointment) return { ok: false as const, message: "Could not find that request." };
+
+      const recipient = data.to ?? appointment.email;
+      if (!recipient) return { ok: false as const, message: "There's no email address on this request." };
+
+      const [{ buildQuotePdf }, { loadBusinessProfile }] = await Promise.all([
+        import("./quote-pdf.server"),
+        import("./business-profile.server"),
+      ]);
+      const profile = await loadBusinessProfile();
+      const subtotal = Math.round(data.lineItems.reduce((s, l) => s + l.quantity * l.unit_price, 0) * 100) / 100;
+
+      const bytes = await buildQuotePdf({
+        profile,
+        quote: {
+          id: "00000000-manual",
+          line_items: data.lineItems as unknown as QuoteLineItem[],
+          subtotal,
+          total: subtotal,
+          status: "draft",
+          notes: data.notes,
+          hosted_invoice_url: null,
+          sent_at: null,
+          created_at: new Date().toISOString(),
+        },
+        appointment: {
+          name: appointment.name,
+          email: appointment.email,
+          phone: appointment.phone,
+          service: appointment.service,
+          meeting_type: appointment.meeting_type,
+          preferred_date: appointment.preferred_date,
+          preferred_time: appointment.preferred_time,
+          address: appointment.address,
+        },
+      });
+
+      const intro = data.message?.trim();
+      const html = `<div style="font-family:Helvetica,Arial,sans-serif;color:#1b1d21;font-size:15px;line-height:1.6">
+<p>Hi ${appointment.name.split(" ")[0] || "there"},</p>
+<p>${intro ? intro.replace(/</g, "&lt;") : `Please find your quote from ${profile.business_name} attached as a PDF.`}</p>
+<p>Questions? Just reply to this email or call ${profile.phone}.</p>
+<p style="color:#6b6f76;font-size:13px">${profile.business_name} · ${profile.service_area}</p>
+</div>`;
+
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+        body: JSON.stringify({
+          from: `${profile.business_name} <outreach@send.enlivennotary.com>`,
+          reply_to: profile.email,
+          to: [recipient],
+          subject: `Your quote from ${profile.business_name}`,
+          html,
+          attachments: [{ filename: safeFileName(appointment.name, "manual00"), content: toBase64(bytes) }],
+        }),
+      });
+
+      if (!res.ok) {
+        const detail = await res.text();
+        console.error("Resend manual quote PDF send failed", res.status, detail.slice(0, 500));
+        return { ok: false as const, message: "The quote document couldn't be emailed. Please try again." };
+      }
+
+      return { ok: true as const, message: `Quote document emailed to ${recipient}.` };
+    } catch (err) {
+      console.error("Failed to email manual quote PDF", err);
       return { ok: false as const, message: "Could not send the quote document. Please try again." };
     }
   });
