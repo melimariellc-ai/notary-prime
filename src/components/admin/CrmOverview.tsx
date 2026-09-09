@@ -65,9 +65,9 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
   let offset = 0;
 
   return (
-    <div className="relative mx-auto h-52 w-52">
+    <div className="relative mx-auto aspect-square w-full max-w-[22rem]">
       <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" role="group" aria-label="Pipeline stage mix">
-        <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--color-muted)" strokeWidth="20" />
+        <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--color-muted)" strokeWidth="24" />
         {total > 0 &&
           counts.map(({ stage, count, color }) => {
             if (count === 0) return null;
@@ -79,7 +79,7 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
                 to="/admin/crm"
                 search={{ stage }}
                 aria-label={`${stage}: ${count} contacts. View filtered list.`}
-                className="cursor-pointer outline-none [&>circle]:transition-[stroke-width,opacity] [&>circle]:hover:stroke-[26] focus-visible:[&>circle]:stroke-[26]"
+                className="cursor-pointer outline-none [&>circle]:transition-[stroke-width,opacity] [&>circle]:hover:stroke-[30] focus-visible:[&>circle]:stroke-[30]"
               >
                 <circle
                   cx="90"
@@ -87,7 +87,7 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
                   r={radius}
                   fill="none"
                   stroke={color}
-                  strokeWidth="20"
+                  strokeWidth="24"
                   strokeDasharray={dash}
                   strokeDashoffset={-offset}
                 />
@@ -98,7 +98,7 @@ function Donut({ counts, total }: { counts: StageCount[]; total: number }) {
           })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-display text-4xl tracking-tight">{total}</span>
+        <span className="font-display text-5xl tracking-tight md:text-6xl">{total}</span>
         <span className="text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">Contacts</span>
       </div>
     </div>
