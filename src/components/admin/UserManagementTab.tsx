@@ -153,11 +153,17 @@ export function UserManagementTab() {
 
   return (
     <Card>
-      <CardHeader title="Team members" icon={Shield} />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <CardHeader title="Team members" icon={Shield} />
+        <Button type="button" variant="primary" size="sm" onClick={() => setAddOpen(true)}>
+          <UserPlus className="h-4 w-4" /> Add member
+        </Button>
+      </div>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         Change what someone can access, or switch off their sign-in without removing any of their past
         work. Deactivated and archived people keep their history, assignments, and record of changes.
       </p>
+
 
       {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
       {notice && <p className="mt-4 text-sm text-muted-foreground">{notice}</p>}
