@@ -45,8 +45,8 @@ export function BusinessProfileTab() {
     <Card>
       <CardHeader title="Business profile" />
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        These details are the single source of truth for the admin system — outreach emails, team invitations, and
-        anywhere else the business is named will use whatever you save here.
+        Keep your business information up to date here. These details are used across outreach emails, team
+        invitations, and other areas of the platform.
       </p>
 
       {notice && <p className="mt-6 rounded-xl bg-secondary px-4 py-3 text-sm text-foreground">{notice}</p>}
