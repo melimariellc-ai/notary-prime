@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const ACTIVITY_TYPES = ["Call", "Email", "Meeting", "Referral sent", "Note", "Follow-up"] as const;
+const ACTIVITY_TYPES = ["Call", "Email", "Meeting", "Note"] as const;
 type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
 function uuid(value: unknown): string {
