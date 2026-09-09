@@ -82,14 +82,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
   /** Validated line items, or null after showing the reason. */
   function validated(): QuoteLineItem[] | null {
     const lineItems: QuoteLineItem[] = lines.map((l) => ({
-      description: l.description.trim(),
-      quantity: Number(l.quantity),
+      description: l.description.trim() || "Notary services",
+      quantity: Number(l.quantity) || 1,
       unit_price: Number(l.unit_price),
     }));
-    if (lineItems.some((l) => !l.description)) {
-      toast.error("Every line item needs a description.");
-      return null;
-    }
     if (lineItems.some((l) => !Number.isFinite(l.quantity) || l.quantity <= 0)) {
       toast.error("Quantities must be greater than 0.");
       return null;
@@ -192,7 +188,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
               <div key={i} className="flex flex-wrap items-end gap-3">
                 <div className="min-w-[12rem] flex-1">
                   <label htmlFor={`desc-${appointmentId}-${i}`} className="block text-xs text-muted-foreground">
-                    Description
+                    Description (optional)
                   </label>
                   <input
                     id={`desc-${appointmentId}-${i}`}
