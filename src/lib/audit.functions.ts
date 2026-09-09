@@ -26,10 +26,12 @@ export const listAuditLog = createServerFn({ method: "GET" })
     return { table: table as AuditTable, recordId };
   })
   .handler(async ({ data, context }) => {
+    const tableNames =
+      data.table === "business_contacts" ? ["business_contacts", "contact_activities"] : [data.table];
     const { data: rows, error } = await context.supabase
       .from("audit_log")
       .select("id, action, field_name, old_value, new_value, changed_by_email, changed_at")
-      .eq("table_name", data.table)
+      .in("table_name", tableNames)
       .eq("record_id", data.recordId)
       .order("changed_at", { ascending: false })
       .limit(200);
