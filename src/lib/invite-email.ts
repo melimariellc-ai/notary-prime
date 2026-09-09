@@ -4,7 +4,6 @@
 
 import logoAsset from "@/assets/enliven-logo.png.asset.json";
 import lockupAsset from "@/assets/enliven-lockup.png.asset.json";
-import markGoldAsset from "@/assets/enliven-mark-gold.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
