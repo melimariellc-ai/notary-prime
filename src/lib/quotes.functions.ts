@@ -159,7 +159,24 @@ export const createStripeQuoteInvoice = createServerFn({ method: "POST" })
         console.error("Failed to save quote", error);
         return { ok: false as const, message: "The invoice was sent but the quote could not be saved." };
       }
+
+      // Record the first history entry with the staff member who sent it.
+      const { data: actor } = await context.supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const { error: historyError } = await context.supabase.from("quote_status_events").insert({
+        quote_id: quote.id,
+        status: "sent",
+        source: "staff",
+        changed_by: context.userId,
+        changed_by_email: actor?.email ?? null,
+      });
+      if (historyError) console.error("Failed to record quote history", historyError);
+
       return { ok: true as const, quote };
+
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not create the invoice.";
       return { ok: false as const, message };
