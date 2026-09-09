@@ -114,10 +114,9 @@ export const previewQuotePdf = createServerFn({ method: "POST" })
       const raw = Array.isArray(data?.lineItems) ? data.lineItems : [];
       if (!raw.length) throw new Error("Add at least one line item.");
       const lineItems = raw.map((l, i) => {
-        const description = String(l?.description ?? "").trim();
-        const quantity = Number(l?.quantity);
+        const description = String(l?.description ?? "").trim() || "Notary services";
+        const quantity = Number(l?.quantity) || 1;
         const unit_price = Number(l?.unit_price);
-        if (!description) throw new Error(`Line ${i + 1}: description is required.`);
         if (!Number.isFinite(quantity) || quantity <= 0) throw new Error(`Line ${i + 1}: quantity must be above 0.`);
         if (!Number.isFinite(unit_price) || unit_price < 0) throw new Error(`Line ${i + 1}: unit price is invalid.`);
         return { description, quantity: Math.round(quantity), unit_price: Math.round(unit_price * 100) / 100 };
@@ -283,10 +282,9 @@ export const emailDraftQuotePdf = createServerFn({ method: "POST" })
       const raw = Array.isArray(data?.lineItems) ? data.lineItems : [];
       if (!raw.length) throw new Error("Add at least one line item.");
       const lineItems = raw.map((l, i) => {
-        const description = String(l?.description ?? "").trim();
-        const quantity = Number(l?.quantity);
+        const description = String(l?.description ?? "").trim() || "Notary services";
+        const quantity = Number(l?.quantity) || 1;
         const unit_price = Number(l?.unit_price);
-        if (!description) throw new Error(`Line ${i + 1}: description is required.`);
         if (!Number.isFinite(quantity) || quantity <= 0) throw new Error(`Line ${i + 1}: quantity must be above 0.`);
         if (!Number.isFinite(unit_price) || unit_price < 0) throw new Error(`Line ${i + 1}: unit price is invalid.`);
         return { description, quantity: Math.round(quantity), unit_price: Math.round(unit_price * 100) / 100 };
