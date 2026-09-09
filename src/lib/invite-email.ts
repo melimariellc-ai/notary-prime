@@ -2,11 +2,12 @@
 // The secure password-setup URL is never printed as text — it is only ever
 // used as the href of the "Set Up Your Password" button.
 
-import logoAsset from "@/assets/enliven-logo.png.asset.json";
+import logoAsset from "@/assets/enliven-logo-gold.png.asset.json";
 import { escapeHtml, fillPlaceholders } from "./email-templates";
 
 const SITE_URL = "https://enlivennotary.com";
 export const LOGO_URL = `${SITE_URL}${logoAsset.url}`;
+
 
 const CHARCOAL = "#2b3244";
 const GOLD = "#b08a3c";
@@ -71,10 +72,20 @@ export function renderInviteEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};padding:24px 12px">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e7e0d1">
-  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:32px 24px">
-    <img src="${LOGO_URL}" width="150" alt="${escapeHtml(businessName)}" style="display:block;width:150px;max-width:70%;height:auto;border:0;margin:0 auto"/>
-    <p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#d8c9a3">Mobile &middot; Online &middot; Trusted</p>
+  <tr><td align="center" bgcolor="${CHARCOAL}" style="background-color:${CHARCOAL};padding:28px 24px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto">
+      <tr>
+        <td valign="middle" style="padding-right:10px">
+          <img src="${LOGO_URL}" width="48" height="48" alt="${escapeHtml(businessName)}" style="display:block;width:48px;height:48px;border:0"/>
+        </td>
+        <td valign="middle" align="left">
+          <div style="font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:22px;color:#ffffff;white-space:nowrap">Enliven Notary</div>
+          <div style="margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6)">Mobile &middot; Online &middot; Trusted</div>
+        </td>
+      </tr>
+    </table>
   </td></tr>
+
   <tr><td height="4" style="height:4px;background-color:${GOLD};font-size:0;line-height:0">&nbsp;</td></tr>
   <tr><td style="padding:32px 32px 24px">
 ${bodyHtml}
