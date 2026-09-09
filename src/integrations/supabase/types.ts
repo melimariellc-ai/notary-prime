@@ -589,6 +589,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           created_at: string
           deactivated_at: string | null
           deactivated_by: string | null
@@ -600,6 +602,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           created_at?: string
           deactivated_at?: string | null
           deactivated_by?: string | null
@@ -611,6 +615,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           created_at?: string
           deactivated_at?: string | null
           deactivated_by?: string | null
@@ -739,6 +745,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_permissions: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          id: string
+          permission: Database["public"]["Enums"]["admin_permission"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          permission: Database["public"]["Enums"]["admin_permission"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          permission?: Database["public"]["Enums"]["admin_permission"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -786,6 +816,13 @@ export type Database = {
           reason: string
         }[]
       }
+      has_permission: {
+        Args: {
+          _permission: Database["public"]["Enums"]["admin_permission"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -806,6 +843,10 @@ export type Database = {
       }
     }
     Enums: {
+      admin_permission:
+        | "can_archive_users"
+        | "can_deactivate_users"
+        | "can_grant_permissions"
       app_role: "notary" | "admin" | "employee"
       bd_activity_type: "Call" | "Email" | "Meeting" | "Note"
       bd_contact_type:
@@ -957,6 +998,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_permission: [
+        "can_archive_users",
+        "can_deactivate_users",
+        "can_grant_permissions",
+      ],
       app_role: ["notary", "admin", "employee"],
       bd_activity_type: ["Call", "Email", "Meeting", "Note"],
       bd_contact_type: [
