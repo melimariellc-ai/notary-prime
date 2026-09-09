@@ -42,7 +42,7 @@ const STATUS_LABEL: Record<string, string> = {
   paid: "Paid",
 };
 
-export function QuoteRow({ appointmentId }: { appointmentId: string }) {
+export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string; clientEmail?: string | null }) {
   const fetchQuotes = useServerFn(listQuotes);
   const fetchHistory = useServerFn(listQuoteHistory);
   const sendQuote = useServerFn(createStripeQuoteInvoice);
