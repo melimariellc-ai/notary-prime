@@ -16,7 +16,7 @@ import {
   Receipt,
   Search,
   SlidersHorizontal,
-  UserPlus,
+  
   Users,
   X,
 } from "lucide-react";

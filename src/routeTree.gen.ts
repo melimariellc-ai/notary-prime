@@ -34,7 +34,6 @@ import { Route as AdminProtectedNotificationsRouteImport } from './routes/admin.
 import { Route as AdminProtectedQuotesRouteImport } from './routes/admin._protected.quotes'
 import { Route as AdminProtectedReportsRouteImport } from './routes/admin._protected.reports'
 import { Route as AdminProtectedSettingsRouteImport } from './routes/admin._protected.settings'
-import { Route as AdminProtectedUsersRouteImport } from './routes/admin._protected.users'
 import { Route as ApiPublicAppointmentNotifyRouteImport } from './routes/api/public/appointment-notify'
 import { Route as ApiPublicCrmFollowupDigestRouteImport } from './routes/api/public/crm-followup-digest'
 import { Route as ApiPublicResendInboundRouteImport } from './routes/api/public/resend-inbound'
@@ -169,11 +168,6 @@ const AdminProtectedSettingsRoute = AdminProtectedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminProtectedRoute,
 } as any)
-const AdminProtectedUsersRoute = AdminProtectedUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminProtectedRoute,
-} as any)
 const ApiPublicAppointmentNotifyRoute =
   ApiPublicAppointmentNotifyRouteImport.update({
     id: '/api/public/appointment-notify',
@@ -239,7 +233,6 @@ export interface FileRoutesByFullPath {
   '/admin/quotes': typeof AdminProtectedQuotesRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/settings': typeof AdminProtectedSettingsRoute
-  '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
@@ -273,7 +266,6 @@ export interface FileRoutesByTo {
   '/admin/quotes': typeof AdminProtectedQuotesRoute
   '/admin/reports': typeof AdminProtectedReportsRoute
   '/admin/settings': typeof AdminProtectedSettingsRoute
-  '/admin/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
@@ -308,7 +300,6 @@ export interface FileRoutesById {
   '/admin/_protected/quotes': typeof AdminProtectedQuotesRoute
   '/admin/_protected/reports': typeof AdminProtectedReportsRoute
   '/admin/_protected/settings': typeof AdminProtectedSettingsRoute
-  '/admin/_protected/users': typeof AdminProtectedUsersRoute
   '/api/public/appointment-notify': typeof ApiPublicAppointmentNotifyRoute
   '/api/public/crm-followup-digest': typeof ApiPublicCrmFollowupDigestRoute
   '/api/public/resend-inbound': typeof ApiPublicResendInboundRoute
@@ -344,7 +335,6 @@ export interface FileRouteTypes {
     | '/admin/quotes'
     | '/admin/reports'
     | '/admin/settings'
-    | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
@@ -378,7 +368,6 @@ export interface FileRouteTypes {
     | '/admin/quotes'
     | '/admin/reports'
     | '/admin/settings'
-    | '/admin/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
@@ -412,7 +401,6 @@ export interface FileRouteTypes {
     | '/admin/_protected/quotes'
     | '/admin/_protected/reports'
     | '/admin/_protected/settings'
-    | '/admin/_protected/users'
     | '/api/public/appointment-notify'
     | '/api/public/crm-followup-digest'
     | '/api/public/resend-inbound'
@@ -623,13 +611,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedSettingsRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
-    '/admin/_protected/users': {
-      id: '/admin/_protected/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminProtectedUsersRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
     '/api/public/appointment-notify': {
       id: '/api/public/appointment-notify'
       path: '/api/public/appointment-notify'
@@ -689,7 +670,6 @@ interface AdminProtectedRouteChildren {
   AdminProtectedQuotesRoute: typeof AdminProtectedQuotesRoute
   AdminProtectedReportsRoute: typeof AdminProtectedReportsRoute
   AdminProtectedSettingsRoute: typeof AdminProtectedSettingsRoute
-  AdminProtectedUsersRoute: typeof AdminProtectedUsersRoute
   AdminProtectedIndexRoute: typeof AdminProtectedIndexRoute
   AdminProtectedCrmContactIdRoute: typeof AdminProtectedCrmContactIdRoute
   AdminProtectedCrmIndexRoute: typeof AdminProtectedCrmIndexRoute
@@ -702,7 +682,6 @@ const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedQuotesRoute: AdminProtectedQuotesRoute,
   AdminProtectedReportsRoute: AdminProtectedReportsRoute,
   AdminProtectedSettingsRoute: AdminProtectedSettingsRoute,
-  AdminProtectedUsersRoute: AdminProtectedUsersRoute,
   AdminProtectedIndexRoute: AdminProtectedIndexRoute,
   AdminProtectedCrmContactIdRoute: AdminProtectedCrmContactIdRoute,
   AdminProtectedCrmIndexRoute: AdminProtectedCrmIndexRoute,

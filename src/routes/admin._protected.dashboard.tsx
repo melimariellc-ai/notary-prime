@@ -118,12 +118,13 @@ function DashboardPage() {
             )}
             {isAdmin && (
               <QuickLink
-                to="/admin/users"
+                to="/admin/settings"
                 icon={UserPlus}
-                title="Add user"
-                body="Invite a notary, employee, or admin with a secure password link."
+                title="Team members"
+                body="Add a notary, employee, or admin, and manage existing accounts."
               />
             )}
+
           </div>
         </div>
       </AdminSection>
