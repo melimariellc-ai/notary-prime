@@ -157,3 +157,63 @@ export const setTeamMemberActive = createServerFn({ method: "POST" })
       message: data.active ? "Account reactivated." : "Account deactivated — they can no longer sign in.",
     };
   });
+
+export const setTeamMemberArchived = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string; archived: boolean }) => {
+    const userId = String(data.userId ?? "");
+    if (!UUID.test(userId)) throw new Error("Invalid user.");
+    return { userId, archived: Boolean(data.archived) };
+  })
+  .handler(async ({ data, context }) => {
+    const admin = await isAdmin(context.supabase, context.userId);
+    const permissions = admin ? await loadPermissions(context.userId) : [];
+    if (!permissions.includes("can_archive_users"))
+      return { ok: false as const, message: "You do not have permission to archive users." };
+    if (data.userId === context.userId)
+      return { ok: false as const, message: "You cannot archive your own account." };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Archiving only hides the person from the default team list and blocks
+    // sign-in. Nothing is deleted: history, audit records, assigned
+    // appointments and contacts all keep pointing at this same account.
+    const { data: existing, error: readError } = await supabaseAdmin
+      .from("profiles")
+      .select("is_active")
+      .eq("id", data.userId)
+      .maybeSingle();
+    if (readError) {
+      console.error("Failed to read profile", readError);
+      return { ok: false as const, message: "Could not update that account." };
+    }
+
+    // Un-archiving restores sign-in only when the account is not also deactivated.
+    const shouldBan = data.archived || existing?.is_active === false;
+    const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      ban_duration: shouldBan ? BAN_FOREVER : "none",
+    });
+    if (authError) {
+      console.error("Failed to update sign-in access", authError);
+      return { ok: false as const, message: "Could not update sign-in access." };
+    }
+
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        archived_at: data.archived ? new Date().toISOString() : null,
+        archived_by: data.archived ? context.userId : null,
+      })
+      .eq("id", data.userId);
+    if (profileError) {
+      console.error("Failed to update archive status", profileError);
+      return { ok: false as const, message: "Sign-in access changed, but the status could not be saved." };
+    }
+
+    return {
+      ok: true as const,
+      message: data.archived
+        ? "Account archived — they can no longer sign in, and all of their records stay in place."
+        : "Account restored.",
+    };
+  });
