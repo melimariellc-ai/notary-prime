@@ -285,7 +285,7 @@ export function ManualQuotePdfTool({
                   <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
                 </a>
               </div>
-              {previewBytes && <PdfPreview bytes={previewBytes} fallbackUrl={previewUrl} />
+              {previewBytes && <PdfPreview bytes={previewBytes} fallbackUrl={previewUrl} />}
               <p className="mt-2 text-xs text-muted-foreground">
                 Edit anything above and press Preview PDF again to refresh this document.
               </p>
