@@ -1,0 +1,2 @@
+REVOKE ALL ON FUNCTION public.has_permission(uuid, public.admin_permission) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.has_permission(uuid, public.admin_permission) TO service_role;
