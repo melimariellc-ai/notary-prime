@@ -142,7 +142,14 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
           <FileText className="h-4 w-4 text-gold" />
           {latest ? "Send another quote" : "Send formal quote"}
         </Button>
-        <ManualQuotePdfTool appointmentId={appointmentId} clientEmail={clientEmail} />
+        <ManualQuotePdfTool
+          key={latest?.id ?? "blank"}
+          appointmentId={appointmentId}
+          clientEmail={clientEmail}
+          initialLines={latest?.line_items}
+          initialNotes={latest?.notes ?? null}
+          openLabel={latest ? "Edit & preview PDF" : "Build quote PDF manually"}
+        />
         {latest && (
           <button
             type="button"
