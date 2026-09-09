@@ -123,6 +123,7 @@ export function UserManagementTab() {
             {data.members.map((m) => {
               const isMe = m.id === data.meId;
               const archived = Boolean(m.archived_at);
+              const isOwner = Boolean(m.is_owner);
               return (
                 <tr key={m.id} className="border-b border-border/60">
                   <td className="py-4 pr-4 font-medium">
@@ -137,7 +138,7 @@ export function UserManagementTab() {
                     <select
                       id={`role-${m.id}`}
                       value={m.role}
-                      disabled={isMe || busy}
+                      disabled={isMe || isOwner || busy}
                       onChange={(e) => roleMutation.mutate({ userId: m.id, role: e.target.value })}
                       className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 disabled:opacity-60"
                     >
@@ -154,11 +155,16 @@ export function UserManagementTab() {
                         {m.is_active ? "Active" : "Inactive"}
                       </Badge>
                       {archived && <Badge tone="critical">Archived</Badge>}
+                      {isOwner && <Badge tone="neutral">Owner</Badge>}
                     </div>
                   </td>
                   {showActions && (
                     <td className="py-4 text-right">
-                      {isMe ? (
+                      {isOwner ? (
+                        <span className="text-xs text-muted-foreground">
+                          Owner account — protected, cannot be deactivated
+                        </span>
+                      ) : isMe ? (
                         <span className="text-xs text-muted-foreground">
                           You can't deactivate your own account
                         </span>
