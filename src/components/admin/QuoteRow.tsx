@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
+import { Clock, Eye, ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   createStripeQuoteInvoice,
@@ -10,6 +10,7 @@ import {
   type Quote,
   type QuoteLineItem,
 } from "@/lib/quotes.functions";
+import { previewQuotePdf } from "@/lib/quote-pdf.functions";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
 import { QuotePdfActions } from "@/components/admin/QuotePdfActions";
@@ -60,6 +61,9 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
   const [lines, setLines] = useState<DraftLine[]>([{ ...emptyLine }]);
   const [notes, setNotes] = useState("");
   const [sending, setSending] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewing, setPreviewing] = useState(false);
+  const makePreview = useServerFn(previewQuotePdf);
 
   const { data: history } = useQuery({
     queryKey: ["quote-history", appointmentId],
@@ -74,11 +78,20 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
     return sum + (Number.isFinite(q) && Number.isFinite(p) ? q * p : 0);
   }, 0);
 
+  function clearPreview() {
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  }
+
   function update(i: number, patch: Partial<DraftLine>) {
+    clearPreview();
     setLines((prev) => prev.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
   }
 
-  async function submit() {
+  /** Validated line items, or null after showing the reason. */
+  function validated(): QuoteLineItem[] | null {
     const lineItems: QuoteLineItem[] = lines.map((l) => ({
       description: l.description.trim(),
       quantity: Number(l.quantity),
@@ -86,16 +99,44 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
     }));
     if (lineItems.some((l) => !l.description)) {
       toast.error("Every line item needs a description.");
-      return;
+      return null;
     }
     if (lineItems.some((l) => !Number.isFinite(l.quantity) || l.quantity <= 0)) {
       toast.error("Quantities must be greater than 0.");
-      return;
+      return null;
     }
     if (lineItems.some((l) => !Number.isFinite(l.unit_price) || l.unit_price < 0)) {
       toast.error("Enter a valid unit price for every line item.");
-      return;
+      return null;
     }
+    return lineItems;
+  }
+
+  async function preview() {
+    const lineItems = validated();
+    if (!lineItems) return;
+    setPreviewing(true);
+    try {
+      const res = await makePreview({ data: { appointmentId, lineItems, notes: notes.trim() || null } });
+      if (!res.ok) {
+        toast.error(res.message);
+        return;
+      }
+      const bytes = Uint8Array.from(atob(res.pdfBase64), (c) => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      clearPreview();
+      setPreviewUrl(url);
+    } catch (err) {
+      console.error("Quote preview failed", err);
+      toast.error("Could not build the preview. Please try again.");
+    } finally {
+      setPreviewing(false);
+    }
+  }
+
+  async function submit() {
+    const lineItems = validated();
+    if (!lineItems) return;
 
     setSending(true);
     try {
@@ -103,6 +144,7 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
       if (res.ok) {
         toast.success("Quote sent — the client has been emailed an invoice.");
         setOpen(false);
+        clearPreview();
         setLines([{ ...emptyLine }]);
         setNotes("");
         await refetch();
@@ -222,7 +264,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
                 </div>
                 <button
                   type="button"
-                  onClick={() => setLines((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== i)))}
+                  onClick={() => {
+                    clearPreview();
+                    setLines((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== i)));
+                  }}
                   disabled={lines.length === 1}
                   aria-label={`Remove line item ${i + 1}`}
                   className="mb-1 inline-flex items-center rounded-full border border-border p-2 text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40"
@@ -235,7 +280,10 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
 
           <button
             type="button"
-            onClick={() => setLines((prev) => [...prev, { ...emptyLine }])}
+            onClick={() => {
+              clearPreview();
+              setLines((prev) => [...prev, { ...emptyLine }]);
+            }}
             className="mt-4 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
             <Plus className="h-3.5 w-3.5" /> Add line item
@@ -249,10 +297,40 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
               id={`notes-${appointmentId}`}
               rows={3}
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={(e) => {
+                clearPreview();
+                setNotes(e.target.value);
+              }}
               className={`mt-1 w-full ${INPUT_CLASS}`}
             />
           </div>
+
+          {previewUrl && (
+            <div className="mt-5 rounded-2xl border border-border bg-background p-3">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                  Preview — exactly what the client receives
+                </p>
+                <a
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-accent-foreground underline underline-offset-4"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
+                </a>
+              </div>
+              <iframe
+                title="Quote PDF preview"
+                src={previewUrl}
+                className="h-[32rem] w-full rounded-xl border border-border"
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Edit anything above to update it — the preview refreshes when you press Preview PDF again. The payment
+                link is added once the quote is sent.
+              </p>
+            </div>
+          )}
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
             <p className="text-sm">
@@ -262,6 +340,16 @@ export function QuoteRow({ appointmentId, clientEmail }: { appointmentId: string
             <div className="flex items-center gap-3">
               <Button type="button" variant="secondary" size="sm" onClick={() => setOpen(false)}>
                 Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => void preview()}
+                disabled={previewing || sending}
+              >
+                <Eye className="h-4 w-4 text-gold" />
+                {previewing ? "Building…" : previewUrl ? "Refresh preview" : "Preview PDF"}
               </Button>
               <Button type="button" variant="primary" size="sm" onClick={() => void submit()} disabled={sending}>
                 {sending ? "Sending…" : "Send quote"}

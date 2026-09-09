@@ -100,6 +100,86 @@ async function renderQuote(supabase: SupabaseClient, quoteId: string) {
   };
 }
 
+/** Renders a not-yet-sent draft quote so staff can review the real document first. */
+export const previewQuotePdf = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (data: {
+      appointmentId: string;
+      lineItems: { description: string; quantity: number; unit_price: number }[];
+      notes?: string | null;
+    }) => {
+      const appointmentId = String(data?.appointmentId ?? "");
+      if (!UUID.test(appointmentId)) throw new Error("Invalid appointment id.");
+      const raw = Array.isArray(data?.lineItems) ? data.lineItems : [];
+      if (!raw.length) throw new Error("Add at least one line item.");
+      const lineItems = raw.map((l, i) => {
+        const description = String(l?.description ?? "").trim();
+        const quantity = Number(l?.quantity);
+        const unit_price = Number(l?.unit_price);
+        if (!description) throw new Error(`Line ${i + 1}: description is required.`);
+        if (!Number.isFinite(quantity) || quantity <= 0) throw new Error(`Line ${i + 1}: quantity must be above 0.`);
+        if (!Number.isFinite(unit_price) || unit_price < 0) throw new Error(`Line ${i + 1}: unit price is invalid.`);
+        return { description, quantity: Math.round(quantity), unit_price: Math.round(unit_price * 100) / 100 };
+      });
+      return {
+        appointmentId,
+        lineItems,
+        notes: data?.notes ? String(data.notes).slice(0, 1000) : null,
+      };
+    },
+  )
+  .handler(async ({ data, context }) => {
+    if (!(await canManageQuotes(context.supabase, context.userId)))
+      return { ok: false as const, message: "Only Admin and Employee accounts can preview quotes." };
+
+    try {
+      const { data: appointment, error } = await context.supabase
+        .from("appointments")
+        .select("name, email, phone, service, meeting_type, preferred_date, preferred_time, address")
+        .eq("id", data.appointmentId)
+        .maybeSingle();
+      if (error || !appointment) return { ok: false as const, message: "Could not find that request." };
+
+      const [{ buildQuotePdf }, { loadBusinessProfile }] = await Promise.all([
+        import("./quote-pdf.server"),
+        import("./business-profile.server"),
+      ]);
+      const profile = await loadBusinessProfile();
+      const subtotal = Math.round(data.lineItems.reduce((s, l) => s + l.quantity * l.unit_price, 0) * 100) / 100;
+
+      const bytes = await buildQuotePdf({
+        profile,
+        quote: {
+          id: "00000000-preview",
+          line_items: data.lineItems as unknown as QuoteLineItem[],
+          subtotal,
+          total: subtotal,
+          status: "draft",
+          notes: data.notes,
+          hosted_invoice_url: null,
+          sent_at: null,
+          created_at: new Date().toISOString(),
+        },
+        appointment: {
+          name: appointment.name,
+          email: appointment.email,
+          phone: appointment.phone,
+          service: appointment.service,
+          meeting_type: appointment.meeting_type,
+          preferred_date: appointment.preferred_date,
+          preferred_time: appointment.preferred_time,
+          address: appointment.address,
+        },
+      });
+
+      return { ok: true as const, pdfBase64: toBase64(bytes) };
+    } catch (err) {
+      console.error("Failed to build quote preview", err);
+      return { ok: false as const, message: "Could not build the preview. Please try again." };
+    }
+  });
+
 /** Returns the quote PDF as base64 so the browser can download it. */
 export const getQuotePdf = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
