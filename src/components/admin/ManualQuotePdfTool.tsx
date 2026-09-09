@@ -69,6 +69,7 @@ export function ManualQuotePdfTool({
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
+    setPreviewBytes(null);
   }
 
   function update(i: number, patch: Partial<DraftLine>) {
