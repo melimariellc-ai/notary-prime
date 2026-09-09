@@ -69,6 +69,7 @@ export function renderInviteEmail(
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${escapeHtml(subject)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&display=swap" rel="stylesheet"/>
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM}">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">Set up your ${escapeHtml(businessName)} password to access your account.</div>
