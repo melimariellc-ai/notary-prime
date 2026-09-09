@@ -115,6 +115,7 @@ export function ManualQuotePdfTool({
       clearPreview();
       setPreviewUrl(url);
       setPreviewName(res.fileName);
+      setPreviewBytes(bytes);
     } catch (err) {
       console.error("Manual quote PDF preview failed", err);
       toast.error("Could not build the document. Please try again.");
