@@ -73,9 +73,24 @@ function SettingsPage() {
   const { defs, contactTypes, pipelineStages } = Route.useLoaderData();
   const [tab, setTab] = useState<TabId>("fields");
   const fetchRole = useServerFn(getMyRole);
-  const { data: me, isLoading } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole({}) });
+  // The sign-in token can still be refreshing on first paint; retry briefly so a
+  // transient "no session yet" never surfaces as an error.
+  const retryAuth = {
+    retry: 3,
+    retryDelay: (attempt: number) => Math.min(400 * 2 ** attempt, 2000),
+  } as const;
+  const { data: me, isLoading } = useQuery({
+    queryKey: ["my-role"],
+    queryFn: () => fetchRole({}),
+    ...retryAuth,
+  });
   const fetchPermissions = useServerFn(getMyPermissions);
-  const { data: perms } = useQuery({ queryKey: ["my-permissions"], queryFn: () => fetchPermissions({}) });
+  const { data: perms } = useQuery({
+    queryKey: ["my-permissions"],
+    queryFn: () => fetchPermissions({}),
+    ...retryAuth,
+  });
+
 
   if (isLoading) return <div className="px-8 py-24 text-center text-muted-foreground">Loading…</div>;
   if (!me?.isAdmin)
