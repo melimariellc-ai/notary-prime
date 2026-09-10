@@ -36,7 +36,7 @@ function bookingUrl(lead: { name: string; email: string; phone: string; notes: s
 }
 
 const GREETING =
-  "Hi! I'm Hailey, Enliven Notary's AI assistant. I can answer questions about our services and help you book an appointment. How can I help?";
+  "Hi, I'm Hailey, Enliven Notary's virtual assistant. How can I help you today?";
 
 
 
@@ -145,11 +145,11 @@ export function SiteChatWidget() {
             setOpen(true);
             track("opened");
           }}
-          aria-label="Ask Hailey"
+          aria-label="Chat now"
           className="btn-gold fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium shadow-lg"
         >
           <MessageSquare className="h-4 w-4" aria-hidden="true" />
-          Ask Hailey
+          Chat now
         </button>
       )}
 
