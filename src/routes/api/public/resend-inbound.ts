@@ -111,15 +111,17 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           return new Response("Invalid email id", { status: 400 });
         }
 
-        // Resend usually includes the body inline on email.received; only call the
-        // API when it doesn't (send-only API keys can't read receiving anyway).
+        // Resend's email.received webhook carries metadata only — the body must
+        // be retrieved. That retrieval needs a full-access key; the send-only
+        // key returns 401, so prefer a dedicated read key when configured.
         let received: ReceivedEmail = {};
         const inlineText = event.data?.text ?? "";
         const inlineHtml = event.data?.html ?? "";
+        const readKey = process.env["RESEND_INBOUND_API_KEY"] || apiKey;
         if (!inlineText && !inlineHtml) {
           try {
             const res = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
-              headers: { Authorization: `Bearer ${apiKey}` },
+              headers: { Authorization: `Bearer ${readKey}` },
             });
             if (!res.ok) {
               const detail = await res.text();
@@ -131,6 +133,7 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
             console.error("resend-inbound: fetch threw", error);
           }
         }
+
 
         const fromRaw = received.from ?? event.data?.from ?? "";
         if (!fromRaw) return new Response("Missing sender", { status: 400 });
