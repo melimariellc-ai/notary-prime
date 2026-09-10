@@ -1,0 +1,1 @@
+ALTER TABLE public.business_profile ADD COLUMN IF NOT EXISTS ai_chat_widget_enabled boolean NOT NULL DEFAULT false;

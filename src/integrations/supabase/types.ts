@@ -337,6 +337,7 @@ export type Database = {
       }
       business_profile: {
         Row: {
+          ai_chat_widget_enabled: boolean
           business_name: string
           created_at: string
           default_referral_rate: number
@@ -354,6 +355,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_chat_widget_enabled?: boolean
           business_name?: string
           created_at?: string
           default_referral_rate?: number
@@ -371,6 +373,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_chat_widget_enabled?: boolean
           business_name?: string
           created_at?: string
           default_referral_rate?: number
