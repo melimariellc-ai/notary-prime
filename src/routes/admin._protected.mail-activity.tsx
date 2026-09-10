@@ -369,6 +369,7 @@ function MailActivityPage() {
                     <Row
                       key={row.id}
                       row={row}
+                      focused={focusedId === row.id}
                       {...(row.draftId && draftsById.get(row.draftId)
                         ? { draft: draftsById.get(row.draftId)! }
                         : {})}
