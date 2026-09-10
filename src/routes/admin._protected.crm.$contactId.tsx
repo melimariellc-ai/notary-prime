@@ -645,8 +645,10 @@ function ContactDetailPage() {
               Write and send an email to {contact.business_name} yourself. AI help is optional — nothing sends until you
               press Send.
             </p>
-            <div className="mt-5">
+            <div className="mt-5" ref={composeRef}>
               <MailReplyComposer
+                key={`compose-${composeSignal}`}
+                defaultOpen={composeSignal > 0}
                 contactId={contact.id}
                 contactEmail={contact.email}
                 businessName={contact.business_name}
