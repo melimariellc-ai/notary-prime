@@ -1,0 +1,1 @@
+- [ ] Chat widget: fix circular navy avatar being visually cut off; verify with screenshot

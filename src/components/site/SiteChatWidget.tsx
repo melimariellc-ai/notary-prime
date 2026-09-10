@@ -159,12 +159,12 @@ export function SiteChatWidget() {
           style={{ borderRadius: "20px" }}
         >
           {/* navy stripe */}
-          <div className="h-1 w-full bg-charcoal" />
+          <div className="h-2 w-full shrink-0 bg-charcoal" />
 
-          <div className="relative px-4 pb-3 pt-0">
+          <div className="relative px-4 pb-3 pt-2">
             <div className="flex items-start gap-3">
               <span
-                className="-mt-[17px] inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-charcoal ring-4 ring-card"
+                className="-mt-[6px] inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full border-[3px] border-card bg-charcoal"
                 aria-hidden="true"
               >
                 <Feather className="h-4 w-4 text-gold" />
