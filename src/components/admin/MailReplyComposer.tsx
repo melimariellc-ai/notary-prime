@@ -8,6 +8,7 @@ import {
   getInboundEmail,
   sendMailReply,
 } from "@/lib/mail-reply.functions";
+import { SEND_PROFILE_LIST, type SendProfileId } from "@/lib/send-profiles";
 
 /**
  * Reply to a received email without leaving the CRM. The original message is
@@ -23,6 +24,7 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
   const [showInstructions, setShowInstructions] = useState(false);
   const [instructions, setInstructions] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [sendProfile, setSendProfile] = useState<SendProfileId>("reply_in_thread");
 
   const loadEmail = useServerFn(getInboundEmail);
   const generate = useServerFn(generateMailReplyDraft);
@@ -68,7 +70,7 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
     setSending(true);
     setFeedback(null);
     try {
-      const result = await send({ data: { inboundEmailId, subject: subjectValue, body } });
+      const result = await send({ data: { inboundEmailId, subject: subjectValue, body, sendProfile } });
       if (result.ok) {
         setFeedback({ tone: "ok", text: `Reply sent to ${result.sentTo}.` });
         setBody("");
@@ -141,6 +143,23 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
                 className="mt-1.5 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm"
               />
             </label>
+            <label className="block">
+              <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                Send from
+              </span>
+              <select
+                value={sendProfile}
+                onChange={(e) => setSendProfile(e.target.value as SendProfileId)}
+                className="mt-1.5 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm"
+              >
+                {SEND_PROFILE_LIST.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
 
             {/* Optional helper — writing a reply by hand needs none of this. */}
             <div className="rounded-xl border border-border bg-background p-3">

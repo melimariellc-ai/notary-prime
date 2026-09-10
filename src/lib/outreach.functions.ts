@@ -130,12 +130,12 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
 
 export const sendOutreachEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { contactId: string; subject: string; body: string }) => {
+  .inputValidator((data: { contactId: string; subject: string; body: string; sendProfile?: string }) => {
     const subject = String(data.subject ?? "").trim().slice(0, 200);
     const body = String(data.body ?? "").trim();
     if (!subject) throw new Error("Add a subject line.");
     if (!body) throw new Error("The email is empty.");
-    return { contactId: uuid(data.contactId), subject, body };
+    return { contactId: uuid(data.contactId), subject, body, sendProfile: data.sendProfile };
   })
   .handler(async ({ data, context }) => {
     const resendKey = process.env["RESEND_API_KEY"];
@@ -152,6 +152,8 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const senderName = (await loadBusinessProfile()).business_name;
+    const { resolveSendProfile } = await import("./send-profiles");
+    const profile = resolveSendProfile(data.sendProfile, "outreach");
 
     const html = `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c;white-space:pre-wrap">${data.body
       .replace(/&/g, "&amp;")
@@ -162,8 +164,8 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: `${senderName} <outreach@send.enlivennotary.com>`,
-        reply_to: "replies@replies.enlivennotary.com",
+        from: `${senderName} <${profile.from}>`,
+        reply_to: profile.replyTo,
         to: [contact.email],
         subject: data.subject,
         text: data.body,
