@@ -90,7 +90,7 @@ function NotificationScroller({ children }: { children: ReactNode }) {
           makes the list overflow instead of scroll. */}
       <div
         ref={ref}
-        className="max-h-[min(65dvh,28rem)] overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+        className="max-h-[min(50dvh,19rem)] overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
       >
         <ul className="divide-y divide-border">{children}</ul>
       </div>
