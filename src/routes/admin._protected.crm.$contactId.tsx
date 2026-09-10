@@ -528,8 +528,17 @@ function ContactDetailPage() {
               )}
               {contact.email && (
                 <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-2 hover:text-foreground">
-                  <Mail className="h-4 w-4 text-accent-foreground" /> Email
+                  <Mail className="h-4 w-4 text-accent-foreground" /> Email app
                 </a>
+              )}
+              {contact.email && (
+                <button
+                  type="button"
+                  onClick={openCompose}
+                  className="inline-flex items-center gap-2 hover:text-foreground"
+                >
+                  <Pencil className="h-4 w-4 text-accent-foreground" /> Compose
+                </button>
               )}
               <span className="inline-flex items-center gap-2">
                 <CalendarClock className="h-4 w-4 text-accent-foreground" /> {referralCount} job
