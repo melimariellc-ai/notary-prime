@@ -14,6 +14,112 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointment_drafts: {
+        Row: {
+          address: string | null
+          ai_error: string | null
+          ai_summary: string | null
+          appointment_id: string | null
+          contact_id: string | null
+          created_at: string
+          email: string | null
+          found_fields: string[]
+          from_email: string
+          from_name: string | null
+          id: string
+          inbound_email_id: string | null
+          meeting_type: string | null
+          name: string | null
+          notes: string | null
+          phone: string | null
+          preferred_date: string | null
+          preferred_time: string | null
+          raw_body: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          ai_error?: string | null
+          ai_summary?: string | null
+          appointment_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          email?: string | null
+          found_fields?: string[]
+          from_email: string
+          from_name?: string | null
+          id?: string
+          inbound_email_id?: string | null
+          meeting_type?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          raw_body?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          ai_error?: string | null
+          ai_summary?: string | null
+          appointment_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          email?: string | null
+          found_fields?: string[]
+          from_email?: string
+          from_name?: string | null
+          id?: string
+          inbound_email_id?: string | null
+          meeting_type?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          raw_body?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_drafts_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_drafts_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "business_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_drafts_inbound_email_id_fkey"
+            columns: ["inbound_email_id"]
+            isOneToOne: false
+            referencedRelation: "inbound_emails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           address: string | null
