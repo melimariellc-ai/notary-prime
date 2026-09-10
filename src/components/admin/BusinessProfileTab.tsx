@@ -129,6 +129,26 @@ export function BusinessProfileTab() {
         </fieldset>
 
         <fieldset className="rounded-2xl border border-border p-6">
+          <legend className="px-2 text-sm font-medium text-foreground">Appointment readiness check</legend>
+          <label className="block max-w-xs text-sm">
+            <span className="mb-2 block font-medium text-foreground">Hours before the appointment</span>
+            <input
+              type="number"
+              min={1}
+              max={336}
+              step={1}
+              className={field}
+              value={String(form.readiness_check_hours)}
+              onChange={(e) => set("readiness_check_hours", Number(e.target.value))}
+            />
+          </label>
+          <p className="mt-5 text-xs text-muted-foreground">
+            This many hours before a confirmed appointment, the client automatically gets a short checklist by text —
+            or by email when no phone number is on file. It is a reminder only and never changes the appointment.
+          </p>
+        </fieldset>
+
+        <fieldset className="rounded-2xl border border-border p-6">
           <legend className="px-2 text-sm font-medium text-foreground">Credentials</legend>
           <div className="space-y-4">
             <label className="flex items-center gap-3 text-sm text-foreground">
