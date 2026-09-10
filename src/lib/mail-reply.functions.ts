@@ -125,7 +125,7 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
     }
 
     const { loadBusinessProfile } = await import("./business-profile.server");
-    const { credentialsLine } = await import("./business-profile");
+    const { credentialsLine, servicePricingLines } = await import("./business-profile");
     const { loadEmailTemplate } = await import("./email-templates.server");
     const { fillPlaceholders } = await import("./email-templates");
     const profile = await loadBusinessProfile();
