@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS public.appointment_drafts_inbound_email_idx;
+CREATE UNIQUE INDEX appointment_drafts_inbound_email_idx ON public.appointment_drafts (inbound_email_id);
