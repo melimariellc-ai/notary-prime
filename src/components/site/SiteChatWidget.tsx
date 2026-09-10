@@ -233,14 +233,6 @@ export function SiteChatWidget() {
               <a href="/book" className={pillClass}>
                 Book an appointment
               </a>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => void sendMessage(PRICING_QUESTION)}
-                className={pillClass}
-              >
-                View pricing
-              </button>
               <button type="button" onClick={() => setShowLead(true)} className={pillClass}>
                 Request a callback
               </button>
