@@ -26,6 +26,9 @@ export type MailActivityRow = {
   kind: string;
   contactId: string | null;
   contactName: string | null;
+  /** Set when this email produced an appointment intake draft. */
+  draftId: string | null;
+  draftStatus: string | null;
 };
 
 const clean = (value: string) => value.replace(/\s+/g, " ").trim();
