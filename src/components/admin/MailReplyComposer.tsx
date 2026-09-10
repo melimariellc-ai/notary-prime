@@ -76,7 +76,8 @@ export function MailReplyComposer(props: Props) {
           : await generateFresh({ data: { contactId: props.contactId!, extraInstructions: instructions } });
       if (result.ok) {
         setBody(result.body);
-        if (mode === "compose" && "subject" in result && result.subject && !subject) setSubject(result.subject);
+        const suggested = (result as { subject?: string }).subject;
+        if (mode === "compose" && suggested && !subject) setSubject(suggested);
         setFeedback({ tone: "ok", text: "Draft ready — edit it as you like, nothing has been sent." });
       } else {
         setFeedback({ tone: "error", text: result.message });
