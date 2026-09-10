@@ -61,7 +61,7 @@ function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean 
  * "more below" hint whenever there is content past the bottom of the list, so a
  * long list never looks like it simply stops.
  */
-function NotificationScroller({ children }: { children: React.ReactNode }) {
+function NotificationScroller({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLUListElement>(null);
   const [moreBelow, setMoreBelow] = useState(false);
 
