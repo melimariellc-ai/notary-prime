@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   LayoutDashboard,
   LogOut,
+  MailQuestion,
   Menu,
   PanelLeftOpen,
   Receipt,
