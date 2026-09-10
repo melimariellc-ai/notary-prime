@@ -98,6 +98,7 @@ function DashboardPage() {
             <div className="grid gap-6 lg:col-span-2">
               <RecentActivityCard />
               <InboundRepliesCard />
+              <SiteChatEngagementCard />
             </div>
           )}
 
