@@ -30,7 +30,6 @@ import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$ci
 import { Route as AdminProtectedIndexRouteImport } from './routes/admin._protected.index'
 import { Route as AdminProtectedDashboardRouteImport } from './routes/admin._protected.dashboard'
 import { Route as AdminProtectedDuplicatesRouteImport } from './routes/admin._protected.duplicates'
-import { Route as AdminProtectedEmailRequestsRouteImport } from './routes/admin._protected.email-requests'
 import { Route as AdminProtectedMailActivityRouteImport } from './routes/admin._protected.mail-activity'
 import { Route as AdminProtectedNotificationsRouteImport } from './routes/admin._protected.notifications'
 import { Route as AdminProtectedQuotesRouteImport } from './routes/admin._protected.quotes'
@@ -151,12 +150,6 @@ const AdminProtectedDuplicatesRoute =
     path: '/duplicates',
     getParentRoute: () => AdminProtectedRoute,
   } as any)
-const AdminProtectedEmailRequestsRoute =
-  AdminProtectedEmailRequestsRouteImport.update({
-    id: '/email-requests',
-    path: '/email-requests',
-    getParentRoute: () => AdminProtectedRoute,
-  } as any)
 const AdminProtectedMailActivityRoute =
   AdminProtectedMailActivityRouteImport.update({
     id: '/mail-activity',
@@ -256,7 +249,6 @@ export interface FileRoutesByFullPath {
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
-  '/admin/email-requests': typeof AdminProtectedEmailRequestsRoute
   '/admin/mail-activity': typeof AdminProtectedMailActivityRoute
   '/admin/notifications': typeof AdminProtectedNotificationsRoute
   '/admin/quotes': typeof AdminProtectedQuotesRoute
@@ -293,7 +285,6 @@ export interface FileRoutesByTo {
   '/service-areas': typeof ServiceAreasIndexRoute
   '/admin/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/duplicates': typeof AdminProtectedDuplicatesRoute
-  '/admin/email-requests': typeof AdminProtectedEmailRequestsRoute
   '/admin/mail-activity': typeof AdminProtectedMailActivityRoute
   '/admin/notifications': typeof AdminProtectedNotificationsRoute
   '/admin/quotes': typeof AdminProtectedQuotesRoute
@@ -331,7 +322,6 @@ export interface FileRoutesById {
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/admin/_protected/dashboard': typeof AdminProtectedDashboardRoute
   '/admin/_protected/duplicates': typeof AdminProtectedDuplicatesRoute
-  '/admin/_protected/email-requests': typeof AdminProtectedEmailRequestsRoute
   '/admin/_protected/mail-activity': typeof AdminProtectedMailActivityRoute
   '/admin/_protected/notifications': typeof AdminProtectedNotificationsRoute
   '/admin/_protected/quotes': typeof AdminProtectedQuotesRoute
@@ -370,7 +360,6 @@ export interface FileRouteTypes {
     | '/service-areas/'
     | '/admin/dashboard'
     | '/admin/duplicates'
-    | '/admin/email-requests'
     | '/admin/mail-activity'
     | '/admin/notifications'
     | '/admin/quotes'
@@ -407,7 +396,6 @@ export interface FileRouteTypes {
     | '/service-areas'
     | '/admin/dashboard'
     | '/admin/duplicates'
-    | '/admin/email-requests'
     | '/admin/mail-activity'
     | '/admin/notifications'
     | '/admin/quotes'
@@ -444,7 +432,6 @@ export interface FileRouteTypes {
     | '/service-areas/'
     | '/admin/_protected/dashboard'
     | '/admin/_protected/duplicates'
-    | '/admin/_protected/email-requests'
     | '/admin/_protected/mail-activity'
     | '/admin/_protected/notifications'
     | '/admin/_protected/quotes'
@@ -636,13 +623,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProtectedDuplicatesRouteImport
       parentRoute: typeof AdminProtectedRoute
     }
-    '/admin/_protected/email-requests': {
-      id: '/admin/_protected/email-requests'
-      path: '/email-requests'
-      fullPath: '/admin/email-requests'
-      preLoaderRoute: typeof AdminProtectedEmailRequestsRouteImport
-      parentRoute: typeof AdminProtectedRoute
-    }
     '/admin/_protected/mail-activity': {
       id: '/admin/_protected/mail-activity'
       path: '/mail-activity'
@@ -747,7 +727,6 @@ declare module '@tanstack/react-router' {
 interface AdminProtectedRouteChildren {
   AdminProtectedDashboardRoute: typeof AdminProtectedDashboardRoute
   AdminProtectedDuplicatesRoute: typeof AdminProtectedDuplicatesRoute
-  AdminProtectedEmailRequestsRoute: typeof AdminProtectedEmailRequestsRoute
   AdminProtectedMailActivityRoute: typeof AdminProtectedMailActivityRoute
   AdminProtectedNotificationsRoute: typeof AdminProtectedNotificationsRoute
   AdminProtectedQuotesRoute: typeof AdminProtectedQuotesRoute
@@ -761,7 +740,6 @@ interface AdminProtectedRouteChildren {
 const AdminProtectedRouteChildren: AdminProtectedRouteChildren = {
   AdminProtectedDashboardRoute: AdminProtectedDashboardRoute,
   AdminProtectedDuplicatesRoute: AdminProtectedDuplicatesRoute,
-  AdminProtectedEmailRequestsRoute: AdminProtectedEmailRequestsRoute,
   AdminProtectedMailActivityRoute: AdminProtectedMailActivityRoute,
   AdminProtectedNotificationsRoute: AdminProtectedNotificationsRoute,
   AdminProtectedQuotesRoute: AdminProtectedQuotesRoute,

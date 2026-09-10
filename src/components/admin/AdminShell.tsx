@@ -75,7 +75,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Work",
     items: [
       { to: "/admin", label: "Appointment Requests", icon: CalendarClock, exact: true, need: "crm" },
-      { to: "/admin/email-requests", label: "Email Requests", icon: MailQuestion, exact: true, need: "crm" },
+      
       { to: "/admin/mail-activity", label: "Mail Activity", icon: Mails, exact: true, need: "crm" },
       { to: "/admin/crm", label: "Business Development CRM", icon: Users, exact: false, need: "crm" },
       { to: "/admin/duplicates", label: "Duplicate Contacts", icon: Copy, exact: true, need: "crm" },
