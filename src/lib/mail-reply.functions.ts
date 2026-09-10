@@ -160,7 +160,12 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
       guidance,
       "",
       "Reply requirements:",
-      "- Answer what they actually asked; do not invent appointments, prices, or commitments that were not offered.",
+      "- Answer what they actually asked; do not invent appointments or commitments that were not offered.",
+      "STRICT FACTUAL GROUNDING — no invented numbers:",
+      "- You have NOT been given any pricing, rates, discounts, or promotions. None exist in the information above unless written there verbatim.",
+      "- Never state a price, fee, rate, dollar amount, discount, percentage off, promotional offer, package deal, or turnaround guarantee unless that exact figure appears verbatim in their email above, in the CRM record above, or in the additional instructions below.",
+      "- If they ask about cost, or if mentioning pricing would help, keep it general: offer to share current pricing, or invite a call or email to go over rates. Never estimate, guess, or illustrate with an example number.",
+      "- The same applies to any claim of a current special, seasonable offer, or new-client discount: do not mention one unless it is stated verbatim above.",
       "- Do not include a subject line. Return only the body of the reply.",
       ...(data.extraInstructions
         ? [
