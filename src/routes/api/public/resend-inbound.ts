@@ -192,6 +192,18 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           console.error("resend-inbound: appointment draft failed", error);
         }
 
+        // A reply to a readiness check lands on the client's record and on the check.
+        try {
+          const { logReadinessReply } = await import("@/lib/readiness-check.server");
+          await logReadinessReply({
+            address: fromEmail,
+            body: text || strip(html),
+            matchBy: "email",
+          });
+        } catch (error) {
+          console.error("resend-inbound: readiness reply logging failed", error);
+        }
+
         if (contact?.id) {
           const body = text || html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
           const description = [
