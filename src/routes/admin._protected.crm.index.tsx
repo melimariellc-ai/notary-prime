@@ -238,10 +238,15 @@ function CrmPage() {
   }
 
   async function applyBulkStage() {
+    const stage = bulkTarget || pipelineStages[0] || "";
+    if (!stage) {
+      toast.error("Choose a stage first.");
+      return;
+    }
     try {
-      const res = await bulkStage({ data: { ids: selected, stage: bulkTarget } });
+      const res = await bulkStage({ data: { ids: selected, stage } });
       if (res.ok) {
-        toast.success(`${res.updated} contact${res.updated === 1 ? "" : "s"} moved to ${bulkTarget}.`);
+        toast.success(`${res.updated} contact${res.updated === 1 ? "" : "s"} moved to ${stage}.`);
         setSelected([]);
         await router.invalidate();
       } else {
