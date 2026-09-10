@@ -17,6 +17,55 @@ export const getSiteChatConfig = createServerFn({ method: "GET" }).handler(async
   };
 });
 
+/** Public: records that a visitor opened the chat, or started a conversation. Counted once per session. */
+export const logSiteChatEvent = createServerFn({ method: "POST" })
+  .inputValidator((data: { sessionId: string; event: "opened" | "conversation_started"; path?: string }) => {
+    const sessionId = text(data.sessionId, 64);
+    const event = data.event === "conversation_started" ? ("conversation_started" as const) : ("opened" as const);
+    if (!sessionId) throw new Error("Missing session.");
+    return { sessionId, event, path: text(data.path, 300) };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error } = await supabaseAdmin.from("site_chat_events").insert({
+        session_id: data.sessionId,
+        event_type: data.event,
+        page_path: data.path || null,
+      });
+      // Duplicate = same session already counted for this event; that is expected.
+      if (error && error.code !== "23505") console.error("site chat: event log failed", error.message);
+    } catch (error) {
+      console.error("site chat: event log failed", error);
+    }
+    return { ok: true as const };
+  });
+
+/** Staff-only: engagement counts for the website chat widget. */
+export const getSiteChatEngagement = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await context.supabase
+      .from("site_chat_events")
+      .select("event_type, created_at")
+      .gte("created_at", since);
+    if (error) {
+      console.error("site chat: engagement read failed", error.message);
+      return { opened: 0, conversations: 0, opened7: 0, conversations7: 0 };
+    }
+    const rows = data ?? [];
+    const cutoff7 = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const count = (event: string, from?: string) =>
+      rows.filter((r) => r.event_type === event && (!from || String(r.created_at) >= from)).length;
+    return {
+      opened: count("opened"),
+      conversations: count("conversation_started"),
+      opened7: count("opened", cutoff7),
+      conversations7: count("conversation_started", cutoff7),
+    };
+  });
+
 function buildSystemPrompt(profile: BusinessProfile): string {
   const pricing = servicePricingLines(profile);
   return [
