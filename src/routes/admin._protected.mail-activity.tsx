@@ -188,15 +188,6 @@ function Row({
     </Link>
   ) : null;
 
-  const selfLink = (
-    <Link
-      to="/admin/mail-activity"
-      search={{ email: row.id }}
-      className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
-    >
-      Link to this email
-    </Link>
-  );
 
   return (
     <li
