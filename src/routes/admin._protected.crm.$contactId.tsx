@@ -621,6 +621,22 @@ function ContactDetailPage() {
 
           {tab === "Activity" && (
           <>
+          <Card>
+            <CardHeader title="Compose email" icon={Mail} />
+            <p className="mt-2 text-sm text-muted-foreground">
+              Write and send an email to {contact.business_name} yourself. AI help is optional — nothing sends until you
+              press Send.
+            </p>
+            <div className="mt-5">
+              <MailReplyComposer
+                contactId={contact.id}
+                contactEmail={contact.email}
+                businessName={contact.business_name}
+                onSent={() => router.invalidate()}
+              />
+            </div>
+          </Card>
+
           <OutreachPanel
             contactId={contact.id}
             businessName={contact.business_name}
