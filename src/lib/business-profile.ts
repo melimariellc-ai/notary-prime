@@ -11,6 +11,7 @@ export type BusinessProfile = {
   is_nna_certified: boolean;
   default_referral_rate: number;
   default_referral_rate_type: ReferralRateType;
+  readiness_check_hours: number;
 };
 
 export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
@@ -24,6 +25,7 @@ export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   is_nna_certified: true,
   default_referral_rate: 0,
   default_referral_rate_type: "percent",
+  readiness_check_hours: 24,
 };
 
 /** Human-readable credentials sentence built from the saved profile. */
