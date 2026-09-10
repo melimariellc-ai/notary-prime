@@ -146,6 +146,9 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
       `- Credentials: ${credentialsLine(profile)}`,
       `- Phone: ${profile.phone} · Email: ${profile.email}`,
       "",
+      ...(servicePricingLines(profile).length
+        ? ["Official current pricing (the ONLY prices you may state):", ...servicePricingLines(profile), ""]
+        : []),
       "Who wrote to us:",
       `- Name on the email: ${row.from_name ?? row.from_email}`,
       `- Email: ${row.from_email}`,
