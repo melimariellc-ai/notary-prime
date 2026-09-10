@@ -96,6 +96,7 @@ const ROUTE_LABELS: { match: (p: string) => boolean; label: string }[] = [
   { match: (p) => p === "/admin/dashboard", label: "Dashboard" },
   { match: (p) => p === "/admin" || p === "/admin/", label: "Appointment Requests" },
   { match: (p) => p.startsWith("/admin/email-requests"), label: "Email Requests" },
+  { match: (p) => p.startsWith("/admin/mail-activity"), label: "Mail Activity" },
   { match: (p) => p.startsWith("/admin/crm"), label: "CRM" },
   { match: (p) => p.startsWith("/admin/duplicates"), label: "Duplicate Contacts" },
   { match: (p) => p.startsWith("/admin/quotes"), label: "Quotes" },
