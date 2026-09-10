@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, Mails } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CalendarClock, Mails } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
