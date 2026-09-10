@@ -171,7 +171,7 @@ function Row({
     <Link
       to="/admin/crm/$contactId"
       params={{ contactId: row.contactId }}
-      hash="activity"
+      
       className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
     >
       View contact record
@@ -188,15 +188,6 @@ function Row({
     </Link>
   ) : null;
 
-  const selfLink = (
-    <Link
-      to="/admin/mail-activity"
-      search={{ email: row.id }}
-      className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
-    >
-      Link to this email
-    </Link>
-  );
 
   return (
     <li
@@ -237,7 +228,6 @@ function Row({
           <p className="flex flex-wrap gap-4 pl-11 text-xs">
             {contactLink}
             {appointmentLink}
-            {selfLink}
           </p>
         </div>
       )}
