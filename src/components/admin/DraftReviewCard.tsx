@@ -1,41 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
-import { MailQuestion } from "lucide-react";
-import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
+import { useEffect, useState } from "react";
 import { Card, SectionLabel } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { Button } from "@/components/admin/ui/Button";
 import {
-  listAppointmentDrafts,
   updateAppointmentDraft,
   approveAppointmentDraft,
   rejectAppointmentDraft,
   type AppointmentDraft,
 } from "@/lib/appointment-drafts.functions";
-
-export const Route = createFileRoute("/admin/_protected/email-requests")({
-  head: () => ({
-    meta: [
-      { title: "Email Requests | Enliven Notary" },
-      {
-        name: "description",
-        content: "Review appointment requests that arrived by email before they become confirmed bookings.",
-      },
-      { name: "robots", content: "noindex, nofollow" },
-      { property: "og:title", content: "Email Requests | Enliven Notary" },
-      { property: "og:description", content: "Private review queue for appointment requests received by email." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: EmailRequestsPage,
-  errorComponent: () => (
-    <div className="px-8 py-24 text-center text-muted-foreground">Something went wrong. Please refresh.</div>
-  ),
-  notFoundComponent: () => <div className="px-8 py-24 text-center text-muted-foreground">Page not found.</div>,
-});
 
 const STATUS_META: Record<string, { label: string; tone: BadgeTone }> = {
   pending_review: { label: "Pending review", tone: "warning" },
@@ -54,9 +28,6 @@ const FIELD_LABELS: Record<string, string> = {
   preferred_time: "Time",
   notes: "Notes",
 };
-
-const FILTERS = ["pending_review", "approved", "rejected", "all"] as const;
-type Filter = (typeof FILTERS)[number];
 
 type FormState = {
   name: string;
@@ -126,7 +97,12 @@ function Field({
   );
 }
 
-function DraftCard({ draft }: { draft: AppointmentDraft }) {
+/**
+ * Review panel for an appointment request that arrived by email. Used inside the
+ * Mail Activity feed — the approve/reject actions behave exactly as before, so
+ * nothing becomes a confirmed appointment without an explicit approval here.
+ */
+export function DraftReviewCard({ draft, bare = false }: { draft: AppointmentDraft; bare?: boolean }) {
   const queryClient = useQueryClient();
   const save = useServerFn(updateAppointmentDraft);
   const approve = useServerFn(approveAppointmentDraft);
@@ -146,7 +122,11 @@ function DraftCard({ draft }: { draft: AppointmentDraft }) {
 
   const set = (key: keyof FormState) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: ["appointment-drafts"] });
+  const refresh = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["appointment-drafts"] }),
+      queryClient.invalidateQueries({ queryKey: ["mail-activity"] }),
+    ]);
 
   async function run(kind: "save" | "approve" | "reject") {
     setBusy(kind);
@@ -183,13 +163,11 @@ function DraftCard({ draft }: { draft: AppointmentDraft }) {
     }
   }
 
-  return (
-    <Card>
+  const inner = (
+    <>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="font-display text-2xl leading-tight tracking-tight">
-            {draft.from_name ?? draft.from_email}
-          </h2>
+          <h3 className="font-display text-xl leading-tight tracking-tight">{draft.from_name ?? draft.from_email}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             {draft.subject ?? "(no subject)"} · {when(draft.created_at)}
           </p>
@@ -277,7 +255,7 @@ function DraftCard({ draft }: { draft: AppointmentDraft }) {
             <>
               <span className="text-sm text-muted-foreground">Not a booking request?</span>
               <Button variant="destructive" size="sm" disabled={busy !== null} onClick={() => run("reject")}>
-                {busy === "reject" ? "Rejecting…" : "Yes, reject"}
+                {busy === "reject" ? "Dismissing…" : "Yes, not a booking"}
               </Button>
               <Button variant="tertiary" size="sm" onClick={() => setConfirmReject(false)}>
                 Cancel
@@ -285,7 +263,7 @@ function DraftCard({ draft }: { draft: AppointmentDraft }) {
             </>
           ) : (
             <Button variant="tertiary" size="sm" onClick={() => setConfirmReject(true)}>
-              Reject
+              Not a booking
             </Button>
           )}
         </div>
@@ -296,94 +274,9 @@ function DraftCard({ draft }: { draft: AppointmentDraft }) {
           Approved {draft.reviewed_at ? when(draft.reviewed_at) : ""} — it now appears on Appointment Requests.
         </p>
       )}
-    </Card>
-  );
-}
-
-function EmailRequestsPage() {
-  const fetchDrafts = useServerFn(listAppointmentDrafts);
-  const { data, isLoading } = useQuery({
-    queryKey: ["appointment-drafts"],
-    queryFn: () => fetchDrafts({}),
-  });
-  const [filter, setFilter] = useState<Filter>("pending_review");
-
-  const drafts = data?.drafts ?? [];
-
-  // Arriving from Mail Activity with #draft-<id>: make sure that card is visible.
-  const targetDraftId = typeof window === "undefined" ? "" : window.location.hash.replace(/^#draft-/, "");
-  useEffect(() => {
-    if (!targetDraftId || targetDraftId.startsWith("#") || drafts.length === 0) return;
-    const match = drafts.find((d) => d.id === targetDraftId);
-    if (!match) return;
-    if (match.status !== filter && filter !== "all") setFilter("all");
-    const node = document.getElementById(`draft-${targetDraftId}`);
-    if (node) node.scrollIntoView({ behavior: "smooth", block: "start" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetDraftId, drafts.length, filter]);
-  const counts = useMemo(() => {
-    const base: Record<string, number> = { pending_review: 0, approved: 0, rejected: 0 };
-    for (const d of drafts) if (d.status in base) base[d.status] = (base[d.status] ?? 0) + 1;
-    return base;
-  }, [drafts]);
-
-  const visible = filter === "all" ? drafts : drafts.filter((d) => d.status === filter);
-
-  return (
-    <>
-      <AdminPageHeader
-        eyebrow="Work"
-        title="Email requests"
-        intro="Appointment requests that arrived by email. Nothing becomes a confirmed appointment until you approve it here."
-      />
-      <AdminSection className="grid gap-6">
-        {data?.forbidden ? (
-          <Card>
-            <p className="text-sm text-muted-foreground">You do not have access to email requests.</p>
-          </Card>
-        ) : (
-          <>
-            <div className="flex flex-wrap gap-2">
-              {FILTERS.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFilter(f)}
-                  className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                    filter === f ? "border-gold/45 bg-gold/12 text-accent-foreground" : "border-border hover:bg-secondary"
-                  }`}
-                >
-                  {f === "all" ? `All (${drafts.length})` : `${STATUS_META[f]!.label} (${counts[f] ?? 0})`}
-                </button>
-              ))}
-            </div>
-
-            {isLoading ? (
-              <Card>
-                <p className="text-sm text-muted-foreground" aria-busy="true">
-                  Loading email requests…
-                </p>
-              </Card>
-            ) : visible.length === 0 ? (
-              <Card>
-                <div className="flex items-start gap-3">
-                  <MailQuestion className="mt-0.5 h-5 w-5 shrink-0 text-accent-foreground" />
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Nothing here right now. When an email looks like a booking request, a draft appears here for you to
-                    review.
-                  </p>
-                </div>
-              </Card>
-            ) : (
-              visible.map((d) => (
-                <div key={d.id} id={`draft-${d.id}`} className="scroll-mt-24">
-                  <DraftCard draft={d} />
-                </div>
-              ))
-            )}
-          </>
-        )}
-      </AdminSection>
     </>
   );
+
+  if (bare) return <div className="rounded-2xl border border-border bg-background p-5">{inner}</div>;
+  return <Card>{inner}</Card>;
 }
