@@ -70,22 +70,13 @@ export function InboundRepliesCard() {
 
             return (
               <li key={item.id} className="first:-mt-2 last:-mb-2">
-                {item.contact_id ? (
-                  <Link
-                    to="/admin/crm/$contactId"
-                    params={{ contactId: item.contact_id }}
-                    className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
-                  >
-                    {body}
-                  </Link>
-                ) : (
-                  <a
-                    href={`mailto:${item.from_email}`}
-                    className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
-                  >
-                    {body}
-                  </a>
-                )}
+                <Link
+                  to="/admin/mail-activity"
+                  search={{ email: `inbound-${item.id}` }}
+                  className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  {body}
+                </Link>
               </li>
             );
           })}
