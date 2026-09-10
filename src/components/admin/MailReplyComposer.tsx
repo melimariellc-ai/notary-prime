@@ -28,10 +28,10 @@ type Props =
       onSent?: () => void | Promise<void>;
     };
 
-export function MailReplyComposer(props: Props) {
+export function MailReplyComposer(props: Props & { defaultOpen?: boolean }) {
   const mode = props.inboundEmailId ? ("reply" as const) : ("compose" as const);
   const inboundEmailId = props.inboundEmailId ?? "";
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(props.defaultOpen ?? false);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);

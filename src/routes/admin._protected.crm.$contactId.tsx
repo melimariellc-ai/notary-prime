@@ -336,6 +336,14 @@ function ContactDetailPage() {
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
+  const [composeSignal, setComposeSignal] = useState(0);
+  const composeRef = useRef<HTMLDivElement | null>(null);
+
+  function openCompose() {
+    setTab("Activity");
+    setComposeSignal((n) => n + 1);
+    setTimeout(() => composeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+  }
   // Links from Mail Activity land straight on the Activity tab.
   useEffect(() => {
     if (window.location.hash.replace("#", "").toLowerCase() === "activity") setTab("Activity");
@@ -520,8 +528,17 @@ function ContactDetailPage() {
               )}
               {contact.email && (
                 <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-2 hover:text-foreground">
-                  <Mail className="h-4 w-4 text-accent-foreground" /> Email
+                  <Mail className="h-4 w-4 text-accent-foreground" /> Email app
                 </a>
+              )}
+              {contact.email && (
+                <button
+                  type="button"
+                  onClick={openCompose}
+                  className="inline-flex items-center gap-2 hover:text-foreground"
+                >
+                  <Pencil className="h-4 w-4 text-accent-foreground" /> Compose
+                </button>
               )}
               <span className="inline-flex items-center gap-2">
                 <CalendarClock className="h-4 w-4 text-accent-foreground" /> {referralCount} job
@@ -628,8 +645,10 @@ function ContactDetailPage() {
               Write and send an email to {contact.business_name} yourself. AI help is optional — nothing sends until you
               press Send.
             </p>
-            <div className="mt-5">
+            <div className="mt-5" ref={composeRef}>
               <MailReplyComposer
+                key={`compose-${composeSignal}`}
+                defaultOpen={composeSignal > 0}
                 contactId={contact.id}
                 contactEmail={contact.email}
                 businessName={contact.business_name}
