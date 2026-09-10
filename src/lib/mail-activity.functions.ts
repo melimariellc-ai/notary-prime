@@ -124,6 +124,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
       const stamp = new Date(at).getTime();
       if (stamp > previous) replyTimes.set(address, stamp);
 
+      const draft = draftByInbound.get(String(r.id));
+
       rows.push({
         id: `inbound-${r.id}`,
         direction: "received",
@@ -132,9 +134,11 @@ export const listMailActivity = createServerFn({ method: "GET" })
         preview: clean(body).slice(0, 200),
         at,
         status: "received",
-        kind: "Reply received",
+        kind: draft ? "Appointment Intake" : "Reply received",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: draft?.id ?? null,
+        draftStatus: draft?.status ?? null,
       });
     }
 
