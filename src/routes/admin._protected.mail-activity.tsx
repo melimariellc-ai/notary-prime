@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownLeft, ArrowUpRight, CalendarClock, ChevronDown, Mails } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
@@ -9,9 +9,13 @@ import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { DraftReviewCard } from "@/components/admin/DraftReviewCard";
 import { MailReplyComposer } from "@/components/admin/MailReplyComposer";
 import { listMailActivity, type MailActivityRow } from "@/lib/mail-activity.functions";
+import { getInboundEmail } from "@/lib/mail-reply.functions";
 import { listAppointmentDrafts, type AppointmentDraft } from "@/lib/appointment-drafts.functions";
 
 export const Route = createFileRoute("/admin/_protected/mail-activity")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    email: typeof search["email"] === "string" && search["email"] ? String(search["email"]) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Mail Activity | Enliven Notary" },
