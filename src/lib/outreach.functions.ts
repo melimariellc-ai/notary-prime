@@ -162,8 +162,8 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: `${senderName} <outreach@send.enlivennotary.com>`,
-        reply_to: "replies@replies.enlivennotary.com",
+        from: `${senderName} <${profile.from}>`,
+        reply_to: profile.replyTo,
         to: [contact.email],
         subject: data.subject,
         text: data.body,
