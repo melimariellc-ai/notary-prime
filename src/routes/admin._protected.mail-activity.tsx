@@ -7,6 +7,7 @@ import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeade
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
 import { DraftReviewCard } from "@/components/admin/DraftReviewCard";
+import { MailReplyComposer } from "@/components/admin/MailReplyComposer";
 import { listMailActivity, type MailActivityRow } from "@/lib/mail-activity.functions";
 import { listAppointmentDrafts, type AppointmentDraft } from "@/lib/appointment-drafts.functions";
 
@@ -106,6 +107,10 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
     </>
   );
 
+  // Received emails can be answered right here, without leaving the CRM.
+  const inboundId = row.id.startsWith("inbound-") ? row.id.slice("inbound-".length) : null;
+  const reply = inboundId ? <MailReplyComposer inboundEmailId={inboundId} /> : null;
+
   // Emails that scored as a likely booking request open in place for review.
   if (draft) {
     return (
@@ -130,6 +135,7 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
             )}
           </div>
         )}
+        {reply}
       </li>
     );
   }
@@ -166,6 +172,7 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
       ) : (
         <div className="-mx-3 flex gap-3 px-3 py-4">{body}</div>
       )}
+      {reply}
     </li>
   );
 }
