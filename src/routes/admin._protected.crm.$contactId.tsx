@@ -349,6 +349,7 @@ function ContactDetailPage() {
     if (window.location.hash.replace("#", "").toLowerCase() === "activity") setTab("Activity");
   }, []);
   const [showAudit, setShowAudit] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState<string>("All");
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const pendingHighlight = useRef(false);
   const knownActivityIds = useRef<Set<string>>(new Set());
