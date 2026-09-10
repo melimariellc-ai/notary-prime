@@ -25,6 +25,16 @@ function chatSessionId() {
   }
 }
 
+function bookingUrl(lead: { name: string; email: string; phone: string; notes: string }) {
+  const params = new URLSearchParams();
+  if (lead.name.trim()) params.set("name", lead.name.trim());
+  if (lead.email.trim()) params.set("email", lead.email.trim());
+  if (lead.phone.trim()) params.set("phone", lead.phone.trim());
+  if (lead.notes.trim()) params.set("notes", lead.notes.trim());
+  const query = params.toString();
+  return query ? `/book?${query}` : "/book";
+}
+
 const GREETING =
   "Hi! Need a notarization? I can help with pricing, answer questions, or help you book. How can I help today?";
 
@@ -55,6 +65,7 @@ export function SiteChatWidget() {
   const [showLead, setShowLead] = useState(false);
   const [lead, setLead] = useState({ name: "", email: "", phone: "", notes: "" });
   const [leadStatus, setLeadStatus] = useState<string | null>(null);
+  const [bookingHref, setBookingHref] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
