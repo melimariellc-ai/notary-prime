@@ -164,6 +164,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: subject ? "Outreach email" : "Email logged",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 
@@ -182,6 +184,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: "Team invitation",
         contactId: byEmail.get(address)?.id as string | undefined ?? null,
         contactName: (byEmail.get(address)?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 
@@ -220,6 +224,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: "System email",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 
