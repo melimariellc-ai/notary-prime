@@ -198,10 +198,10 @@ export const captureSiteChatLead = createServerFn({ method: "POST" })
         }
         contactId = created.id as string;
       } else {
-        const patch: Record<string, string> = {};
-        if (data.email) patch["email"] = data.email;
-        if (data.phone) patch["phone"] = data.phone;
-        if (data.name) patch["contact_person"] = data.name;
+        const patch: { email?: string; phone?: string; contact_person?: string } = {};
+        if (data.email) patch.email = data.email;
+        if (data.phone) patch.phone = data.phone;
+        if (data.name) patch.contact_person = data.name;
         if (Object.keys(patch).length) {
           await supabaseAdmin.from("business_contacts").update(patch).eq("id", contactId);
         }
@@ -220,7 +220,7 @@ export const captureSiteChatLead = createServerFn({ method: "POST" })
 
       const { error: activityError } = await supabaseAdmin.from("contact_activities").insert({
         contact_id: contactId,
-        activity_type: "Other",
+        activity_type: "Note",
         description: description.slice(0, 6000),
       });
       if (activityError) console.error("site chat: activity log failed", activityError.message);
