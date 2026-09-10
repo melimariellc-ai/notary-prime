@@ -60,7 +60,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
 
     const supabase = context.supabase;
 
-    const [contactsRes, activitiesRes, inboundRes, invitesRes, sendLogRes, suppressedRes] = await Promise.all([
+    const [contactsRes, activitiesRes, inboundRes, invitesRes, sendLogRes, suppressedRes, draftsRes] =
+      await Promise.all([
       supabase.from("business_contacts").select("id, business_name, email"),
       supabase
         .from("contact_activities")
