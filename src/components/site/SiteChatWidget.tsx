@@ -67,6 +67,10 @@ export function SiteChatWidget() {
 
   const sendMessage = async (message: string) => {
     if (!message || busy) return;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track("conversation_started");
+    }
     const history = turns;
     setTurns([...history, { role: "user", content: message }]);
     setInput("");
