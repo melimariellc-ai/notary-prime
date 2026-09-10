@@ -363,7 +363,11 @@ function EmailRequestsPage() {
                 </div>
               </Card>
             ) : (
-              visible.map((d) => <DraftCard key={d.id} draft={d} />)
+              visible.map((d) => (
+                <div key={d.id} id={`draft-${d.id}`} className="scroll-mt-24">
+                  <DraftCard draft={d} />
+                </div>
+              ))
             )}
           </>
         )}
