@@ -290,6 +290,7 @@ function AdminPage() {
 
                       <AppointmentAuditToggle appointmentId={a.id} />
                     </Card>
+                    </div>
                   ))}
                 </div>
               )}
