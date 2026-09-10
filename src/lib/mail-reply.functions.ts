@@ -246,6 +246,8 @@ export const sendMailReply = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const senderName = (await loadBusinessProfile()).business_name;
+    const { resolveSendProfile } = await import("./send-profiles");
+    const profile = resolveSendProfile(data.sendProfile, "reply_in_thread");
 
     const html = `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c;white-space:pre-wrap">${escapeHtml(
       data.body,
@@ -255,8 +257,8 @@ export const sendMailReply = createServerFn({ method: "POST" })
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: `${senderName} <outreach@send.enlivennotary.com>`,
-        reply_to: "replies@replies.enlivennotary.com",
+        from: `${senderName} <${profile.from}>`,
+        reply_to: profile.replyTo,
         to: [toAddress],
         subject: data.subject,
         text: data.body,
