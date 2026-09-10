@@ -2,11 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, CalendarClock, Mails } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CalendarClock, ChevronDown, Mails } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
+import { DraftReviewCard } from "@/components/admin/DraftReviewCard";
 import { listMailActivity, type MailActivityRow } from "@/lib/mail-activity.functions";
+import { listAppointmentDrafts, type AppointmentDraft } from "@/lib/appointment-drafts.functions";
 
 export const Route = createFileRoute("/admin/_protected/mail-activity")({
   head: () => ({
@@ -40,6 +42,12 @@ const STATUS_META: Record<string, { label: string; tone: BadgeTone }> = {
   failed: { label: "Failed", tone: "critical" },
 };
 
+const DRAFT_BADGE: Record<string, { label: string; tone: BadgeTone }> = {
+  pending_review: { label: "Looks like a booking", tone: "warning" },
+  approved: { label: "Booking approved", tone: "positive" },
+  rejected: { label: "Not a booking", tone: "neutral" },
+};
+
 const DIRECTIONS = [
   { value: "all", label: "All" },
   { value: "sent", label: "Sent" },
@@ -52,11 +60,16 @@ function when(value: string) {
   return new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
-function Row({ row }: { row: MailActivityRow }) {
+const rowClass =
+  "-mx-3 flex gap-3 rounded-2xl px-3 py-4 text-left transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
+function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft }) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
   const isIntake = row.kind === "Appointment Intake";
   const isReadiness = row.kind === "Readiness Check";
+  const draftBadge = draft ? (DRAFT_BADGE[draft.status] ?? DRAFT_BADGE["pending_review"]!) : null;
+  const [expanded, setExpanded] = useState(false);
 
   const body = (
     <>
@@ -70,6 +83,7 @@ function Row({ row }: { row: MailActivityRow }) {
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium">{row.contactName ?? row.address}</span>
+          {draftBadge && <Badge tone={draftBadge.tone}>{draftBadge.label}</Badge>}
           {isIntake && <Badge tone="accent">Appointment Intake</Badge>}
           {isReadiness && <Badge tone="accent">Readiness Check</Badge>}
           <Badge tone={status.tone}>{status.label}</Badge>
@@ -84,11 +98,41 @@ function Row({ row }: { row: MailActivityRow }) {
           {row.preview}
         </p>
       </div>
+      {draft && (
+        <ChevronDown
+          className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
+        />
+      )}
     </>
   );
 
-  const rowClass =
-    "-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+  // Emails that scored as a likely booking request open in place for review.
+  if (draft) {
+    return (
+      <li id={`draft-${draft.id}`} className="scroll-mt-24">
+        <button type="button" onClick={() => setExpanded((v) => !v)} className={`${rowClass} w-full`} aria-expanded={expanded}>
+          {body}
+        </button>
+        {expanded && (
+          <div className="pb-4">
+            <DraftReviewCard draft={draft} bare />
+            {row.contactId && (
+              <p className="mt-3 text-xs">
+                <Link
+                  to="/admin/crm/$contactId"
+                  params={{ contactId: row.contactId }}
+                  hash="activity"
+                  className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+                >
+                  View contact record
+                </Link>
+              </p>
+            )}
+          </div>
+        )}
+      </li>
+    );
+  }
 
   return (
     <li>
@@ -110,10 +154,6 @@ function Row({ row }: { row: MailActivityRow }) {
             </p>
           )}
         </div>
-      ) : row.draftId ? (
-        <Link to="/admin/email-requests" hash={`draft-${row.draftId}`} className={rowClass}>
-          {body}
-        </Link>
       ) : row.contactId ? (
         <Link
           to="/admin/crm/$contactId"
@@ -132,13 +172,21 @@ function Row({ row }: { row: MailActivityRow }) {
 
 function MailActivityPage() {
   const fetchRows = useServerFn(listMailActivity);
+  const fetchDrafts = useServerFn(listAppointmentDrafts);
   const { data, isLoading } = useQuery({ queryKey: ["mail-activity"], queryFn: () => fetchRows({}) });
+  const { data: draftData } = useQuery({ queryKey: ["appointment-drafts"], queryFn: () => fetchDrafts({}) });
 
   const [direction, setDirection] = useState<Direction>("all");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
   const rows = data?.rows ?? [];
+
+  const draftsById = useMemo(() => {
+    const map = new Map<string, AppointmentDraft>();
+    for (const d of draftData?.drafts ?? []) map.set(d.id, d);
+    return map;
+  }, [draftData]);
 
   const visible = useMemo(() => {
     const fromTime = from ? new Date(`${from}T00:00:00`).getTime() : null;
@@ -160,12 +208,17 @@ function MailActivityPage() {
     [visible],
   );
 
+  const pendingBookings = useMemo(
+    () => (draftData?.drafts ?? []).filter((d) => d.status === "pending_review").length,
+    [draftData],
+  );
+
   return (
     <>
       <AdminPageHeader
         eyebrow="Work"
         title="Mail activity"
-        intro="Every email the system sends and receives, in one place. This page only shows what is already happening — it does not send anything."
+        intro="Every email the system sends and receives, in one place. Emails that look like booking requests can be reviewed and approved right here — nothing becomes a confirmed appointment until you approve it."
       />
       <AdminSection className="grid gap-6">
         {data?.forbidden ? (
@@ -233,6 +286,7 @@ function MailActivityPage() {
                 )}
                 <p className="ml-auto text-sm text-muted-foreground">
                   {counts.sent} sent · {counts.received} received
+                  {pendingBookings > 0 ? ` · ${pendingBookings} awaiting review` : ""}
                 </p>
               </div>
             </Card>
@@ -252,7 +306,13 @@ function MailActivityPage() {
               ) : (
                 <ul className="divide-y divide-border">
                   {visible.map((row) => (
-                    <Row key={row.id} row={row} />
+                    <Row
+                      key={row.id}
+                      row={row}
+                      {...(row.draftId && draftsById.get(row.draftId)
+                        ? { draft: draftsById.get(row.draftId)! }
+                        : {})}
+                    />
                   ))}
                 </ul>
               )}
