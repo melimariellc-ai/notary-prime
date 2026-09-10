@@ -29,6 +29,8 @@ export type MailActivityRow = {
   /** Set when this email produced an appointment intake draft. */
   draftId: string | null;
   draftStatus: string | null;
+  /** Set when this row is an emailed pre-appointment readiness check. */
+  appointmentId: string | null;
 };
 
 const clean = (value: string) => value.replace(/\s+/g, " ").trim();
@@ -60,8 +62,16 @@ export const listMailActivity = createServerFn({ method: "GET" })
 
     const supabase = context.supabase;
 
-    const [contactsRes, activitiesRes, inboundRes, invitesRes, sendLogRes, suppressedRes, draftsRes] =
-      await Promise.all([
+    const [
+      contactsRes,
+      activitiesRes,
+      inboundRes,
+      invitesRes,
+      sendLogRes,
+      suppressedRes,
+      draftsRes,
+      readinessRes,
+    ] = await Promise.all([
       supabase.from("business_contacts").select("id, business_name, email"),
       supabase
         .from("contact_activities")
@@ -86,6 +96,12 @@ export const listMailActivity = createServerFn({ method: "GET" })
         .select("id, inbound_email_id, status, contact_id, appointment_id")
         .order("created_at", { ascending: false })
         .limit(500),
+      supabase
+        .from("readiness_checks")
+        .select("id, appointment_id, contact_id, channel, to_address, status, sent_at, created_at, reply_text, replied_at")
+        .eq("channel", "email")
+        .order("created_at", { ascending: false })
+        .limit(300),
       ]);
 
     const draftByInbound = new Map<string, { id: string; status: string }>();
@@ -139,6 +155,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         contactName: (contact?.business_name as string | undefined) ?? null,
         draftId: draft?.id ?? null,
         draftStatus: draft?.status ?? null,
+        appointmentId: null,
       });
     }
 
@@ -166,6 +183,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         contactName: (contact?.business_name as string | undefined) ?? null,
         draftId: null,
         draftStatus: null,
+        appointmentId: null,
       });
     }
 
@@ -186,6 +204,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         contactName: (byEmail.get(address)?.business_name as string | undefined) ?? null,
         draftId: null,
         draftStatus: null,
+        appointmentId: null,
       });
     }
 
@@ -226,6 +245,38 @@ export const listMailActivity = createServerFn({ method: "GET" })
         contactName: (contact?.business_name as string | undefined) ?? null,
         draftId: null,
         draftStatus: null,
+        appointmentId: null,
+      });
+    }
+
+    // Emailed readiness checks (sent when no phone number is on file).
+    for (const r of readinessRes.data ?? []) {
+      const address = String(r.to_address ?? "").toLowerCase();
+      const contactId = r.contact_id ? String(r.contact_id) : (byEmail.get(address)?.id as string | undefined) ?? null;
+      const contact = contactId ? byId.get(contactId) : byEmail.get(address);
+      rows.push({
+        id: `readiness-${r.id}`,
+        direction: "sent",
+        address: address || "—",
+        subject: "Getting ready for your appointment",
+        preview: r.replied_at
+          ? `Client replied: ${clean(String(r.reply_text ?? "")).slice(0, 160)}`
+          : "Pre-appointment checklist: photo ID, location and parking details, special instructions.",
+        at: String(r.sent_at ?? r.created_at),
+        status:
+          String(r.status) === "failed"
+            ? "failed"
+            : bounced.has(address)
+              ? "bounced"
+              : r.replied_at
+                ? "replied"
+                : "sent",
+        kind: "Readiness Check",
+        contactId,
+        contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
+        appointmentId: String(r.appointment_id),
       });
     }
 
