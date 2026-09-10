@@ -84,8 +84,14 @@ function NotificationScroller({ children }: { children: ReactNode }) {
   }, [children]);
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
-      <div ref={ref} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+    <div className="relative">
+      {/* Explicit max-height on the scroller itself: relying on flex-1 inside a
+          max-height parent leaves some browsers with no definite height, which
+          makes the list overflow instead of scroll. */}
+      <div
+        ref={ref}
+        className="max-h-[min(65dvh,28rem)] overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+      >
         <ul className="divide-y divide-border">{children}</ul>
       </div>
       {moreBelow && (
