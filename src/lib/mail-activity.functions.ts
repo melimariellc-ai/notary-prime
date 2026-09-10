@@ -81,7 +81,20 @@ export const listMailActivity = createServerFn({ method: "GET" })
         .order("created_at", { ascending: false })
         .limit(500),
       supabase.from("suppressed_emails").select("email, reason"),
-    ]);
+      supabase
+        .from("appointment_drafts")
+        .select("id, inbound_email_id, status, contact_id, appointment_id")
+        .order("created_at", { ascending: false })
+        .limit(500),
+      ]);
+
+    const draftByInbound = new Map<string, { id: string; status: string }>();
+    for (const d of draftsRes.data ?? []) {
+      const inboundId = d.inbound_email_id ? String(d.inbound_email_id) : null;
+      if (inboundId && !draftByInbound.has(inboundId)) {
+        draftByInbound.set(inboundId, { id: String(d.id), status: String(d.status) });
+      }
+    }
 
     const contacts = contactsRes.data ?? [];
     const byId = new Map(contacts.map((c) => [c.id as string, c]));
