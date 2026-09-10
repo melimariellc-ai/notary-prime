@@ -55,15 +55,21 @@ function when(value: string) {
 function Row({ row }: { row: MailActivityRow }) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
+  const isIntake = row.kind === "Appointment Intake";
 
   const body = (
     <>
       <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-        <Icon className="h-4 w-4 text-accent-foreground" />
+        {isIntake ? (
+          <CalendarClock className="h-4 w-4 text-accent-foreground" />
+        ) : (
+          <Icon className="h-4 w-4 text-accent-foreground" />
+        )}
       </span>
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium">{row.contactName ?? row.address}</span>
+          {isIntake && <Badge tone="accent">Appointment Intake</Badge>}
           <Badge tone={status.tone}>{status.label}</Badge>
           {!row.contactId && <Badge tone="neutral">Unmatched</Badge>}
           <span className="text-xs text-muted-foreground">
