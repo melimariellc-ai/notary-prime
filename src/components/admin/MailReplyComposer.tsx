@@ -24,6 +24,7 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
   const [showInstructions, setShowInstructions] = useState(false);
   const [instructions, setInstructions] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [sendProfile, setSendProfile] = useState<SendProfileId>("reply_in_thread");
 
   const loadEmail = useServerFn(getInboundEmail);
   const generate = useServerFn(generateMailReplyDraft);
@@ -69,7 +70,7 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
     setSending(true);
     setFeedback(null);
     try {
-      const result = await send({ data: { inboundEmailId, subject: subjectValue, body } });
+      const result = await send({ data: { inboundEmailId, subject: subjectValue, body, sendProfile } });
       if (result.ok) {
         setFeedback({ tone: "ok", text: `Reply sent to ${result.sentTo}.` });
         setBody("");
