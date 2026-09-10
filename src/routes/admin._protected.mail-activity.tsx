@@ -171,7 +171,7 @@ function Row({
     <Link
       to="/admin/crm/$contactId"
       params={{ contactId: row.contactId }}
-      hash="activity"
+      
       className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
     >
       View contact record
