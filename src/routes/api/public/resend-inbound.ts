@@ -111,8 +111,6 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           return new Response("Invalid email id", { status: 400 });
         }
 
-        // Resend usually includes the body inline on email.received; only call the
-        // API when it doesn't (send-only API keys can't read receiving anyway).
         // Resend's email.received webhook carries metadata only — the body must
         // be retrieved. That retrieval needs a full-access key; the send-only
         // key returns 401, so prefer a dedicated read key when configured.
