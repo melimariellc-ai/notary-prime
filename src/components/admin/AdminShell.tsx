@@ -411,9 +411,9 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 {notifOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
+                    className="fixed inset-x-3 top-[4.5rem] z-50 flex max-h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:max-h-[min(70dvh,32rem)]"
                   >
-                    <p className="border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="shrink-0 border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       Notifications
                     </p>
                     {notifications.length === 0 ? (
