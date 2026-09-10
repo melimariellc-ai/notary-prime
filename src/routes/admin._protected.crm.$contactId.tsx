@@ -336,6 +336,14 @@ function ContactDetailPage() {
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
+  const [composeSignal, setComposeSignal] = useState(0);
+  const composeRef = useRef<HTMLDivElement | null>(null);
+
+  function openCompose() {
+    setTab("Activity");
+    setComposeSignal((n) => n + 1);
+    setTimeout(() => composeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+  }
   // Links from Mail Activity land straight on the Activity tab.
   useEffect(() => {
     if (window.location.hash.replace("#", "").toLowerCase() === "activity") setTab("Activity");
