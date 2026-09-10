@@ -45,13 +45,63 @@ function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean 
         aria-hidden="true"
         className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${unread ? "bg-gold" : "bg-transparent"}`}
       />
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{n.title}</p>
-        <p className="truncate text-xs text-muted-foreground">
+      <div className="min-w-0 flex-1">
+        <p className="break-words text-sm font-medium">{n.title}</p>
+        <p className="break-words text-xs text-muted-foreground">
           {n.kind === "reply" ? "Reply received · " : ""}
           {n.detail}
         </p>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Scrolling wrapper for the notification list. Shows a soft fade plus a
+ * "more below" hint whenever there is content past the bottom of the list, so a
+ * long list never looks like it simply stops.
+ */
+function NotificationScroller({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLUListElement>(null);
+  const [moreBelow, setMoreBelow] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setMoreBelow(el.scrollHeight - el.clientHeight - el.scrollTop > 8);
+    };
+    update();
+    el.addEventListener("scroll", update);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [children]);
+
+  return (
+    <div className="relative min-h-0 flex-1">
+      <ul ref={ref} className="h-full divide-y divide-border overflow-y-auto overscroll-contain">
+        {children}
+      </ul>
+      {moreBelow && (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-card to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-1 flex justify-center"
+          >
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-sm">
+              <ChevronDown className="h-3 w-3" /> Scroll for more
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
