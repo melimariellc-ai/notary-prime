@@ -1,1 +1,2 @@
 - [x] Chat widget: fixed circular navy avatar clipping; verified with screenshot
+- [x] Chat widget: launcher label "Ask Hailey" + new Hailey welcome message
