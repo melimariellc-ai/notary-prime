@@ -125,7 +125,7 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
     }
 
     const { loadBusinessProfile } = await import("./business-profile.server");
-    const { credentialsLine } = await import("./business-profile");
+    const { credentialsLine, servicePricingLines } = await import("./business-profile");
     const { loadEmailTemplate } = await import("./email-templates.server");
     const { fillPlaceholders } = await import("./email-templates");
     const profile = await loadBusinessProfile();
@@ -146,6 +146,9 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
       `- Credentials: ${credentialsLine(profile)}`,
       `- Phone: ${profile.phone} · Email: ${profile.email}`,
       "",
+      ...(servicePricingLines(profile).length
+        ? ["Official current pricing (the ONLY prices you may state):", ...servicePricingLines(profile), ""]
+        : []),
       "Who wrote to us:",
       `- Name on the email: ${row.from_name ?? row.from_email}`,
       `- Email: ${row.from_email}`,
@@ -162,10 +165,10 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
       "Reply requirements:",
       "- Answer what they actually asked; do not invent appointments or commitments that were not offered.",
       "STRICT FACTUAL GROUNDING — no invented numbers:",
-      "- You have NOT been given any pricing, rates, discounts, or promotions. None exist in the information above unless written there verbatim.",
-      "- Never state a price, fee, rate, dollar amount, discount, percentage off, promotional offer, package deal, or turnaround guarantee unless that exact figure appears verbatim in their email above, in the CRM record above, or in the additional instructions below.",
-      "- If they ask about cost, or if mentioning pricing would help, keep it general: offer to share current pricing, or invite a call or email to go over rates. Never estimate, guess, or illustrate with an example number.",
-      "- The same applies to any claim of a current special, seasonable offer, or new-client discount: do not mention one unless it is stated verbatim above.",
+      "- The official current pricing listed above is real and approved: when the reply calls for it (for example they asked what it costs), quote those figures exactly as written, with the exact service name they belong to.",
+      "- Never state any other price, fee, rate, dollar amount, discount, percentage off, promotional offer, package deal, or turnaround guarantee. Anything outside that pricing list may only be stated if the exact figure appears verbatim in their email above, in the CRM record above, or in the additional instructions below.",
+      "- No discounts or promotions exist. Never offer, imply, or invent one, and never combine, average, round, or adjust the listed prices.",
+      "- If they ask about something not covered by the pricing list, say pricing depends on the specifics and offer to confirm it by phone or email. Never estimate, guess, or illustrate with an example number.",
       "- Do not include a subject line. Return only the body of the reply.",
       ...(data.extraInstructions
         ? [

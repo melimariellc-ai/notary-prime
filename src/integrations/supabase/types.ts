@@ -350,6 +350,7 @@ export type Database = {
           phone: string
           readiness_check_hours: number
           service_area: string
+          service_pricing: Json
           updated_at: string
         }
         Insert: {
@@ -366,6 +367,7 @@ export type Database = {
           phone?: string
           readiness_check_hours?: number
           service_area?: string
+          service_pricing?: Json
           updated_at?: string
         }
         Update: {
@@ -382,6 +384,7 @@ export type Database = {
           phone?: string
           readiness_check_hours?: number
           service_area?: string
+          service_pricing?: Json
           updated_at?: string
         }
         Relationships: []

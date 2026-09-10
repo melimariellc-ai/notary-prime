@@ -1,7 +1,7 @@
 import { DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "./business-profile";
 
 const FIELDS =
-  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, readiness_check_hours";
+  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, readiness_check_hours, service_pricing";
 
 /** Reads the single business profile row server-side, falling back to defaults. */
 export async function loadBusinessProfile(): Promise<BusinessProfile> {

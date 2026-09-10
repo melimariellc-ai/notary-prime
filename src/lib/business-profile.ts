@@ -1,5 +1,17 @@
 export type ReferralRateType = "percent" | "flat";
 
+export type ServicePrice = {
+  label: string;
+  price: string;
+};
+
+export const DEFAULT_SERVICE_PRICING: ServicePrice[] = [
+  { label: "Mobile Standard", price: "$100" },
+  { label: "Same-Day/Urgent", price: "$135" },
+  { label: "RON (Remote Online Notarization)", price: "$75" },
+  { label: "Loan Signing", price: "$250+" },
+];
+
 export type BusinessProfile = {
   business_name: string;
   phone: string;
@@ -12,6 +24,7 @@ export type BusinessProfile = {
   default_referral_rate: number;
   default_referral_rate_type: ReferralRateType;
   readiness_check_hours: number;
+  service_pricing: ServicePrice[];
 };
 
 export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
@@ -26,7 +39,15 @@ export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   default_referral_rate: 0,
   default_referral_rate_type: "percent",
   readiness_check_hours: 24,
+  service_pricing: DEFAULT_SERVICE_PRICING,
 };
+
+/** Bullet list of the saved service prices, for prompts and emails. */
+export function servicePricingLines(profile: BusinessProfile): string[] {
+  return (profile.service_pricing ?? [])
+    .filter((item) => item.label.trim() && item.price.trim())
+    .map((item) => `- ${item.label.trim()}: ${item.price.trim()}`);
+}
 
 /** Human-readable credentials sentence built from the saved profile. */
 export function credentialsLine(profile: BusinessProfile): string {

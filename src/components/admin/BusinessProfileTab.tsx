@@ -2,7 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getBusinessProfile, updateBusinessProfile } from "@/lib/business-profile.functions";
-import { credentialsLine, DEFAULT_BUSINESS_PROFILE, rateLabel, type BusinessProfile } from "@/lib/business-profile";
+import {
+  credentialsLine,
+  DEFAULT_BUSINESS_PROFILE,
+  rateLabel,
+  type BusinessProfile,
+  type ServicePrice,
+} from "@/lib/business-profile";
 import { Card, CardHeader } from "@/components/admin/ui/Card";
 import { Button } from "@/components/admin/ui/Button";
 
@@ -37,6 +43,21 @@ export function BusinessProfileTab() {
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading business details…</p>;
+
+  const setPrice = (index: number, patch: Partial<ServicePrice>) =>
+    setForm((prev) => ({
+      ...prev,
+      service_pricing: (prev.service_pricing ?? []).map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    }));
+
+  const addPrice = () =>
+    setForm((prev) => ({ ...prev, service_pricing: [...(prev.service_pricing ?? []), { label: "", price: "" }] }));
+
+  const removePrice = (index: number) =>
+    setForm((prev) => ({
+      ...prev,
+      service_pricing: (prev.service_pricing ?? []).filter((_, i) => i !== index),
+    }));
 
   const set = <K extends keyof BusinessProfile>(key: K, value: BusinessProfile[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -93,6 +114,45 @@ export function BusinessProfileTab() {
             />
           </label>
         </div>
+
+        <fieldset className="rounded-2xl border border-border p-6">
+          <legend className="px-2 text-sm font-medium text-foreground">Services &amp; pricing</legend>
+          <div className="space-y-4">
+            {(form.service_pricing ?? []).map((item, index) => (
+              <div key={index} className="grid gap-3 sm:grid-cols-[2fr_1fr_auto] sm:items-end">
+                <label className="block text-sm">
+                  <span className="mb-2 block font-medium text-foreground">Service</span>
+                  <input
+                    className={field}
+                    value={item.label}
+                    onChange={(e) => setPrice(index, { label: e.target.value })}
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-2 block font-medium text-foreground">Price</span>
+                  <input
+                    className={field}
+                    placeholder="$100"
+                    value={item.price}
+                    onChange={(e) => setPrice(index, { price: e.target.value })}
+                  />
+                </label>
+                <Button type="button" variant="tertiary" onClick={() => removePrice(index)}>
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5">
+            <Button type="button" variant="tertiary" onClick={addPrice}>
+              Add a service
+            </Button>
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            These are the only prices the assistant is allowed to quote when it drafts a reply for you. Write the
+            price exactly how you want it to appear, for example $100 or $250+.
+          </p>
+        </fieldset>
 
         <fieldset className="rounded-2xl border border-border p-6">
           <legend className="px-2 text-sm font-medium text-foreground">Referral commission</legend>
