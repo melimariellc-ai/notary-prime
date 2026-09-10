@@ -107,7 +107,13 @@ function Field({
     <label className="block">
       <span className="flex items-center gap-2">
         <SectionLabel>{label}</SectionLabel>
-        {found ? <Badge tone="accent">Found by AI</Badge> : <Badge tone="neutral">Left blank</Badge>}
+        {found ? (
+          <Badge tone="accent">Found by AI</Badge>
+        ) : value ? (
+          <Badge tone="neutral">Taken from sender</Badge>
+        ) : (
+          <Badge tone="neutral">Left blank</Badge>
+        )}
       </span>
       <input
         type={type}
