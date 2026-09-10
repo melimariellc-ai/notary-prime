@@ -129,7 +129,10 @@ export function SiteChatWidget() {
       {!open && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            track("opened");
+          }}
           aria-label="Open chat"
           className="btn-gold fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium shadow-lg"
         >
