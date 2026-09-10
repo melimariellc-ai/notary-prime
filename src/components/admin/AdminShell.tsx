@@ -62,7 +62,7 @@ function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean 
  * long list never looks like it simply stops.
  */
 function NotificationScroller({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLUListElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [moreBelow, setMoreBelow] = useState(false);
 
   useEffect(() => {
