@@ -3,7 +3,27 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageSquare, X, Send, Feather } from "lucide-react";
 
-import { getSiteChatConfig, sendSiteChatMessage, captureSiteChatLead, type SiteChatTurn } from "@/lib/site-chat.functions";
+import {
+  getSiteChatConfig,
+  sendSiteChatMessage,
+  captureSiteChatLead,
+  logSiteChatEvent,
+  type SiteChatTurn,
+} from "@/lib/site-chat.functions";
+
+const SESSION_KEY = "enliven-chat-session";
+
+function chatSessionId() {
+  try {
+    const existing = sessionStorage.getItem(SESSION_KEY);
+    if (existing) return existing;
+    const fresh = crypto.randomUUID();
+    sessionStorage.setItem(SESSION_KEY, fresh);
+    return fresh;
+  } catch {
+    return "";
+  }
+}
 
 const GREETING =
   "Hi! Need a notarization? I can help with pricing, answer questions, or help you book. How can I help today?";
