@@ -237,7 +237,6 @@ function Row({
           <p className="flex flex-wrap gap-4 pl-11 text-xs">
             {contactLink}
             {appointmentLink}
-            {selfLink}
           </p>
         </div>
       )}
