@@ -56,6 +56,7 @@ function Row({ row }: { row: MailActivityRow }) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
   const isIntake = row.kind === "Appointment Intake";
+  const isReadiness = row.kind === "Readiness Check";
 
   const body = (
     <>
