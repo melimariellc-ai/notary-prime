@@ -99,7 +99,15 @@ function matchQuoteService(raw: string | null | undefined) {
 
 function BookPage() {
   const searchStr = useRouterState({ select: (s) => s.location.searchStr });
-  const preselected = matchQuoteService(new URLSearchParams(searchStr ?? "").get("service"));
+  const initialParams = new URLSearchParams(searchStr ?? "");
+  const preselected = matchQuoteService(initialParams.get("service"));
+  const prefill = (params: URLSearchParams) => ({
+    name: (params.get("name") ?? "").slice(0, 120),
+    email: (params.get("email") ?? "").slice(0, 160),
+    phone: (params.get("phone") ?? "").slice(0, 40),
+    notes: (params.get("notes") ?? "").slice(0, 600),
+  });
+  const initialContact = prefill(initialParams);
 
   const [step, setStep] = useState(preselected ? 1 : 0);
   const [data, setData] = useState({
@@ -107,21 +115,30 @@ function BookPage() {
     location: "mobile" as "mobile" | "online",
     date: "",
     time: "",
-    name: "",
-    email: "",
-    phone: "",
+    name: initialContact.name,
+    email: initialContact.email,
+    phone: initialContact.phone,
     address: "",
-    notes: "",
+    notes: initialContact.notes,
   });
 
   // On the published (prerendered) site the router's search string can be empty
   // during hydration, so re-read the real URL after mount.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const fromUrl = matchQuoteService(new URLSearchParams(window.location.search).get("service"));
-    if (!fromUrl) return;
-    setData((d) => (d.service ? d : { ...d, service: fromUrl }));
-    setStep((s) => (s === 0 ? 1 : s));
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = matchQuoteService(params.get("service"));
+    const contact = prefill(params);
+    setData((d) => ({
+      ...d,
+      service: d.service || fromUrl,
+      name: d.name || contact.name,
+      email: d.email || contact.email,
+      phone: d.phone || contact.phone,
+      notes: d.notes || contact.notes,
+    }));
+    if (fromUrl) setStep((s) => (s === 0 ? 1 : s));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [done, setDone] = useState(false);

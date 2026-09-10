@@ -25,6 +25,16 @@ function chatSessionId() {
   }
 }
 
+function bookingUrl(lead: { name: string; email: string; phone: string; notes: string }) {
+  const params = new URLSearchParams();
+  if (lead.name.trim()) params.set("name", lead.name.trim());
+  if (lead.email.trim()) params.set("email", lead.email.trim());
+  if (lead.phone.trim()) params.set("phone", lead.phone.trim());
+  if (lead.notes.trim()) params.set("notes", lead.notes.trim());
+  const query = params.toString();
+  return query ? `/book?${query}` : "/book";
+}
+
 const GREETING =
   "Hi! Need a notarization? I can help with pricing, answer questions, or help you book. How can I help today?";
 
@@ -55,11 +65,12 @@ export function SiteChatWidget() {
   const [showLead, setShowLead] = useState(false);
   const [lead, setLead] = useState({ name: "", email: "", phone: "", notes: "" });
   const [leadStatus, setLeadStatus] = useState<string | null>(null);
+  const [bookingHref, setBookingHref] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [turns, busy, showLead]);
+  }, [turns, busy, showLead, bookingHref]);
 
   if (!config.data?.enabled) return null;
 
@@ -112,6 +123,7 @@ export function SiteChatWidget() {
       setLeadStatus(result.message);
       if (result.ok) {
         setShowLead(false);
+        setBookingHref(bookingUrl(lead));
         setTurns((prev) => [...prev, { role: "assistant", content: result.message }]);
       }
     } catch {
@@ -226,11 +238,22 @@ export function SiteChatWidget() {
                 </div>
               </form>
             )}
+
+            {bookingHref && !showLead && (
+              <div className="space-y-2 rounded-2xl border border-gold/40 p-3">
+                <p className="text-xs text-foreground">
+                  Want to pick a time now? We'll carry your details over to the booking form.
+                </p>
+                <a href={bookingHref} className="btn-gold inline-block rounded-full px-4 py-2 text-xs font-medium">
+                  Book an appointment
+                </a>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2 border-t border-gold/35 px-4 py-3">
             <div className="flex flex-wrap gap-2">
-              <a href="/book" className={pillClass}>
+              <a href={bookingHref ?? "/book"} className={pillClass}>
                 Book an appointment
               </a>
               <button type="button" onClick={() => setShowLead(true)} className={pillClass}>
