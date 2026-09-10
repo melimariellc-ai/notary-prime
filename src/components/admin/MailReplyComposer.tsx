@@ -138,7 +138,7 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant="secondary"
               onClick={() => {
                 setOpen(false);
                 setFeedback(null);

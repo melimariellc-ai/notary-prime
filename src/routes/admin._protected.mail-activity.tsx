@@ -106,6 +106,10 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
     </>
   );
 
+  // Received emails can be answered right here, without leaving the CRM.
+  const inboundId = row.id.startsWith("inbound-") ? row.id.slice("inbound-".length) : null;
+  const reply = inboundId ? <MailReplyComposer inboundEmailId={inboundId} /> : null;
+
   // Emails that scored as a likely booking request open in place for review.
   if (draft) {
     return (
@@ -130,6 +134,7 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
             )}
           </div>
         )}
+        {reply}
       </li>
     );
   }
