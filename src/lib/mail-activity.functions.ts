@@ -165,7 +165,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
     }
 
     // Queued/auth emails with a recorded delivery status (latest row per email).
-    const latestByMessage = new Map<string, (typeof sendLogRes.data)[number]>();
+    type SendLogRow = NonNullable<typeof sendLogRes.data>[number];
+    const latestByMessage = new Map<string, SendLogRow>();
     for (const row of sendLogRes.data ?? []) {
       const key = String(row.message_id ?? row.id);
       const existing = latestByMessage.get(key);
