@@ -71,6 +71,7 @@ function Row({ row }: { row: MailActivityRow }) {
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium">{row.contactName ?? row.address}</span>
           {isIntake && <Badge tone="accent">Appointment Intake</Badge>}
+          {isReadiness && <Badge tone="accent">Readiness Check</Badge>}
           <Badge tone={status.tone}>{status.label}</Badge>
           {!row.contactId && <Badge tone="neutral">Unmatched</Badge>}
           <span className="text-xs text-muted-foreground">
