@@ -421,7 +421,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                         You're all caught up — no overdue follow-ups or new replies.
                       </p>
                     ) : (
-                      <ul className="max-h-96 divide-y divide-border overflow-y-auto">
+                      <NotificationScroller>
                         {notifications.map((n) => (
                           <li key={n.id}>
                             {n.contactId ? (
