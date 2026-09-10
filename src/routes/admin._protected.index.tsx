@@ -198,7 +198,8 @@ function AdminPage() {
               ) : (
                 <div className="grid gap-6">
                   {visible.map((a) => (
-                    <Card key={a.id}>
+                    <div key={a.id} id={`appt-${a.id}`} className="scroll-mt-28">
+                    <Card>
                       {/* Identity row: name largest at top-left, status badge top-right */}
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
@@ -289,6 +290,7 @@ function AdminPage() {
 
                       <AppointmentAuditToggle appointmentId={a.id} />
                     </Card>
+                    </div>
                   ))}
                 </div>
               )}

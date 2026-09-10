@@ -56,11 +56,12 @@ function Row({ row }: { row: MailActivityRow }) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
   const isIntake = row.kind === "Appointment Intake";
+  const isReadiness = row.kind === "Readiness Check";
 
   const body = (
     <>
       <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-        {isIntake ? (
+        {isIntake || isReadiness ? (
           <CalendarClock className="h-4 w-4 text-accent-foreground" />
         ) : (
           <Icon className="h-4 w-4 text-accent-foreground" />
@@ -70,6 +71,7 @@ function Row({ row }: { row: MailActivityRow }) {
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium">{row.contactName ?? row.address}</span>
           {isIntake && <Badge tone="accent">Appointment Intake</Badge>}
+          {isReadiness && <Badge tone="accent">Readiness Check</Badge>}
           <Badge tone={status.tone}>{status.label}</Badge>
           {!row.contactId && <Badge tone="neutral">Unmatched</Badge>}
           <span className="text-xs text-muted-foreground">
@@ -90,7 +92,25 @@ function Row({ row }: { row: MailActivityRow }) {
 
   return (
     <li>
-      {row.draftId ? (
+      {row.appointmentId ? (
+        <div>
+          <Link to="/admin" hash={`appt-${row.appointmentId}`} className={rowClass}>
+            {body}
+          </Link>
+          {row.contactId && (
+            <p className="-mt-2 mb-2 pl-11 text-xs">
+              <Link
+                to="/admin/crm/$contactId"
+                params={{ contactId: row.contactId }}
+                hash="activity"
+                className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+              >
+                View contact record
+              </Link>
+            </p>
+          )}
+        </div>
+      ) : row.draftId ? (
         <Link to="/admin/email-requests" hash={`draft-${row.draftId}`} className={rowClass}>
           {body}
         </Link>

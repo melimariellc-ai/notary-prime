@@ -348,6 +348,7 @@ export type Database = {
           is_nna_certified: boolean
           is_texas_commissioned: boolean
           phone: string
+          readiness_check_hours: number
           service_area: string
           updated_at: string
         }
@@ -363,6 +364,7 @@ export type Database = {
           is_nna_certified?: boolean
           is_texas_commissioned?: boolean
           phone?: string
+          readiness_check_hours?: number
           service_area?: string
           updated_at?: string
         }
@@ -378,6 +380,7 @@ export type Database = {
           is_nna_certified?: boolean
           is_texas_commissioned?: boolean
           phone?: string
+          readiness_check_hours?: number
           service_area?: string
           updated_at?: string
         }
@@ -834,6 +837,66 @@ export type Database = {
             columns: ["appointment_id"]
             isOneToOne: false
             referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      readiness_checks: {
+        Row: {
+          appointment_id: string
+          channel: string
+          contact_id: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          replied_at: string | null
+          reply_text: string | null
+          sent_at: string | null
+          status: string
+          to_address: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          channel: string
+          contact_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          replied_at?: string | null
+          reply_text?: string | null
+          sent_at?: string | null
+          status?: string
+          to_address: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          replied_at?: string | null
+          reply_text?: string | null
+          sent_at?: string | null
+          status?: string
+          to_address?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "readiness_checks_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "readiness_checks_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "business_contacts"
             referencedColumns: ["id"]
           },
         ]

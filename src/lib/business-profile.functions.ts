@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "./business-profile";
 
 const FIELDS =
-  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, default_referral_rate, default_referral_rate_type";
+  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, default_referral_rate, default_referral_rate_type, readiness_check_hours";
 
 const text = (value: unknown, max = 200) => String(value ?? "").trim().slice(0, max);
 
@@ -11,6 +11,13 @@ const rate = (value: unknown) => {
   const n = Number(value ?? 0);
   if (!Number.isFinite(n) || n < 0) throw new Error("Please enter a referral rate of zero or more.");
   return Math.round(n * 100) / 100;
+};
+
+const hoursValue = (value: unknown) => {
+  const n = Math.round(Number(value ?? 24));
+  if (!Number.isFinite(n) || n < 1 || n > 336)
+    throw new Error("Please enter a readiness check lead time between 1 and 336 hours.");
+  return n;
 };
 
 export const getBusinessProfile = createServerFn({ method: "GET" })
@@ -38,6 +45,7 @@ export const updateBusinessProfile = createServerFn({ method: "POST" })
       is_nna_certified: Boolean(data.is_nna_certified),
       default_referral_rate: rate(data.default_referral_rate),
       default_referral_rate_type: data.default_referral_rate_type === "flat" ? "flat" : "percent",
+      readiness_check_hours: hoursValue(data.readiness_check_hours),
     } satisfies BusinessProfile;
   })
   .handler(async ({ data, context }) => {
