@@ -84,8 +84,14 @@ function NotificationScroller({ children }: { children: ReactNode }) {
   }, [children]);
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
-      <div ref={ref} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+    <div className="relative">
+      {/* Explicit max-height on the scroller itself: relying on flex-1 inside a
+          max-height parent leaves some browsers with no definite height, which
+          makes the list overflow instead of scroll. */}
+      <div
+        ref={ref}
+        className="max-h-[min(65dvh,28rem)] overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+      >
         <ul className="divide-y divide-border">{children}</ul>
       </div>
       {moreBelow && (
@@ -414,7 +420,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 {notifOpen && (
                   <div
                     role="menu"
-                    className="fixed inset-x-3 top-[4.5rem] z-50 flex max-h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:max-h-[min(70dvh,32rem)]"
+                    className="fixed inset-x-3 top-[4.5rem] z-50 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80"
                   >
                     <p className="shrink-0 border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       Notifications
