@@ -92,7 +92,25 @@ function Row({ row }: { row: MailActivityRow }) {
 
   return (
     <li>
-      {row.draftId ? (
+      {row.appointmentId ? (
+        <div>
+          <Link to="/admin" hash={`appt-${row.appointmentId}`} className={rowClass}>
+            {body}
+          </Link>
+          {row.contactId && (
+            <p className="-mt-2 mb-2 pl-11 text-xs">
+              <Link
+                to="/admin/crm/$contactId"
+                params={{ contactId: row.contactId }}
+                hash="activity"
+                className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+              >
+                View contact record
+              </Link>
+            </p>
+          )}
+        </div>
+      ) : row.draftId ? (
         <Link to="/admin/email-requests" hash={`draft-${row.draftId}`} className={rowClass}>
           {body}
         </Link>
