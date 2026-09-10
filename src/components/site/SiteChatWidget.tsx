@@ -238,11 +238,22 @@ export function SiteChatWidget() {
                 </div>
               </form>
             )}
+
+            {bookingHref && !showLead && (
+              <div className="space-y-2 rounded-2xl border border-gold/40 p-3">
+                <p className="text-xs text-foreground">
+                  Want to pick a time now? We'll carry your details over to the booking form.
+                </p>
+                <a href={bookingHref} className="btn-gold inline-block rounded-full px-4 py-2 text-xs font-medium">
+                  Book an appointment
+                </a>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2 border-t border-gold/35 px-4 py-3">
             <div className="flex flex-wrap gap-2">
-              <a href="/book" className={pillClass}>
+              <a href={bookingHref ?? "/book"} className={pillClass}>
                 Book an appointment
               </a>
               <button type="button" onClick={() => setShowLead(true)} className={pillClass}>
