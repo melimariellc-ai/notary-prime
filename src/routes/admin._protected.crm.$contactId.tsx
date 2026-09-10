@@ -37,6 +37,7 @@ import {
 import { deleteContactHistoryEntry, updateContactHistoryEntry } from "@/lib/contact-history.functions";
 import { getMyRole } from "@/lib/users.functions";
 import { buildFallbackOutreachEmail, generateOutreachEmail, sendOutreachEmail } from "@/lib/outreach.functions";
+import { SEND_PROFILE_LIST, type SendProfileId } from "@/lib/send-profiles";
 import { rateLabel, usd, type ReferralRateType } from "@/lib/business-profile";
 
 export const Route = createFileRoute("/admin/_protected/crm/$contactId")({
@@ -988,6 +989,7 @@ function OutreachPanel({
   const [askStage, setAskStage] = useState(false);
   const [showExtra, setShowExtra] = useState(false);
   const [extraInstructions, setExtraInstructions] = useState("");
+  const [sendProfile, setSendProfile] = useState<SendProfileId>("outreach");
 
   async function onGenerate() {
     setDrafting(true);
@@ -1032,7 +1034,7 @@ function OutreachPanel({
   async function onSend() {
     setSending(true);
     try {
-      const res = await send({ data: { contactId, subject, body } });
+      const res = await send({ data: { contactId, subject, body, sendProfile } });
       if (res.ok) {
         toast.success(`Sent to ${res.sentTo} and added to this contact's history.`);
         setHasDraft(false);
