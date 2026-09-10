@@ -211,12 +211,12 @@ export const generateMailReplyDraft = createServerFn({ method: "POST" })
 
 export const sendMailReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { inboundEmailId: string; subject: string; body: string }) => {
+  .inputValidator((data: { inboundEmailId: string; subject: string; body: string; sendProfile?: string }) => {
     const subject = String(data.subject ?? "").trim().slice(0, 200);
     const body = String(data.body ?? "").trim();
     if (!subject) throw new Error("Add a subject line.");
     if (!body) throw new Error("Write a message before sending.");
-    return { inboundEmailId: uuid(data.inboundEmailId), subject, body };
+    return { inboundEmailId: uuid(data.inboundEmailId), subject, body, sendProfile: data.sendProfile };
   })
   .handler(async ({ data, context }) => {
     if (!(await canReply(context.supabase, context.userId)))
