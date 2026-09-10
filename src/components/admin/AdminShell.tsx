@@ -208,6 +208,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
       detail: r.subject ?? "(no subject)",
       at: r.received_at,
       contactId: r.contact_id ?? null,
+      mailRowId: `inbound-${r.id}`,
     }));
     const follows: NotificationItem[] = overdue.map((c) => ({
       id: `overdue:${c.id}:${c.next_follow_up_date}`,
