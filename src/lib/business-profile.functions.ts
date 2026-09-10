@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_BUSINESS_PROFILE, type BusinessProfile } from "./business-profile";
 
 const FIELDS =
-  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, default_referral_rate, default_referral_rate_type, readiness_check_hours, service_pricing";
+  "business_name, phone, email, service_area, is_texas_commissioned, is_bonded, eo_insured_amount, is_nna_certified, default_referral_rate, default_referral_rate_type, readiness_check_hours, service_pricing, ai_chat_widget_enabled";
 
 const text = (value: unknown, max = 200) => String(value ?? "").trim().slice(0, max);
 
@@ -58,6 +58,7 @@ export const updateBusinessProfile = createServerFn({ method: "POST" })
       default_referral_rate_type: data.default_referral_rate_type === "flat" ? "flat" : "percent",
       readiness_check_hours: hoursValue(data.readiness_check_hours),
       service_pricing: pricing(data.service_pricing),
+      ai_chat_widget_enabled: Boolean(data.ai_chat_widget_enabled),
     } satisfies BusinessProfile;
   })
   .handler(async ({ data, context }) => {

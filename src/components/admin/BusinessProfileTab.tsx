@@ -209,6 +209,24 @@ export function BusinessProfileTab() {
         </fieldset>
 
         <fieldset className="rounded-2xl border border-border p-6">
+          <legend className="px-2 text-sm font-medium text-foreground">Public website chat</legend>
+          <label className="flex items-center gap-3 text-sm text-foreground">
+            <input
+              type="checkbox"
+              className="h-4 w-4 accent-[hsl(var(--gold))]"
+              checked={form.ai_chat_widget_enabled}
+              onChange={(e) => set("ai_chat_widget_enabled", e.target.checked)}
+            />
+            AI chat widget enabled on public site
+          </label>
+          <p className="mt-5 text-xs text-muted-foreground">
+            Off by default. When on, visitors to the public website see a chat bubble that answers questions about the
+            notarization process, service area, credentials and the pricing saved above, and can leave their contact
+            details — which arrive as a new lead. It never appears in this admin area.
+          </p>
+        </fieldset>
+
+        <fieldset className="rounded-2xl border border-border p-6">
           <legend className="px-2 text-sm font-medium text-foreground">Credentials</legend>
           <div className="space-y-4">
             <label className="flex items-center gap-3 text-sm text-foreground">

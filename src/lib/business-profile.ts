@@ -25,6 +25,7 @@ export type BusinessProfile = {
   default_referral_rate_type: ReferralRateType;
   readiness_check_hours: number;
   service_pricing: ServicePrice[];
+  ai_chat_widget_enabled: boolean;
 };
 
 export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
@@ -40,6 +41,7 @@ export const DEFAULT_BUSINESS_PROFILE: BusinessProfile = {
   default_referral_rate_type: "percent",
   readiness_check_hours: 24,
   service_pricing: DEFAULT_SERVICE_PRICING,
+  ai_chat_widget_enabled: false,
 };
 
 /** Bullet list of the saved service prices, for prompts and emails. */
