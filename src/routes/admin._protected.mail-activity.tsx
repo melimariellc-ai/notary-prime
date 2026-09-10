@@ -68,13 +68,67 @@ function when(value: string) {
 const rowClass =
   "-mx-3 flex gap-3 rounded-2xl px-3 py-4 text-left transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
 
-function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft }) {
+/** Full text of a received email, loaded on demand when a row is opened. */
+function InboundFullBody({ inboundEmailId }: { inboundEmailId: string }) {
+  const fetchEmail = useServerFn(getInboundEmail);
+  const { data, isLoading } = useQuery({
+    queryKey: ["inbound-email", inboundEmailId],
+    queryFn: () => fetchEmail({ data: { inboundEmailId } }),
+  });
+
+  if (isLoading) {
+    return (
+      <p className="pl-11 text-sm text-muted-foreground" aria-busy="true">
+        Loading the full message…
+      </p>
+    );
+  }
+  if (!data?.ok) {
+    return <p className="pl-11 text-sm text-muted-foreground">{data?.message ?? "Could not load this message."}</p>;
+  }
+
+  return (
+    <div className="pl-11">
+      <div className="rounded-2xl border border-border bg-secondary/40 p-4">
+        <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Full message
+        </p>
+        <p className="mt-2 text-sm">
+          <span className="font-medium">{data.email.fromName ?? data.email.fromEmail}</span>{" "}
+          <span className="text-muted-foreground">&lt;{data.email.fromEmail}&gt;</span>
+        </p>
+        <p className="mt-1 text-sm font-medium">{data.email.subject ?? "(no subject)"}</p>
+        <p className="mt-3 whitespace-pre-line border-t border-border pt-3 text-sm leading-relaxed">
+          {data.email.body || "This message had no text content."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Row({
+  row,
+  draft,
+  focused,
+}: {
+  row: MailActivityRow;
+  draft?: AppointmentDraft;
+  focused?: boolean;
+}) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
   const isIntake = row.kind === "Appointment Intake";
   const isReadiness = row.kind === "Readiness Check";
   const draftBadge = draft ? (DRAFT_BADGE[draft.status] ?? DRAFT_BADGE["pending_review"]!) : null;
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(Boolean(focused));
+  const itemRef = useRef<HTMLLIElement>(null);
+
+  // A row opened through its own link scrolls itself into view, already open.
+  useEffect(() => {
+    if (!focused) return;
+    setExpanded(true);
+    itemRef.current?.scrollIntoView({ block: "center" });
+  }, [focused]);
 
   const body = (
     <>
@@ -98,16 +152,14 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
           </span>
         </p>
         <p className="mt-1 truncate text-sm">{row.subject ?? "(no subject)"}</p>
-        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+        <p className={`mt-1 text-sm text-muted-foreground ${expanded ? "" : "line-clamp-2"}`}>
           {row.contactName ? `${row.address} · ` : ""}
           {row.preview}
         </p>
       </div>
-      {draft && (
-        <ChevronDown
-          className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
-        />
-      )}
+      <ChevronDown
+        className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
+      />
     </>
   );
 
@@ -115,66 +167,61 @@ function Row({ row, draft }: { row: MailActivityRow; draft?: AppointmentDraft })
   const inboundId = row.id.startsWith("inbound-") ? row.id.slice("inbound-".length) : null;
   const reply = inboundId ? <MailReplyComposer inboundEmailId={inboundId} /> : null;
 
-  // Emails that scored as a likely booking request open in place for review.
-  if (draft) {
-    return (
-      <li id={`draft-${draft.id}`} className="scroll-mt-24">
-        <button type="button" onClick={() => setExpanded((v) => !v)} className={`${rowClass} w-full`} aria-expanded={expanded}>
-          {body}
-        </button>
-        {expanded && (
-          <div className="pb-4">
-            <DraftReviewCard draft={draft} bare />
-            {row.contactId && (
-              <p className="mt-3 text-xs">
-                <Link
-                  to="/admin/crm/$contactId"
-                  params={{ contactId: row.contactId }}
-                  hash="activity"
-                  className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
-                >
-                  View contact record
-                </Link>
-              </p>
-            )}
-          </div>
-        )}
-        {reply}
-      </li>
-    );
-  }
+  const contactLink = row.contactId ? (
+    <Link
+      to="/admin/crm/$contactId"
+      params={{ contactId: row.contactId }}
+      hash="activity"
+      className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+    >
+      View contact record
+    </Link>
+  ) : null;
+
+  const appointmentLink = row.appointmentId ? (
+    <Link
+      to="/admin"
+      hash={`appt-${row.appointmentId}`}
+      className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+    >
+      View appointment
+    </Link>
+  ) : null;
+
+  const selfLink = (
+    <Link
+      to="/admin/mail-activity"
+      search={{ email: row.id }}
+      className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
+    >
+      Link to this email
+    </Link>
+  );
 
   return (
-    <li>
-      {row.appointmentId ? (
-        <div>
-          <Link to="/admin" hash={`appt-${row.appointmentId}`} className={rowClass}>
-            {body}
-          </Link>
-          {row.contactId && (
-            <p className="-mt-2 mb-2 pl-11 text-xs">
-              <Link
-                to="/admin/crm/$contactId"
-                params={{ contactId: row.contactId }}
-                hash="activity"
-                className="text-muted-foreground underline decoration-gold/50 underline-offset-2 hover:text-foreground"
-              >
-                View contact record
-              </Link>
-            </p>
-          )}
+    <li
+      ref={itemRef}
+      {...(draft ? { id: `draft-${draft.id}` } : {})}
+      className={`scroll-mt-24 ${focused ? "rounded-2xl ring-1 ring-gold/50" : ""}`}
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className={`${rowClass} w-full`}
+        aria-expanded={expanded}
+      >
+        {body}
+      </button>
+      {expanded && (
+        <div className="grid gap-3 pb-4">
+          {inboundId && <InboundFullBody inboundEmailId={inboundId} />}
+          {draft && <DraftReviewCard draft={draft} bare />}
+          <p className="flex flex-wrap gap-4 pl-11 text-xs">
+            {contactLink}
+            {appointmentLink}
+            {selfLink}
+          </p>
         </div>
-      ) : row.contactId ? (
-        <Link
-          to="/admin/crm/$contactId"
-          params={{ contactId: row.contactId }}
-          hash="activity"
-          className={rowClass}
-        >
-          {body}
-        </Link>
-      ) : (
-        <div className="-mx-3 flex gap-3 px-3 py-4">{body}</div>
       )}
       {reply}
     </li>
