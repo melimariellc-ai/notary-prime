@@ -1141,6 +1141,23 @@ function OutreachPanel({
             />
           </div>
           <div>
+            <label htmlFor="outreach_send_profile" className="text-sm font-medium">
+              Send from
+            </label>
+            <select
+              id="outreach_send_profile"
+              value={sendProfile}
+              onChange={(e) => setSendProfile(e.target.value as SendProfileId)}
+              className={`mt-2 ${inputClass}`}
+            >
+              {SEND_PROFILE_LIST.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label htmlFor="outreach_body" className="text-sm font-medium">
               Email draft (edit freely)
             </label>
