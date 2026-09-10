@@ -45,13 +45,63 @@ function NotificationBody({ n, unread }: { n: NotificationItem; unread: boolean 
         aria-hidden="true"
         className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${unread ? "bg-gold" : "bg-transparent"}`}
       />
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{n.title}</p>
-        <p className="truncate text-xs text-muted-foreground">
+      <div className="min-w-0 flex-1">
+        <p className="break-words text-sm font-medium">{n.title}</p>
+        <p className="break-words text-xs text-muted-foreground">
           {n.kind === "reply" ? "Reply received · " : ""}
           {n.detail}
         </p>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Scrolling wrapper for the notification list. Shows a soft fade plus a
+ * "more below" hint whenever there is content past the bottom of the list, so a
+ * long list never looks like it simply stops.
+ */
+function NotificationScroller({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [moreBelow, setMoreBelow] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setMoreBelow(el.scrollHeight - el.clientHeight - el.scrollTop > 8);
+    };
+    update();
+    el.addEventListener("scroll", update);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [children]);
+
+  return (
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      <div ref={ref} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <ul className="divide-y divide-border">{children}</ul>
+      </div>
+      {moreBelow && (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-card to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-1 flex justify-center"
+          >
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[0.625rem] uppercase tracking-[0.14em] text-muted-foreground shadow-sm">
+              <ChevronDown className="h-3 w-3" /> Scroll for more
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -361,9 +411,9 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                 {notifOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
+                    className="fixed inset-x-3 top-[4.5rem] z-50 flex max-h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:max-h-[min(70dvh,32rem)]"
                   >
-                    <p className="border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="shrink-0 border-b border-border px-4 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       Notifications
                     </p>
                     {notifications.length === 0 ? (
@@ -371,7 +421,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                         You're all caught up — no overdue follow-ups or new replies.
                       </p>
                     ) : (
-                      <ul className="max-h-96 divide-y divide-border overflow-y-auto">
+                      <NotificationScroller>
                         {notifications.map((n) => (
                           <li key={n.id}>
                             {n.contactId ? (
@@ -395,7 +445,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                             )}
                           </li>
                         ))}
-                      </ul>
+                      </NotificationScroller>
                     )}
                   </div>
                 )}
