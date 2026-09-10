@@ -82,10 +82,10 @@ function NotificationScroller({ children }: { children: ReactNode }) {
   }, [children]);
 
   return (
-    <div className="relative min-h-0 flex-1">
-      <ul ref={ref} className="h-full divide-y divide-border overflow-y-auto overscroll-contain">
-        {children}
-      </ul>
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      <div ref={ref} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <ul className="divide-y divide-border">{children}</ul>
+      </div>
       {moreBelow && (
         <>
           <div
