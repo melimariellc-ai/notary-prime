@@ -130,12 +130,12 @@ export const generateOutreachEmail = createServerFn({ method: "POST" })
 
 export const sendOutreachEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { contactId: string; subject: string; body: string }) => {
+  .inputValidator((data: { contactId: string; subject: string; body: string; sendProfile?: string }) => {
     const subject = String(data.subject ?? "").trim().slice(0, 200);
     const body = String(data.body ?? "").trim();
     if (!subject) throw new Error("Add a subject line.");
     if (!body) throw new Error("The email is empty.");
-    return { contactId: uuid(data.contactId), subject, body };
+    return { contactId: uuid(data.contactId), subject, body, sendProfile: data.sendProfile };
   })
   .handler(async ({ data, context }) => {
     const resendKey = process.env["RESEND_API_KEY"];
