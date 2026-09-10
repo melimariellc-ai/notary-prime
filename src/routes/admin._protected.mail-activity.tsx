@@ -61,7 +61,7 @@ function Row({ row }: { row: MailActivityRow }) {
   const body = (
     <>
       <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-        {isIntake ? (
+        {isIntake || isReadiness ? (
           <CalendarClock className="h-4 w-4 text-accent-foreground" />
         ) : (
           <Icon className="h-4 w-4 text-accent-foreground" />
