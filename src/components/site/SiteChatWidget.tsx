@@ -70,7 +70,7 @@ export function SiteChatWidget() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [turns, busy, showLead]);
+  }, [turns, busy, showLead, bookingHref]);
 
   if (!config.data?.enabled) return null;
 
