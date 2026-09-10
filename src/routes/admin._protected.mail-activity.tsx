@@ -229,10 +229,12 @@ function Row({
 }
 
 function MailActivityPage() {
+  const { email: focusedId } = Route.useSearch();
   const fetchRows = useServerFn(listMailActivity);
   const fetchDrafts = useServerFn(listAppointmentDrafts);
   const { data, isLoading } = useQuery({ queryKey: ["mail-activity"], queryFn: () => fetchRows({}) });
   const { data: draftData } = useQuery({ queryKey: ["appointment-drafts"], queryFn: () => fetchDrafts({}) });
+
 
   const [direction, setDirection] = useState<Direction>("all");
   const [from, setFrom] = useState("");
