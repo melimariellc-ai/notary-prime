@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   MailQuestion,
+  Mails,
   Menu,
   PanelLeftOpen,
   Receipt,
