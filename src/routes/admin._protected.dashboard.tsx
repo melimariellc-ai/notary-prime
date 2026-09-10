@@ -9,6 +9,7 @@ import { Card, CardHeader, CARD_CLASS } from "@/components/admin/ui/Card";
 
 import { RecentActivityCard } from "@/components/admin/RecentActivity";
 import { InboundRepliesCard } from "@/components/admin/InboundReplies";
+import { SiteChatEngagementCard } from "@/components/admin/SiteChatEngagement";
 
 import { listBusinessContacts } from "@/lib/crm.functions";
 import { getMyRole } from "@/lib/users.functions";
@@ -97,6 +98,7 @@ function DashboardPage() {
             <div className="grid gap-6 lg:col-span-2">
               <RecentActivityCard />
               <InboundRepliesCard />
+              <SiteChatEngagementCard />
             </div>
           )}
 

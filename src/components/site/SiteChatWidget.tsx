@@ -3,12 +3,32 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageSquare, X, Send, Feather } from "lucide-react";
 
-import { getSiteChatConfig, sendSiteChatMessage, captureSiteChatLead, type SiteChatTurn } from "@/lib/site-chat.functions";
+import {
+  getSiteChatConfig,
+  sendSiteChatMessage,
+  captureSiteChatLead,
+  logSiteChatEvent,
+  type SiteChatTurn,
+} from "@/lib/site-chat.functions";
+
+const SESSION_KEY = "enliven-chat-session";
+
+function chatSessionId() {
+  try {
+    const existing = sessionStorage.getItem(SESSION_KEY);
+    if (existing) return existing;
+    const fresh = crypto.randomUUID();
+    sessionStorage.setItem(SESSION_KEY, fresh);
+    return fresh;
+  } catch {
+    return "";
+  }
+}
 
 const GREETING =
   "Hi! Need a notarization? I can help with pricing, answer questions, or help you book. How can I help today?";
 
-const PRICING_QUESTION = "What does it cost? Can you walk me through your pricing?";
+
 
 export function SiteChatWidget() {
   const config = useQuery({
@@ -19,6 +39,14 @@ export function SiteChatWidget() {
 
   const send = useServerFn(sendSiteChatMessage);
   const capture = useServerFn(captureSiteChatLead);
+  const logEvent = useServerFn(logSiteChatEvent);
+  const startedRef = useRef(false);
+
+  const track = (event: "opened" | "conversation_started") => {
+    const sessionId = chatSessionId();
+    if (!sessionId) return;
+    void logEvent({ data: { sessionId, event, path: window.location.pathname } }).catch(() => {});
+  };
 
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<SiteChatTurn[]>([{ role: "assistant", content: GREETING }]);
@@ -39,6 +67,10 @@ export function SiteChatWidget() {
 
   const sendMessage = async (message: string) => {
     if (!message || busy) return;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track("conversation_started");
+    }
     const history = turns;
     setTurns([...history, { role: "user", content: message }]);
     setInput("");
@@ -97,7 +129,10 @@ export function SiteChatWidget() {
       {!open && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            track("opened");
+          }}
           aria-label="Open chat"
           className="btn-gold fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium shadow-lg"
         >
@@ -198,14 +233,6 @@ export function SiteChatWidget() {
               <a href="/book" className={pillClass}>
                 Book an appointment
               </a>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => void sendMessage(PRICING_QUESTION)}
-                className={pillClass}
-              >
-                View pricing
-              </button>
               <button type="button" onClick={() => setShowLead(true)} className={pillClass}>
                 Request a callback
               </button>
