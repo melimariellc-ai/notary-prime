@@ -28,7 +28,7 @@ function chatSessionId() {
 const GREETING =
   "Hi! Need a notarization? I can help with pricing, answer questions, or help you book. How can I help today?";
 
-const PRICING_QUESTION = "What does it cost? Can you walk me through your pricing?";
+
 
 export function SiteChatWidget() {
   const config = useQuery({
