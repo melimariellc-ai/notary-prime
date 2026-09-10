@@ -445,7 +445,7 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                             )}
                           </li>
                         ))}
-                      </ul>
+                      </NotificationScroller>
                     )}
                   </div>
                 )}
