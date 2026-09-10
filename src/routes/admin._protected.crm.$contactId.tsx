@@ -706,24 +706,54 @@ function ContactDetailPage() {
             </form>
           </Card>
 
-          <div className="mt-10">
-            <CardHeader
-              title="History"
-              meta={<span className="text-sm text-muted-foreground">({activities.length})</span>}
-            />
-          </div>
-          {activities.length === 0 ? (
-            <p className="mt-4 rounded-3xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
-              Nothing logged yet. Add the first call, email, or meeting above.
-            </p>
-          ) : (
-            <ol className="mt-6 relative border-l border-border pl-6">
-              {activities.map((a) => (
-                <HistoryEntry key={a.id} activity={a} canManage={isAdmin} highlighted={highlightId === a.id} />
-              ))}
-
-            </ol>
-          )}
+          {(() => {
+            const historyTypes = Array.from(new Set(activities.map((a) => a.activity_type))).sort();
+            const shown =
+              historyFilter === "All" ? activities : activities.filter((a) => a.activity_type === historyFilter);
+            return (
+              <>
+                <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
+                  <CardHeader
+                    title="History"
+                    meta={<span className="text-sm text-muted-foreground">({shown.length})</span>}
+                  />
+                  {historyTypes.length > 0 && (
+                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                      Show
+                      <select
+                        value={historyFilter}
+                        onChange={(e) => setHistoryFilter(e.target.value)}
+                        aria-label="Filter history by type"
+                        className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                      >
+                        <option value="All">All</option>
+                        {historyTypes.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                </div>
+                {activities.length === 0 ? (
+                  <p className="mt-4 rounded-3xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
+                    Nothing logged yet. Add the first call, email, or meeting above.
+                  </p>
+                ) : shown.length === 0 ? (
+                  <p className="mt-4 rounded-3xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
+                    No {historyFilter.toLowerCase()} entries yet.
+                  </p>
+                ) : (
+                  <ol className="mt-6 relative border-l border-border pl-6">
+                    {shown.map((a) => (
+                      <HistoryEntry key={a.id} activity={a} canManage={isAdmin} highlighted={highlightId === a.id} />
+                    ))}
+                  </ol>
+                )}
+              </>
+            );
+          })()}
 
           <div className="mt-10 border-t border-border pt-4">
             <button
