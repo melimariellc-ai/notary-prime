@@ -152,6 +152,8 @@ export const sendOutreachEmail = createServerFn({ method: "POST" })
 
     const { loadBusinessProfile } = await import("./business-profile.server");
     const senderName = (await loadBusinessProfile()).business_name;
+    const { resolveSendProfile } = await import("./send-profiles");
+    const profile = resolveSendProfile(data.sendProfile, "outreach");
 
     const html = `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#1c1c1c;white-space:pre-wrap">${data.body
       .replace(/&/g, "&amp;")
