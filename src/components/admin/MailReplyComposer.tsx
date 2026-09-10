@@ -8,6 +8,7 @@ import {
   getInboundEmail,
   sendMailReply,
 } from "@/lib/mail-reply.functions";
+import { SEND_PROFILE_LIST, type SendProfileId } from "@/lib/send-profiles";
 
 /**
  * Reply to a received email without leaving the CRM. The original message is
