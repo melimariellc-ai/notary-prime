@@ -39,6 +39,14 @@ export function SiteChatWidget() {
 
   const send = useServerFn(sendSiteChatMessage);
   const capture = useServerFn(captureSiteChatLead);
+  const logEvent = useServerFn(logSiteChatEvent);
+  const startedRef = useRef(false);
+
+  const track = (event: "opened" | "conversation_started") => {
+    const sessionId = chatSessionId();
+    if (!sessionId) return;
+    void logEvent({ data: { sessionId, event, path: window.location.pathname } }).catch(() => {});
+  };
 
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<SiteChatTurn[]>([{ role: "assistant", content: GREETING }]);
