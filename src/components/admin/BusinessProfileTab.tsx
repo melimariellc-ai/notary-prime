@@ -137,14 +137,14 @@ export function BusinessProfileTab() {
                     onChange={(e) => setPrice(index, { price: e.target.value })}
                   />
                 </label>
-                <Button type="button" variant="ghost" onClick={() => removePrice(index)}>
+                <Button type="button" variant="tertiary" onClick={() => removePrice(index)}>
                   Remove
                 </Button>
               </div>
             ))}
           </div>
           <div className="mt-5">
-            <Button type="button" variant="ghost" onClick={addPrice}>
+            <Button type="button" variant="tertiary" onClick={addPrice}>
               Add a service
             </Button>
           </div>
