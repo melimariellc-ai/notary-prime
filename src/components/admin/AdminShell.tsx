@@ -427,10 +427,21 @@ export function AdminShell({ email, children }: { email?: string | null; childre
                       <NotificationScroller>
                         {notifications.map((n) => (
                           <li key={n.id}>
-                            {n.contactId ? (
+                            {/* Replies open the actual message; follow-ups stay on the contact. */}
+                            {n.kind === "reply" && n.mailRowId ? (
+                              <Link
+                                to="/admin/mail-activity"
+                                search={{ email: n.mailRowId }}
+                                onClick={() => setNotifOpen(false)}
+                                className="block px-4 py-3 text-left hover:bg-secondary"
+                              >
+                                <NotificationBody n={n} unread={!readIds.includes(n.id)} />
+                              </Link>
+                            ) : n.contactId ? (
                               <Link
                                 to="/admin/crm/$contactId"
                                 params={{ contactId: n.contactId }}
+                                hash="activity"
                                 onClick={() => setNotifOpen(false)}
                                 className="block px-4 py-3 text-left hover:bg-secondary"
                               >
