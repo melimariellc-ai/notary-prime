@@ -309,6 +309,18 @@ function EmailRequestsPage() {
   const [filter, setFilter] = useState<Filter>("pending_review");
 
   const drafts = data?.drafts ?? [];
+
+  // Arriving from Mail Activity with #draft-<id>: make sure that card is visible.
+  const targetDraftId = typeof window === "undefined" ? "" : window.location.hash.replace(/^#draft-/, "");
+  useEffect(() => {
+    if (!targetDraftId || targetDraftId.startsWith("#") || drafts.length === 0) return;
+    const match = drafts.find((d) => d.id === targetDraftId);
+    if (!match) return;
+    if (match.status !== filter && filter !== "all") setFilter("all");
+    const node = document.getElementById(`draft-${targetDraftId}`);
+    if (node) node.scrollIntoView({ behavior: "smooth", block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetDraftId, drafts.length, filter]);
   const counts = useMemo(() => {
     const base: Record<string, number> = { pending_review: 0, approved: 0, rejected: 0 };
     for (const d of drafts) if (d.status in base) base[d.status] = (base[d.status] ?? 0) + 1;
@@ -363,7 +375,11 @@ function EmailRequestsPage() {
                 </div>
               </Card>
             ) : (
-              visible.map((d) => <DraftCard key={d.id} draft={d} />)
+              visible.map((d) => (
+                <div key={d.id} id={`draft-${d.id}`} className="scroll-mt-24">
+                  <DraftCard draft={d} />
+                </div>
+              ))
             )}
           </>
         )}

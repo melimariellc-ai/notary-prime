@@ -26,6 +26,9 @@ export type MailActivityRow = {
   kind: string;
   contactId: string | null;
   contactName: string | null;
+  /** Set when this email produced an appointment intake draft. */
+  draftId: string | null;
+  draftStatus: string | null;
 };
 
 const clean = (value: string) => value.replace(/\s+/g, " ").trim();
@@ -57,7 +60,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
 
     const supabase = context.supabase;
 
-    const [contactsRes, activitiesRes, inboundRes, invitesRes, sendLogRes, suppressedRes] = await Promise.all([
+    const [contactsRes, activitiesRes, inboundRes, invitesRes, sendLogRes, suppressedRes, draftsRes] =
+      await Promise.all([
       supabase.from("business_contacts").select("id, business_name, email"),
       supabase
         .from("contact_activities")
@@ -77,7 +81,20 @@ export const listMailActivity = createServerFn({ method: "GET" })
         .order("created_at", { ascending: false })
         .limit(500),
       supabase.from("suppressed_emails").select("email, reason"),
-    ]);
+      supabase
+        .from("appointment_drafts")
+        .select("id, inbound_email_id, status, contact_id, appointment_id")
+        .order("created_at", { ascending: false })
+        .limit(500),
+      ]);
+
+    const draftByInbound = new Map<string, { id: string; status: string }>();
+    for (const d of draftsRes.data ?? []) {
+      const inboundId = d.inbound_email_id ? String(d.inbound_email_id) : null;
+      if (inboundId && !draftByInbound.has(inboundId)) {
+        draftByInbound.set(inboundId, { id: String(d.id), status: String(d.status) });
+      }
+    }
 
     const contacts = contactsRes.data ?? [];
     const byId = new Map(contacts.map((c) => [c.id as string, c]));
@@ -107,6 +124,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
       const stamp = new Date(at).getTime();
       if (stamp > previous) replyTimes.set(address, stamp);
 
+      const draft = draftByInbound.get(String(r.id));
+
       rows.push({
         id: `inbound-${r.id}`,
         direction: "received",
@@ -115,9 +134,11 @@ export const listMailActivity = createServerFn({ method: "GET" })
         preview: clean(body).slice(0, 200),
         at,
         status: "received",
-        kind: "Reply received",
+        kind: draft ? "Appointment Intake" : "Reply received",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: draft?.id ?? null,
+        draftStatus: draft?.status ?? null,
       });
     }
 
@@ -143,6 +164,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: subject ? "Outreach email" : "Email logged",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 
@@ -161,6 +184,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: "Team invitation",
         contactId: byEmail.get(address)?.id as string | undefined ?? null,
         contactName: (byEmail.get(address)?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 
@@ -199,6 +224,8 @@ export const listMailActivity = createServerFn({ method: "GET" })
         kind: "System email",
         contactId: (contact?.id as string | undefined) ?? null,
         contactName: (contact?.business_name as string | undefined) ?? null,
+        draftId: null,
+        draftStatus: null,
       });
     }
 

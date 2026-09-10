@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, Mails } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CalendarClock, Mails } from "lucide-react";
 import { AdminPageHeader, AdminSection } from "@/components/admin/AdminPageHeader";
 import { Card } from "@/components/admin/ui/Card";
 import { Badge, type BadgeTone } from "@/components/admin/ui/Badge";
@@ -55,15 +55,21 @@ function when(value: string) {
 function Row({ row }: { row: MailActivityRow }) {
   const status = STATUS_META[row.status] ?? STATUS_META["sent"]!;
   const Icon = row.direction === "sent" ? ArrowUpRight : ArrowDownLeft;
+  const isIntake = row.kind === "Appointment Intake";
 
   const body = (
     <>
       <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-secondary">
-        <Icon className="h-4 w-4 text-accent-foreground" />
+        {isIntake ? (
+          <CalendarClock className="h-4 w-4 text-accent-foreground" />
+        ) : (
+          <Icon className="h-4 w-4 text-accent-foreground" />
+        )}
       </span>
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="font-medium">{row.contactName ?? row.address}</span>
+          {isIntake && <Badge tone="accent">Appointment Intake</Badge>}
           <Badge tone={status.tone}>{status.label}</Badge>
           {!row.contactId && <Badge tone="neutral">Unmatched</Badge>}
           <span className="text-xs text-muted-foreground">
@@ -79,14 +85,21 @@ function Row({ row }: { row: MailActivityRow }) {
     </>
   );
 
+  const rowClass =
+    "-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
   return (
     <li>
-      {row.contactId ? (
+      {row.draftId ? (
+        <Link to="/admin/email-requests" hash={`draft-${row.draftId}`} className={rowClass}>
+          {body}
+        </Link>
+      ) : row.contactId ? (
         <Link
           to="/admin/crm/$contactId"
           params={{ contactId: row.contactId }}
           hash="activity"
-          className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+          className={rowClass}
         >
           {body}
         </Link>
