@@ -77,6 +77,133 @@ export const getInboundEmail = createServerFn({ method: "POST" })
     return { ok: true as const, email };
   });
 
+/**
+ * Optional helper: drafts a suggested reply with Claude, using the same business
+ * voice guidance as outreach drafting. Never sends anything — the text lands in
+ * the reply box as an ordinary editable draft.
+ */
+export const generateMailReplyDraft = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { inboundEmailId: string; extraInstructions?: string }) => ({
+    inboundEmailId: uuid(data.inboundEmailId),
+    extraInstructions: String(data.extraInstructions ?? "").trim().slice(0, 1500),
+  }))
+  .handler(async ({ data, context }) => {
+    if (!(await canReply(context.supabase, context.userId)))
+      return { ok: false as const, message: "You do not have access to reply to email." };
+
+    const apiKey = process.env["ANTHROPIC_API_KEY"];
+    if (!apiKey) return { ok: false as const, message: "AI drafting isn't set up yet." };
+
+    const { data: row, error } = await context.supabase
+      .from("inbound_emails")
+      .select("id, from_email, from_name, subject, text_body, html_body, contact_id")
+      .eq("id", data.inboundEmailId)
+      .maybeSingle();
+    if (error || !row) return { ok: false as const, message: "Could not load that email." };
+
+    const original =
+      String(row.text_body ?? "").trim() ||
+      String(row.html_body ?? "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    let contact: {
+      business_name?: string;
+      contact_person?: string | null;
+      contact_type?: string;
+      pipeline_stage?: string;
+    } | null = null;
+    if (row.contact_id) {
+      const { data: c } = await context.supabase
+        .from("business_contacts")
+        .select("business_name, contact_person, contact_type, pipeline_stage")
+        .eq("id", row.contact_id)
+        .maybeSingle();
+      contact = c ?? null;
+    }
+
+    const { loadBusinessProfile } = await import("./business-profile.server");
+    const { credentialsLine } = await import("./business-profile");
+    const { loadEmailTemplate } = await import("./email-templates.server");
+    const { fillPlaceholders } = await import("./email-templates");
+    const profile = await loadBusinessProfile();
+
+    // Same editable voice/tone guidance used for outreach drafts.
+    const guidance = fillPlaceholders((await loadEmailTemplate("outreach_instructions")).body, {
+      business_name: profile.business_name,
+      service_area: profile.service_area,
+      phone: profile.phone,
+      contact_email: profile.email,
+    }).trim();
+
+    const prompt = [
+      `Write a reply on behalf of ${profile.business_name} to the email below.`,
+      "",
+      `About ${profile.business_name}:`,
+      `- Mobile notary and remote online notary (RON) services across ${profile.service_area}`,
+      `- Credentials: ${credentialsLine(profile)}`,
+      `- Phone: ${profile.phone} · Email: ${profile.email}`,
+      "",
+      "Who wrote to us:",
+      `- Name on the email: ${row.from_name ?? row.from_email}`,
+      `- Email: ${row.from_email}`,
+      contact
+        ? `- CRM record: ${contact.business_name} · contact person ${contact.contact_person ?? "unknown"} · type ${contact.contact_type} · relationship stage ${contact.pipeline_stage}`
+        : "- No CRM record on file for this sender.",
+      "",
+      `Their email (subject: ${row.subject ?? "(no subject)"}):`,
+      original || "(no message content)",
+      "",
+      "Voice and tone requirements:",
+      guidance,
+      "",
+      "Reply requirements:",
+      "- Answer what they actually asked; do not invent appointments, prices, or commitments that were not offered.",
+      "- Do not include a subject line. Return only the body of the reply.",
+      ...(data.extraInstructions
+        ? [
+            "",
+            "Additional instructions for this specific reply (follow these too, they take priority):",
+            data.extraInstructions,
+          ]
+        : []),
+    ].join("\n");
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: process.env["ANTHROPIC_MODEL"] ?? "claude-sonnet-4-5-20250929",
+        max_tokens: 1200,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+
+    if (!res.ok) {
+      const detail = await res.text();
+      console.error("Claude reply draft failed", res.status, detail.slice(0, 500));
+      return { ok: false as const, message: "A draft could not be generated right now. Please try again." };
+    }
+
+    const payload = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+    const draft = (payload.content ?? [])
+      .filter((c) => c.type === "text")
+      .map((c) => c.text ?? "")
+      .join("")
+      .replace(/^\s*subject:\s*.+\r?\n+/i, "")
+      .trim();
+
+    if (!draft) return { ok: false as const, message: "The draft came back empty. Please try again." };
+
+    return { ok: true as const, body: draft };
+  });
+
 export const sendMailReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { inboundEmailId: string; subject: string; body: string }) => {

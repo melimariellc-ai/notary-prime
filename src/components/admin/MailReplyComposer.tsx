@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Reply, Send } from "lucide-react";
+import { Reply, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/admin/ui/Button";
-import { getInboundEmail, sendMailReply } from "@/lib/mail-reply.functions";
+import {
+  generateMailReplyDraft,
+  getInboundEmail,
+  sendMailReply,
+} from "@/lib/mail-reply.functions";
 
 /**
  * Reply to a received email without leaving the CRM. The original message is
@@ -16,8 +20,12 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [instructions, setInstructions] = useState("");
+  const [drafting, setDrafting] = useState(false);
 
   const loadEmail = useServerFn(getInboundEmail);
+  const generate = useServerFn(generateMailReplyDraft);
   const send = useServerFn(sendMailReply);
   const queryClient = useQueryClient();
 
@@ -34,6 +42,27 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
       : `Re: ${email.subject ?? "(no subject)"}`
     : "";
   const subjectValue = subject || defaultSubject;
+
+  async function onGenerate() {
+    setDrafting(true);
+    setFeedback(null);
+    try {
+      const result = await generate({
+        data: { inboundEmailId, extraInstructions: instructions },
+      });
+      if (result.ok) {
+        setBody(result.body);
+        setFeedback({ tone: "ok", text: "Draft ready — edit it as you like, nothing has been sent." });
+      } else {
+        setFeedback({ tone: "error", text: result.message });
+      }
+    } catch (err) {
+      console.error("Reply draft failed", err);
+      setFeedback({ tone: "error", text: "A draft could not be generated right now. Please try again." });
+    } finally {
+      setDrafting(false);
+    }
+  }
 
   async function onSend() {
     setSending(true);
@@ -112,6 +141,37 @@ export function MailReplyComposer({ inboundEmailId }: { inboundEmailId: string }
                 className="mt-1.5 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm"
               />
             </label>
+
+            {/* Optional helper — writing a reply by hand needs none of this. */}
+            <div className="rounded-xl border border-border bg-background p-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button type="button" variant="secondary" onClick={onGenerate} disabled={drafting}>
+                  <Sparkles className="h-4 w-4" /> {drafting ? "Writing a draft…" : "Generate with AI"}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowInstructions((v) => !v)}
+                  className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+                >
+                  {showInstructions ? "Hide instructions" : "Add instructions (optional)"}
+                </button>
+              </div>
+              {showInstructions && (
+                <label className="mt-3 block">
+                  <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Instructions
+                  </span>
+                  <textarea
+                    value={instructions}
+                    onChange={(e) => setInstructions(e.target.value)}
+                    rows={2}
+                    placeholder="e.g. Keep it to two sentences and mention the RON discount"
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background p-3 text-sm"
+                  />
+                </label>
+              )}
+            </div>
+
             <label className="block">
               <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 Your reply
