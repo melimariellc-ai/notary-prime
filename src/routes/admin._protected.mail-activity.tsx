@@ -153,8 +153,8 @@ function Row({
         </p>
         <p className="mt-1 truncate text-sm">{row.subject ?? "(no subject)"}</p>
         <p className={`mt-1 text-sm text-muted-foreground ${expanded ? "" : "line-clamp-2"}`}>
-          {row.contactName ? `${row.address} · ` : ""}
-          {row.preview}
+          {row.contactName ? `${row.address}${expanded ? "" : " · "}` : ""}
+          {expanded ? "" : row.preview}
         </p>
       </div>
       <ChevronDown
@@ -214,7 +214,25 @@ function Row({
       </button>
       {expanded && (
         <div className="grid gap-3 pb-4">
-          {inboundId && <InboundFullBody inboundEmailId={inboundId} />}
+          {inboundId ? (
+            <InboundFullBody inboundEmailId={inboundId} />
+          ) : (
+            <div className="pl-11">
+              <div className="rounded-2xl border border-border bg-secondary/40 p-4">
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  Full message
+                </p>
+                <p className="mt-2 text-sm">
+                  <span className="text-muted-foreground">To</span>{" "}
+                  <span className="font-medium">{row.address}</span>
+                </p>
+                <p className="mt-1 text-sm font-medium">{row.subject ?? "(no subject)"}</p>
+                <p className="mt-3 whitespace-pre-line border-t border-border pt-3 text-sm leading-relaxed">
+                  {row.body || row.preview || "No message text was saved for this email."}
+                </p>
+              </div>
+            </div>
+          )}
           {draft && <DraftReviewCard draft={draft} bare />}
           <p className="flex flex-wrap gap-4 pl-11 text-xs">
             {contactLink}
