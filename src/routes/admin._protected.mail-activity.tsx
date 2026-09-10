@@ -153,8 +153,8 @@ function Row({
         </p>
         <p className="mt-1 truncate text-sm">{row.subject ?? "(no subject)"}</p>
         <p className={`mt-1 text-sm text-muted-foreground ${expanded ? "" : "line-clamp-2"}`}>
-          {row.contactName ? `${row.address} · ` : ""}
-          {row.preview}
+          {row.contactName ? `${row.address}${expanded ? "" : " · "}` : ""}
+          {expanded ? "" : row.preview}
         </p>
       </div>
       <ChevronDown
