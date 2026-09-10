@@ -171,6 +171,27 @@ export const Route = createFileRoute("/api/public/resend-inbound")({
           return new Response("Storage error", { status: 500 });
         }
 
+        // A reply from a known CRM contact, or any email that reads like a
+        // scheduling request, becomes a draft appointment awaiting review.
+        try {
+          const { data: stored } = await supabaseAdmin
+            .from("inbound_emails")
+            .select("id")
+            .eq("resend_email_id", emailId)
+            .maybeSingle();
+          const { maybeCreateAppointmentDraft } = await import("@/lib/appointment-extract.server");
+          await maybeCreateAppointmentDraft({
+            inboundEmailId: (stored?.id as string | undefined) ?? null,
+            contactId: contact?.id ?? null,
+            fromEmail: fromEmail,
+            fromName: displayName(fromRaw),
+            subject: subject || null,
+            body: text || strip(html),
+          });
+        } catch (error) {
+          console.error("resend-inbound: appointment draft failed", error);
+        }
+
         if (contact?.id) {
           const body = text || html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
           const description = [
