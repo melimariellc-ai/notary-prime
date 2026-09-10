@@ -334,6 +334,10 @@ function ContactDetailPage() {
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<"Overview" | "Referrals" | "Activity">("Overview");
+  // Links from Mail Activity land straight on the Activity tab.
+  useEffect(() => {
+    if (window.location.hash.replace("#", "").toLowerCase() === "activity") setTab("Activity");
+  }, []);
   const [showAudit, setShowAudit] = useState(false);
   const [highlightId, setHighlightId] = useState<string | null>(null);
   const pendingHighlight = useRef(false);

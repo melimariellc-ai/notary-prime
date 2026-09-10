@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   MailQuestion,
+  Mails,
   Menu,
   PanelLeftOpen,
   Receipt,
@@ -75,6 +76,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { to: "/admin", label: "Appointment Requests", icon: CalendarClock, exact: true, need: "crm" },
       { to: "/admin/email-requests", label: "Email Requests", icon: MailQuestion, exact: true, need: "crm" },
+      { to: "/admin/mail-activity", label: "Mail Activity", icon: Mails, exact: true, need: "crm" },
       { to: "/admin/crm", label: "Business Development CRM", icon: Users, exact: false, need: "crm" },
       { to: "/admin/duplicates", label: "Duplicate Contacts", icon: Copy, exact: true, need: "crm" },
       { to: "/admin/quotes", label: "Quotes", icon: Receipt, exact: true, need: "crm" },
@@ -94,6 +96,7 @@ const ROUTE_LABELS: { match: (p: string) => boolean; label: string }[] = [
   { match: (p) => p === "/admin/dashboard", label: "Dashboard" },
   { match: (p) => p === "/admin" || p === "/admin/", label: "Appointment Requests" },
   { match: (p) => p.startsWith("/admin/email-requests"), label: "Email Requests" },
+  { match: (p) => p.startsWith("/admin/mail-activity"), label: "Mail Activity" },
   { match: (p) => p.startsWith("/admin/crm"), label: "CRM" },
   { match: (p) => p.startsWith("/admin/duplicates"), label: "Duplicate Contacts" },
   { match: (p) => p.startsWith("/admin/quotes"), label: "Quotes" },
