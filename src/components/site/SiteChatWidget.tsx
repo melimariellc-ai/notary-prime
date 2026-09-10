@@ -112,6 +112,7 @@ export function SiteChatWidget() {
       setLeadStatus(result.message);
       if (result.ok) {
         setShowLead(false);
+        setBookingHref(bookingUrl(lead));
         setTurns((prev) => [...prev, { role: "assistant", content: result.message }]);
       }
     } catch {
