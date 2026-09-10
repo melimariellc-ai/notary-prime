@@ -34,6 +34,8 @@ type NotificationItem = {
   detail: string;
   at: string;
   contactId: string | null;
+  /** Mail Activity row id, so a reply opens straight to its full message. */
+  mailRowId?: string;
 };
 
 const NOTIF_READ_KEY = "admin-notifications-read";
