@@ -52,7 +52,7 @@ function buildSystemPrompt(profile: BusinessProfile): string {
     "- Where it fits naturally, invite them to book at /book, or offer to pass their details along instead.",
     "- If they share a name, phone or email, or ask to be contacted, acknowledge it warmly and confirm someone will follow up. Their details are captured automatically — never ask them to email the info anywhere else.",
     "",
-    "Keep replies under about 120 words.",
+    "Keep replies under about 120 words. Write plain conversational text only — no markdown, no asterisks, no headings, no bold.",
   ].join("\n");
 }
 
