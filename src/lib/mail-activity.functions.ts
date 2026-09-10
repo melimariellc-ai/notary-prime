@@ -21,6 +21,8 @@ export type MailActivityRow = {
   address: string;
   subject: string | null;
   preview: string;
+  /** Full text of the message, when the system has it stored. */
+  body: string;
   at: string;
   status: MailStatus;
   kind: string;
@@ -148,6 +150,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         address,
         subject: r.subject ? String(r.subject) : null,
         preview: clean(body).slice(0, 200),
+        body,
         at,
         status: "received",
         kind: draft ? "Appointment Intake" : "Reply received",
@@ -176,6 +179,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         address: address || "—",
         subject,
         preview: body.slice(0, 200),
+        body,
         at,
         status: address && bounced.has(address) ? "bounced" : repliedAfter ? "replied" : "sent",
         kind: subject ? "Outreach email" : "Email logged",
@@ -197,6 +201,7 @@ export const listMailActivity = createServerFn({ method: "GET" })
         address,
         subject: "Welcome to Enliven Notary — set up your password",
         preview: `Invitation sent to ${p.name} (${p.role}).`,
+        body: `Invitation sent to ${p.name} (${p.email}) as ${p.role}.\n\nThe welcome email includes a "Set Up Your Password" button and the contact address info@enlivennotary.com.`,
         at: String(p.created_at),
         status: bounced.has(address) ? "bounced" : "sent",
         kind: "Team invitation",
@@ -238,6 +243,9 @@ export const listMailActivity = createServerFn({ method: "GET" })
         address: address || "—",
         subject: String(row.template_name ?? "System email"),
         preview: row.error_message ? clean(String(row.error_message)).slice(0, 200) : "Sent through the email queue.",
+        body: row.error_message
+          ? `Template: ${String(row.template_name ?? "system")}\nStatus: ${raw}\n\n${String(row.error_message)}`
+          : `Template: ${String(row.template_name ?? "system")}\nStatus: ${raw}\n\nSent through the email queue.`,
         at: String(row.created_at),
         status,
         kind: "System email",
@@ -262,6 +270,15 @@ export const listMailActivity = createServerFn({ method: "GET" })
         preview: r.replied_at
           ? `Client replied: ${clean(String(r.reply_text ?? "")).slice(0, 160)}`
           : "Pre-appointment checklist: photo ID, location and parking details, special instructions.",
+        body: [
+          "Pre-appointment checklist sent to the client:",
+          "· A valid, unexpired photo ID for every signer",
+          "· The exact location and any parking or access details",
+          "· Any special instructions we should know in advance",
+          r.replied_at ? `\nClient replied: ${String(r.reply_text ?? "")}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n"),
         at: String(r.sent_at ?? r.created_at),
         status:
           String(r.status) === "failed"
