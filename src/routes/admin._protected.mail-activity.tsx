@@ -85,14 +85,21 @@ function Row({ row }: { row: MailActivityRow }) {
     </>
   );
 
+  const rowClass =
+    "-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60";
+
   return (
     <li>
-      {row.contactId ? (
+      {row.draftId ? (
+        <Link to="/admin/email-requests" hash={`draft-${row.draftId}`} className={rowClass}>
+          {body}
+        </Link>
+      ) : row.contactId ? (
         <Link
           to="/admin/crm/$contactId"
           params={{ contactId: row.contactId }}
           hash="activity"
-          className="-mx-3 flex gap-3 rounded-2xl px-3 py-4 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+          className={rowClass}
         >
           {body}
         </Link>
