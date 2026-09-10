@@ -55,7 +55,7 @@ export const getSiteChatEngagement = createServerFn({ method: "GET" })
       console.error("site chat: engagement read failed", error.message);
       return { opened: 0, conversations: 0, opened7: 0, conversations7: 0 };
     }
-    const rows = data ?? [];
+    const rows = (data ?? []) as Array<{ event_type: string; created_at: string }>;
     const cutoff7 = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const count = (event: string, from?: string) =>
       rows.filter((r) => r.event_type === event && (!from || String(r.created_at) >= from)).length;
